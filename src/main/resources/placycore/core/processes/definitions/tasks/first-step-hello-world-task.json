@@ -1,0 +1,10 @@
+{
+    "code" : "first-step-hello-world-task",
+    "runnerBean" : "stringLoggerBean",
+    "params" : [
+        {
+            "code" : "stringValue",
+            "defaultValue" : "first-step-hello-world!"
+        }
+    ]
+}

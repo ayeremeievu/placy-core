@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: local
+    include: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/core?useSSL=false&useUnicode=yes&characterEncoding=UTF-8
+    username: root
+    password: admin

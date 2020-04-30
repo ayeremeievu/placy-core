@@ -1,0 +1,28 @@
+server:
+  servlet:
+    context-path: "/api/v1"
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+  profiles:
+    active: dev
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        format_sql: true
+        default_schema: core
+
+app:
+  general :
+    basePackage : com.ownqr
+    api :
+      version : 1

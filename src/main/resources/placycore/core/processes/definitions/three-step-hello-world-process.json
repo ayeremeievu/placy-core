@@ -1,0 +1,44 @@
+{
+    "code" : "three-step-hello-world",
+    "params" : [
+        {
+            "code" : "finishingSentence"
+        }
+    ],
+    "steps" : [
+        {
+            "code" : "first-step",
+            "taskCode" : "first-step-hello-world-task"
+        },
+        {
+            "code" : "second-step",
+            "taskCode" : "log-string-task",
+            "paramsValues" : [
+                {
+                    "code" : "stringValue",
+                    "value" : "second-step-hello-world!"
+                }
+            ]
+        },
+        {
+            "code" : "third-step",
+            "taskCode" : "log-string-task",
+            "paramsValues" : [
+                {
+                    "code" : "stringValue",
+                    "value" : "third-step-hello-world!"
+                }
+            ]
+        },
+        {
+            "code" : "finish-step",
+            "taskCode" : "log-string-task",
+            "delegatingParams" : [
+                {
+                    "processParamCode" : "finishingSentence",
+                    "taskParamCode" : "stringValue"
+                }
+            ]
+        }
+    ]
+}

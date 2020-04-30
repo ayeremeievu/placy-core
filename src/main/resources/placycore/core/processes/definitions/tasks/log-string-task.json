@@ -1,0 +1,9 @@
+{
+    "code" : "log-string-task",
+    "runnerBean" : "stringLoggerBean",
+    "params" : [
+        {
+            "code" : "stringValue"
+        }
+    ]
+}
