@@ -8,6 +8,7 @@ import java.util.List;
 public class TaskDefinition {
     private String code;
     private String runnerBean;
+    private String name;
     private List<ParamDefinition> params;
 
     public TaskDefinition() {
@@ -27,6 +28,14 @@ public class TaskDefinition {
 
     public void setRunnerBean(String runnerBean) {
         this.runnerBean = runnerBean;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<ParamDefinition> getParams() {

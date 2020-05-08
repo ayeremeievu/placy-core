@@ -14,20 +14,13 @@ import javax.persistence.UniqueConstraint;
  * @author a.yeremeiev@netconomy.net
  */
 @Entity
-@Table(name = "taskResources",
-    indexes = {
-        @Index(columnList = "pk", name = "pr_pk_idx"),
-    },
-    uniqueConstraints = {
-       @UniqueConstraint(columnNames = "pk")
-    }
-)
+@Table(name = "taskResources")
 public class TaskResourceModel extends DomainModel {
     @OneToOne
-    @JoinColumn(name = "tr_task_pk", unique = true, nullable = false)
+    @JoinColumn(name = "tr_task_pk", unique = true)
     private TaskModel task;
 
-    @Column(name = "tr_resource", nullable = false)
+    @Column(name = "tr_resource", nullable = false, updatable = false)
     private String resource;
 
     public TaskModel getTask() {

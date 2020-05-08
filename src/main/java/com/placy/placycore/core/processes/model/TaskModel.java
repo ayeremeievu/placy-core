@@ -3,7 +3,9 @@ package com.placy.placycore.core.processes.model;
 import com.placy.placycore.core.model.DomainModel;
 
 import java.util.Collection;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -16,12 +18,10 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "tasks", indexes = {
-        @Index(columnList = "pk", name = "t_pk_idx"),
         @Index(columnList = "t_code", name = "t_code_idx"),
     },
     uniqueConstraints = {
-       @UniqueConstraint(columnNames = "pk"),
-       @UniqueConstraint(columnNames = "t_code")
+       @UniqueConstraint(columnNames = "t_code", name = "t_code_unq_constraint")
     }
 )
 public class TaskModel extends DomainModel {
@@ -34,8 +34,11 @@ public class TaskModel extends DomainModel {
     @Column(name = "t_runnerBean", nullable = false)
     private String runnerBean;
 
-    @OneToMany(targetEntity = TaskInstanceModel.class, mappedBy = "task")
-    private Collection<TaskInstanceModel> tasksInstances;
+    @OneToMany(mappedBy = "task")
+    private List<TaskInstanceModel> tasksInstances;
+
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.ALL})
+    private List<TaskParameterModel> params;
 
     public String getCode() {
         return code;
@@ -61,11 +64,19 @@ public class TaskModel extends DomainModel {
         this.runnerBean = runnerBean;
     }
 
-    public Collection<TaskInstanceModel> getTasksInstances() {
+    public List<TaskInstanceModel> getTasksInstances() {
         return tasksInstances;
     }
 
-    public void setTasksInstances(Collection<TaskInstanceModel> tasksInstances) {
+    public void setTasksInstances(List<TaskInstanceModel> tasksInstances) {
         this.tasksInstances = tasksInstances;
+    }
+
+    public List<TaskParameterModel> getParams() {
+        return params;
+    }
+
+    public void setParams(List<TaskParameterModel> params) {
+        this.params = params;
     }
 }

@@ -8,18 +8,21 @@ server:
 spring:
   profiles:
     active: dev
+#  datasource:
+#    initialization-mode: always
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        dialect: org.hibernate.dialect.MySQL5Dialect
         format_sql: true
         default_schema: core
+    generate-ddl: true
+#    show-sql: true
 
 app:
   general :

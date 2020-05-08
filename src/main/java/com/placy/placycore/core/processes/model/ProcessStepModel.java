@@ -2,11 +2,14 @@ package com.placy.placycore.core.processes.model;
 
 import com.placy.placycore.core.model.DomainModel;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -19,8 +22,8 @@ import javax.persistence.UniqueConstraint;
     @Index(columnList = "ps_code", name = "ps_code_idx")
     },
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = "ps_code"),
-            @UniqueConstraint(columnNames = {"ps_task_pk","ps_order"})
+            @UniqueConstraint(columnNames = "ps_code", name = "ps_code_unq_constraint"),
+            @UniqueConstraint(columnNames = {"ps_task_pk","ps_order"}, name = "ps_task_order_unq_constraint")
     })
 public class ProcessStepModel extends DomainModel {
     @Column(name = "ps_code", nullable = false)
@@ -40,6 +43,9 @@ public class ProcessStepModel extends DomainModel {
     @ManyToOne
     @JoinColumn(name = "ps_process_pk", nullable = false)
     private ProcessModel process;
+
+    @OneToMany(mappedBy = "processStep")
+    private List<PredefinedTaskParameterValueModel> predefinedTaskParameterValues;
 
     public String getCode() {
         return code;
@@ -79,5 +85,13 @@ public class ProcessStepModel extends DomainModel {
 
     public void setProcess(ProcessModel process) {
         this.process = process;
+    }
+
+    public List<PredefinedTaskParameterValueModel> getPredefinedTaskParameterValues() {
+        return predefinedTaskParameterValues;
+    }
+
+    public void setPredefinedTaskParameterValues(List<PredefinedTaskParameterValueModel> delegatingTaskParameterValues) {
+        this.predefinedTaskParameterValues = delegatingTaskParameterValues;
     }
 }

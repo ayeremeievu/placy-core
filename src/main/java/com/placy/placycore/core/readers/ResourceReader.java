@@ -14,14 +14,14 @@ public class ResourceReader {
     @Autowired
     private JsonReader jsonReader;
 
-    public <T> T readResourceSystemClassLoader(String path, Class<T> clazz) {
-        return readResource(ClassLoader.getSystemClassLoader(), path, clazz);
-    }
-
-    public <T> T readResource(ClassLoader classLoader, String path, Class<T> clazz) {
+    public <T> T readResource(String path, Class<T> clazz) {
         T result = null;
 
-        InputStream resourceAsStream = classLoader.getResourceAsStream(path);
+        InputStream resourceAsStream = this.getClass().getResourceAsStream(path);
+
+        if(resourceAsStream == null) {
+            throw new IllegalStateException("No resource found by filepath: " + path);
+        }
 
         try {
             result = jsonReader.readJson(resourceAsStream, clazz);

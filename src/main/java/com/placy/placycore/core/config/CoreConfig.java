@@ -83,14 +83,14 @@ public class CoreConfig {
 
     private List<String> processesResourcesPaths() {
         return Arrays.asList(
-            "classpath:playcore/core/processes/definitions/three-step-hello-world-process.json"
+            "/placycore/core/processes/definitions/three-step-hello-world-process.json"
         );
     }
 
     private List<String> tasksResourcesPaths() {
         return Arrays.asList(
-            "classpath:playcore/core/processes/definitions/tasks/first-step-hello-world-task.json",
-            "classpath:playcore/core/processes/definitions/tasks/log-string-task.json"
+            "/placycore/core/processes/definitions/tasks/first-step-hello-world-task.json",
+            "/placycore/core/processes/definitions/tasks/log-string-task.json"
         );
     }
 }

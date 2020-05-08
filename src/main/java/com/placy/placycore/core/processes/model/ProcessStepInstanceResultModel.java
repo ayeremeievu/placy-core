@@ -14,13 +14,7 @@ import javax.persistence.UniqueConstraint;
  * @author a.yeremeiev@netconomy.net
  */
 @Entity
-@Table(name = "processStepInstanceResults",
-   indexes = {
-        @Index(columnList = "psir_code", name = "psir_code_idx")
-    },
-   uniqueConstraints = {
-       @UniqueConstraint(columnNames = "psir_code")
-   })
+@Table(name = "processStepInstanceResults")
 public class ProcessStepInstanceResultModel extends DomainModel {
     @Column(name = "psir_processResult", nullable = false)
     @Enumerated(EnumType.STRING)

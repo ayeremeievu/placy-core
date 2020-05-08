@@ -3,7 +3,9 @@ package com.placy.placycore.core.processes.model;
 import com.placy.placycore.core.model.DomainModel;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,6 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -18,13 +21,7 @@ import javax.persistence.UniqueConstraint;
  * @author a.yeremeiev@netconomy.net
  */
 @Entity
-@Table(name = "taskInstances", indexes = {
-        @Index(columnList = "pk", name = "ti_pk_idx"),
-    },
-   uniqueConstraints = {
-       @UniqueConstraint(columnNames = "ti_pk_idx"),
-   }
-)
+@Table(name = "taskInstances")
 public class TaskInstanceModel extends DomainModel {
     @Column(name = "ti_startDate", nullable = true)
     private Date startDate;
@@ -39,6 +36,9 @@ public class TaskInstanceModel extends DomainModel {
     @ManyToOne
     @JoinColumn(name = "ti_task_pk", nullable = false)
     private TaskModel task;
+
+    @OneToMany(mappedBy = "taskInstance", cascade = CascadeType.ALL)
+    private List<TaskParameterValueModel> paramValues;
 
     public Date getStartDate() {
         return startDate;
@@ -70,5 +70,13 @@ public class TaskInstanceModel extends DomainModel {
 
     public void setTask(TaskModel task) {
         this.task = task;
+    }
+
+    public List<TaskParameterValueModel> getParamValues() {
+        return paramValues;
+    }
+
+    public void setParamValues(List<TaskParameterValueModel> paramValues) {
+        this.paramValues = paramValues;
     }
 }

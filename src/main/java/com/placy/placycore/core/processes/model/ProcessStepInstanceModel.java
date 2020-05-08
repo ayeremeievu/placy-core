@@ -22,7 +22,7 @@ import javax.persistence.UniqueConstraint;
            @Index(columnList = "psi_code", name = "psi_code_idx")
        },
        uniqueConstraints = {
-           @UniqueConstraint(columnNames = "psi_code")
+           @UniqueConstraint(columnNames = "psi_code", name = "psi_code_unq_constraint")
        })
 public class ProcessStepInstanceModel extends DomainModel {
     @Column(name = "psi_code", nullable = false)

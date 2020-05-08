@@ -4,6 +4,8 @@ import com.placy.placycore.core.processes.loaders.TaskLoader;
 import com.placy.placycore.core.processes.model.TaskModel;
 import com.placy.placycore.core.processes.model.TaskResourceModel;
 import com.placy.placycore.core.processes.repository.TaskResourcesRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
  * @author a.yeremeiev@netconomy.net
  */
 public class TaskResourcesService {
+    Logger LOG = LoggerFactory.getLogger(TaskResourcesService.class);
 
     @Autowired
     private TaskResourcesRepository taskResourcesRepository;
@@ -44,13 +47,15 @@ public class TaskResourcesService {
     private TaskResourceModel process(TaskResourceModel taskResource) {
         String resourcePath = taskResource.getResource();
 
-        TaskModel taskModel = taskLoader.loadProcess(this.getClass().getClassLoader(), resourcePath);
+        TaskModel taskModel = taskLoader.loadProcess(resourcePath);
 
         tasksService.save(taskModel);
 
         taskResource.setTask(taskModel);
 
         save(taskResource);
+
+        LOG.info("Task resource with path : {} processsed", taskResource.getResource());
 
         return taskResource;
     }

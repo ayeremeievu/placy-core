@@ -4,31 +4,28 @@ import com.placy.placycore.core.model.DomainModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 /**
  * @author a.yeremeiev@netconomy.net
  */
 @Entity
-@Table(name = "parameterValues")
-public class ParameterValueModel extends DomainModel {
+@Table(name = "processParameterValues")
+public class ProcessParameterValueModel extends DomainModel {
     @ManyToOne
-    @JoinColumn(name = "pv_parameter_pk", nullable = false)
-    private ParameterModel parameter;
+    @JoinColumn(name = "ppv_parameter_pk", nullable = false)
+    private ProcessParameterModel parameter;
 
-    @Column(name = "pv_value", nullable = false)
+    @Column(name = "ppv_value", nullable = false)
     private String value;
 
-    public ParameterModel getParameter() {
+    public ProcessParameterModel getParameter() {
         return parameter;
     }
 
-    public void setParameter(ParameterModel parameter) {
+    public void setParameter(ProcessParameterModel parameter) {
         this.parameter = parameter;
     }
 

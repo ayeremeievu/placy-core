@@ -17,7 +17,7 @@ import javax.persistence.UniqueConstraint;
            @Index(columnList = "c_code", name = "c_code_idx"),
        },
        uniqueConstraints = {
-           @UniqueConstraint(columnNames = "c_code")
+           @UniqueConstraint(columnNames = "c_code", name = "c_code_unq_constraint")
        }
 )
 public class ConditionModel extends DomainModel {

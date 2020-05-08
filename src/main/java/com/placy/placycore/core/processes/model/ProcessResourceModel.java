@@ -14,19 +14,13 @@ import javax.persistence.UniqueConstraint;
  * @author a.yeremeiev@netconomy.net
  */
 @Entity
-@Table(name = "processResources", indexes = {
-        @Index(columnList = "pk", name = "pr_pk_idx"),
-    },
-    uniqueConstraints = {
-       @UniqueConstraint(columnNames = "pk")
-    }
-)
+@Table(name = "processResources")
 public class ProcessResourceModel extends DomainModel {
     @OneToOne
-    @JoinColumn(name = "pr_process_pk", unique = true, nullable = false)
+    @JoinColumn(name = "pr_process_pk", unique = true)
     private ProcessModel process;
 
-    @Column(name = "pr_resource", nullable = false)
+    @Column(name = "pr_resource", nullable = false, updatable = false)
     private String resource;
 
     public ProcessModel getProcess() {

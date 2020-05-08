@@ -7,6 +7,7 @@ import java.util.List;
  */
 public class ProcessDefinition {
     private String code;
+    private String name;
     private List<ParamDefinition> params;
 
     private List<ProcessStepDefinition> steps;
@@ -20,6 +21,14 @@ public class ProcessDefinition {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<ParamDefinition> getParams() {

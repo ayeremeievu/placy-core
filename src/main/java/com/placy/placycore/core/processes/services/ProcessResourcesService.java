@@ -43,7 +43,7 @@ public class ProcessResourcesService {
     public ProcessResourceModel processResource(ProcessResourceModel processResourceModel) {
         String resourcePath = processResourceModel.getResource();
 
-        ProcessModel processModel = processLoader.loadProcess(this.getClass().getClassLoader(), resourcePath);
+        ProcessModel processModel = processLoader.loadProcess(resourcePath);
 
         processesService.save(processModel);
 

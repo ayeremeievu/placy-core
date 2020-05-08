@@ -16,12 +16,10 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "processes", indexes = {
-        @Index(columnList = "pk", name = "p_pk_idx"),
         @Index(columnList = "p_code", name = "p_code_idx"),
     },
     uniqueConstraints = {
-       @UniqueConstraint(columnNames = "pk"),
-       @UniqueConstraint(columnNames = "p_code")
+       @UniqueConstraint(columnNames = "p_code", name = "p_code_unq_constraint")
     }
 )
 public class ProcessModel extends DomainModel {
@@ -35,7 +33,7 @@ public class ProcessModel extends DomainModel {
     private List<ProcessInstanceModel> processInstances;
 
     @OneToMany(mappedBy = "process")
-    private List<ProcessToParamRelModel> parametersRelations;
+    private List<ProcessParameterModel> params;
 
     public String getCode() {
         return code;
@@ -61,11 +59,11 @@ public class ProcessModel extends DomainModel {
         this.processInstances = processInstances;
     }
 
-    public List<ProcessToParamRelModel> getParametersRelations() {
-        return parametersRelations;
+    public List<ProcessParameterModel> getParams() {
+        return params;
     }
 
-    public void setParametersRelations(List<ProcessToParamRelModel> parametersRelations) {
-        this.parametersRelations = parametersRelations;
+    public void setParams(List<ProcessParameterModel> parametersRelations) {
+        this.params = parametersRelations;
     }
 }

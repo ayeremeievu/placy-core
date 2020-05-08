@@ -8,7 +8,7 @@ import java.util.List;
 public class ProcessStepDefinition {
     private String code;
     private String taskCode;
-    private List<ParamValueDefinition> paramValues;
+    private List<ParamValueDefinition> paramsValues;
     private List<DelegatingParamDefinition> delegatingParams;
 
     public ProcessStepDefinition() {
@@ -30,12 +30,12 @@ public class ProcessStepDefinition {
         this.taskCode = taskCode;
     }
 
-    public List<ParamValueDefinition> getParamValues() {
-        return paramValues;
+    public List<ParamValueDefinition> getParamsValues() {
+        return paramsValues;
     }
 
-    public void setParamValues(List<ParamValueDefinition> paramValues) {
-        this.paramValues = paramValues;
+    public void setParamsValues(List<ParamValueDefinition> paramsValues) {
+        this.paramsValues = paramsValues;
     }
 
     public List<DelegatingParamDefinition> getDelegatingParams() {
