@@ -2,12 +2,17 @@ package com.placy.placycore.core.processes.data;
 
 import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * @author a.yeremeiev@netconomy.net
  */
 public class ProcessDefinition {
+    @NotEmpty
     private String code;
+    @NotEmpty
     private String name;
+
     private List<ParamDefinition> params;
 
     private List<ProcessStepDefinition> steps;

@@ -4,6 +4,7 @@ import com.placy.placycore.core.model.DomainModel;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -26,13 +27,16 @@ public class ProcessModel extends DomainModel {
     @Column(name = "p_code", nullable = false)
     private String code;
 
-    @OneToMany(mappedBy = "process")
+    @Column(name = "p_name", nullable = true)
+    private String name;
+
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL)
     private List<ProcessStepModel> processSteps;
 
-    @OneToMany(mappedBy = "process")
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL)
     private List<ProcessInstanceModel> processInstances;
 
-    @OneToMany(mappedBy = "process")
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL)
     private List<ProcessParameterModel> params;
 
     public String getCode() {
@@ -41,6 +45,14 @@ public class ProcessModel extends DomainModel {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<ProcessStepModel> getProcessSteps() {

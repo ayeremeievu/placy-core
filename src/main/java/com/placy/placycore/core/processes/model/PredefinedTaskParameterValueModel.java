@@ -14,16 +14,16 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "predefinedTaskParameterValues", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"ptpv_processStep", "ptpv_parameter"}, name = "ptpv_processStep_parameter_unq_constraint")
+    @UniqueConstraint(columnNames = {"ptpv_processStep_pk", "ptpv_taskParameter_pk"}, name = "ptpv_processStep_parameter_unq_constraint")
 })
 public class PredefinedTaskParameterValueModel extends DomainModel {
     @ManyToOne(optional = false)
-    @JoinColumn(name = "ptpv_processStep")
+    @JoinColumn(name = "ptpv_processStep_pk")
     private ProcessStepModel processStep;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "ptpv_parameter")
-    private TaskParameterModel parameter;
+    @JoinColumn(name = "ptpv_taskParameter_pk")
+    private TaskParameterModel taskParameter;
 
     @Column(name = "ptpv_value", nullable = false)
     private String value;
@@ -36,12 +36,12 @@ public class PredefinedTaskParameterValueModel extends DomainModel {
         this.processStep = processStep;
     }
 
-    public TaskParameterModel getParameter() {
-        return parameter;
+    public TaskParameterModel getTaskParameter() {
+        return taskParameter;
     }
 
-    public void setParameter(TaskParameterModel parameter) {
-        this.parameter = parameter;
+    public void setTaskParameter(TaskParameterModel parameter) {
+        this.taskParameter = parameter;
     }
 
     public String getValue() {

@@ -1,16 +1,13 @@
-package com.placy.placycore.core.processes.data;
-
-import javax.validation.constraints.NotEmpty;
+package com.placy.placycore.corewebservices.processes.dto;
 
 /**
  * @author a.yeremeiev@netconomy.net
  */
-public class ParamDefinition {
-    @NotEmpty
+public class ParamDto {
     private String code;
     private String defaultValue;
 
-    public ParamDefinition() {
+    public ParamDto() {
     }
 
     public String getCode() {

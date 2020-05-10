@@ -2,6 +2,7 @@ package com.placy.placycore.core.processes.loaders;
 
 import com.placy.placycore.core.processes.data.ProcessDefinition;
 import com.placy.placycore.core.processes.data.TaskDefinition;
+import com.placy.placycore.core.processes.exceptions.ExecutiveEntityLoadingException;
 import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.model.TaskModel;
 import com.placy.placycore.core.processes.populators.TaskDefinitionToModelPopulator;
@@ -25,12 +26,15 @@ public class TaskLoader {
 
     public TaskModel loadProcess(String filepath) {
         LOG.info("Loading task : " + filepath);
-
-        TaskDefinition taskDefinition = taskReader.readTask(filepath);
-
         TaskModel taskModel = new TaskModel();
 
-        taskDefinitionToModelPopulator.populate(taskDefinition, taskModel);
+        try {
+            TaskDefinition taskDefinition = taskReader.readTask(filepath);
+
+            taskDefinitionToModelPopulator.populate(taskDefinition, taskModel);
+        } catch (RuntimeException ex) {
+            throw new ExecutiveEntityLoadingException("Error occurred during task loading process", ex);
+        }
 
         return taskModel;
     }

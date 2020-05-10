@@ -2,11 +2,15 @@ package com.placy.placycore.core.processes.data;
 
 import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * @author a.yeremeiev@netconomy.net
  */
 public class TaskDefinition {
+    @NotEmpty
     private String code;
+    @NotEmpty
     private String runnerBean;
     private String name;
     private List<ParamDefinition> params;

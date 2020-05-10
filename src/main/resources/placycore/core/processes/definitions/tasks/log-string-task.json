@@ -1,5 +1,6 @@
 {
     "code" : "log-string-task",
+    "name" : "Log string task",
     "runnerBean" : "stringLoggerBean",
     "params" : [
         {

@@ -1,6 +1,7 @@
 package com.placy.placycore.core.processes.loaders;
 
 import com.placy.placycore.core.processes.data.ProcessDefinition;
+import com.placy.placycore.core.processes.exceptions.ExecutiveEntityLoadingException;
 import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.populators.ProcessDefinitionToModelPopulator;
 import org.slf4j.Logger;
@@ -23,12 +24,15 @@ public class ProcessLoader {
 
     public ProcessModel loadProcess(String filepath) {
         LOG.info("Loading process : " + filepath);
-
-        ProcessDefinition processDefinition = processReader.readProcess(filepath);
-
         ProcessModel processModel = new ProcessModel();
 
-        processDefinitionToModelPopulator.populate(processDefinition, processModel);
+        try {
+            ProcessDefinition processDefinition = processReader.readProcess(filepath);
+
+            processDefinitionToModelPopulator.populate(processDefinition, processModel);
+        } catch (RuntimeException ex) {
+            throw new ExecutiveEntityLoadingException("Error occurred during process load process", ex);
+        }
 
         return processModel;
     }

@@ -1,6 +1,6 @@
 package com.placy.placycore.core.processes.repository;
 
-import com.placy.placycore.core.processes.model.ProcessModel;
+import com.placy.placycore.core.processes.model.TaskParameterModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +10,6 @@ import java.util.Optional;
  * @author a.yeremeiev@netconomy.net
  */
 @Repository
-public interface ProcessesRepository extends JpaRepository<ProcessModel, String> {
-    Optional<ProcessModel> getFirstByCode(String code);
+public interface TaskParametersRepository extends JpaRepository<TaskParameterModel, String> {
+    Optional<TaskParameterModel> getFirstByCodeAndTaskCode(String code, String taskCode);
 }

@@ -22,6 +22,8 @@ public class ApplicationReadyEventListener implements ApplicationListener<Applic
         if(postStartupHooks != null && !postStartupHooks.isEmpty()) {
             postStartupHooks.forEach(postStartupHook -> postStartupHook.run(applicationReadyEvent.getApplicationContext()));
         }
+
+        LOG.info("ApplicationReadyEventListener finished");
     }
 
     public List<PostStartupHook> getPostStartupHooks() {

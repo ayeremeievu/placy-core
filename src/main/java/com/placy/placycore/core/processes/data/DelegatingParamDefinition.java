@@ -1,10 +1,15 @@
 package com.placy.placycore.core.processes.data;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 /**
  * @author a.yeremeiev@netconomy.net
  */
 public class DelegatingParamDefinition {
+    @NotEmpty
     private String processParamCode;
+    @NotEmpty
     private String taskParamCode;
 
     public DelegatingParamDefinition() {

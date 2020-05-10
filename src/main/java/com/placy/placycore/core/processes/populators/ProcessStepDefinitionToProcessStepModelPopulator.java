@@ -4,15 +4,21 @@ import com.placy.placycore.core.populators.Populator;
 import com.placy.placycore.core.processes.data.DelegatingParamDefinition;
 import com.placy.placycore.core.processes.data.DelegatingParamDefinitionInfo;
 import com.placy.placycore.core.processes.data.ParamValueDefinition;
+import com.placy.placycore.core.processes.data.ParamValueDefinitionInfo;
 import com.placy.placycore.core.processes.data.ProcessStepDefinition;
 import com.placy.placycore.core.processes.data.ProcessStepDefinitionInfo;
+import com.placy.placycore.core.processes.exceptions.TaskNotFoundException;
+import com.placy.placycore.core.processes.model.DelegatingTaskParameterValueModel;
 import com.placy.placycore.core.processes.model.PredefinedTaskParameterValueModel;
+import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.model.ProcessStepModel;
 import com.placy.placycore.core.processes.model.TaskModel;
+import com.placy.placycore.core.processes.services.TasksService;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,47 +29,74 @@ import java.util.stream.Stream;
 @Component
 public class ProcessStepDefinitionToProcessStepModelPopulator implements Populator<ProcessStepDefinitionInfo, ProcessStepModel> {
     @Autowired
+    private TasksService tasksService;
+
+    @Autowired
     private DelegatingParamDefToPredefinedTaskParameterValueModelPopulator delegatingParamDefToPredefinedTaskParameterValueModelPopulator;
+
+    @Autowired
+    private ParamValueDefinitionToPredefinedTaskParameterValueModelPopulator paramValueDefinitionToPredefinedTaskParameterValueModelPopulator;
 
     @Override
     public void populate(ProcessStepDefinitionInfo processStepDefinitionInfo, ProcessStepModel processStepModel) {
         ProcessStepDefinition processStepDefinition = processStepDefinitionInfo.getProcessStepDefinition();
 
         processStepModel.setCode(processStepDefinition.getCode());
+        processStepModel.setOrder(processStepDefinitionInfo.getOrder());
         processStepModel.setTaskModel(getTask(processStepDefinitionInfo));
-        processStepModel.setPredefinedTaskParameterValues(getDelegatingTaskParameterValues(processStepDefinitionInfo, processStepModel));
-
-        validateProcessStep(processStepModel);
+        processStepModel.setProcess(getProcess(processStepDefinitionInfo));
+        processStepModel.setPredefinedTaskParameterValues(getParamValues(processStepDefinitionInfo, processStepModel));
+        processStepModel.setDelegatingTaskParameterValueModels(getDelegatingTaskParameterValues(processStepDefinitionInfo, processStepModel));
     }
 
     private TaskModel getTask(ProcessStepDefinitionInfo processStepDefinitionInfo) {
-        throw new NotImplementedException("Not implemented yet");
+        ProcessStepDefinition processStepDefinition = processStepDefinitionInfo.getProcessStepDefinition();
+        String taskCode = processStepDefinition.getTaskCode();
+
+        return tasksService.getTaskByCodeOptional(taskCode)
+                           .orElseThrow(() -> new TaskNotFoundException(taskCode));
     }
 
-    private List<PredefinedTaskParameterValueModel> getPredefinedTaskParameterValues(ProcessStepDefinitionInfo processStepDefinitionInfo, ProcessStepModel processStepModel) {
-        List<PredefinedTaskParameterValueModel> predefinedTaskParameterValues = Stream.concat(
-            getParamValues(processStepDefinitionInfo, processStepModel).stream(),
-            getDelegatingTaskParameterValues(processStepDefinitionInfo, processStepModel).stream()
-        ).collect(Collectors.toList());
+    private ProcessModel getProcess(ProcessStepDefinitionInfo processStepDefinitionInfo) {
+        if(processStepDefinitionInfo.getProcessModel() == null) {
+            throw new IllegalArgumentException("Process model must be specified");
+        }
 
-        return predefinedTaskParameterValues;
+        return processStepDefinitionInfo.getProcessModel();
     }
 
     private List<PredefinedTaskParameterValueModel> getParamValues(ProcessStepDefinitionInfo processStepDefinitionInfo,
                                                                    ProcessStepModel processStepModel) {
         List<ParamValueDefinition> paramsValues = processStepDefinitionInfo.getProcessStepDefinition().getParamsValues();
 
-        throw new NotImplementedException("Not implemented yet");
+        if(paramsValues == null) {
+            paramsValues = new ArrayList<>();
+        }
+
+        return paramsValues.stream()
+            .map(paramValueDefinition -> getParamValueModel(
+                new ParamValueDefinitionInfo(
+                    paramValueDefinition, processStepDefinitionInfo, processStepModel
+                )
+            )).collect(Collectors.toList());
     }
 
-    private void validateProcessStep(ProcessStepModel processStepModel) {
-        throw new NotImplementedException("Not implemented yet");
+    private PredefinedTaskParameterValueModel getParamValueModel(ParamValueDefinitionInfo paramValueDefinitionInfo) {
+        PredefinedTaskParameterValueModel predefinedTaskParameterValueModel = new PredefinedTaskParameterValueModel();
+        paramValueDefinitionToPredefinedTaskParameterValueModelPopulator
+            .populate(paramValueDefinitionInfo, predefinedTaskParameterValueModel);
+
+        return predefinedTaskParameterValueModel;
     }
 
-    private List<PredefinedTaskParameterValueModel> getDelegatingTaskParameterValues(ProcessStepDefinitionInfo processStepDefinitionInfo, ProcessStepModel processStepModel) {
+    private List<DelegatingTaskParameterValueModel> getDelegatingTaskParameterValues(ProcessStepDefinitionInfo processStepDefinitionInfo, ProcessStepModel processStepModel) {
         ProcessStepDefinition processStepDefinition = processStepDefinitionInfo.getProcessStepDefinition();
 
         List<DelegatingParamDefinition> delegatingParams = processStepDefinition.getDelegatingParams();
+
+        if(delegatingParams == null) {
+            delegatingParams = new ArrayList<>();
+        }
 
         return delegatingParams.stream()
                         .map(delegatingParamDefinition -> getPredefinedTaskParameterValueModel(
@@ -74,11 +107,11 @@ public class ProcessStepDefinitionToProcessStepModelPopulator implements Populat
                         ).collect(Collectors.toList());
     }
 
-    private PredefinedTaskParameterValueModel getPredefinedTaskParameterValueModel(DelegatingParamDefinitionInfo delegatingParamDefinitionInfo) {
-        PredefinedTaskParameterValueModel predefinedTaskParameterValueModel = new PredefinedTaskParameterValueModel();
+    private DelegatingTaskParameterValueModel getPredefinedTaskParameterValueModel(DelegatingParamDefinitionInfo delegatingParamDefinitionInfo) {
+        DelegatingTaskParameterValueModel delegatingTaskParameterValueModel = new DelegatingTaskParameterValueModel();
 
-        delegatingParamDefToPredefinedTaskParameterValueModelPopulator.populate(delegatingParamDefinitionInfo, predefinedTaskParameterValueModel);
+        delegatingParamDefToPredefinedTaskParameterValueModelPopulator.populate(delegatingParamDefinitionInfo, delegatingTaskParameterValueModel);
 
-        return predefinedTaskParameterValueModel;
+        return delegatingTaskParameterValueModel;
     }
 }

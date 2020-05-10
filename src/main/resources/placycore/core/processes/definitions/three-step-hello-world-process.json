@@ -1,5 +1,6 @@
 {
     "code" : "three-step-hello-world",
+    "name" : "Three step hello world",
     "params" : [
         {
             "code" : "finishingSentence"

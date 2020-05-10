@@ -34,7 +34,7 @@ public class TaskModel extends DomainModel {
     @Column(name = "t_runnerBean", nullable = false)
     private String runnerBean;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private List<TaskInstanceModel> tasksInstances;
 
     @OneToMany(mappedBy = "task", cascade = {CascadeType.ALL})

@@ -31,6 +31,11 @@ public class TaskDefinitionToModelPopulator implements Populator<TaskDefinition,
     private List<TaskParameterModel> getTaskParameters(TaskDefinition taskDefinition, TaskModel taskModel) {
         List<TaskParameterModel> taskParameters = new ArrayList<>();
         List<ParamDefinition> params = taskDefinition.getParams();
+
+        if(params == null) {
+            params = new ArrayList<>();
+        }
+
         params.stream().map(paramDefinition -> {
             TaskParameterModel parameterModel = new TaskParameterModel();
 

@@ -4,6 +4,7 @@ import com.placy.placycore.core.model.DomainModel;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -37,15 +38,18 @@ public class ProcessStepModel extends DomainModel {
     private TaskModel taskModel;
 
     @OneToOne
-    @JoinColumn(name = "ps_condition_pk", nullable = false)
+    @JoinColumn(name = "ps_condition_pk", nullable = true)
     private ConditionModel condition;
 
     @ManyToOne
     @JoinColumn(name = "ps_process_pk", nullable = false)
     private ProcessModel process;
 
-    @OneToMany(mappedBy = "processStep")
+    @OneToMany(mappedBy = "processStep", cascade = CascadeType.ALL)
     private List<PredefinedTaskParameterValueModel> predefinedTaskParameterValues;
+
+    @OneToMany(mappedBy = "processStep", cascade = CascadeType.ALL)
+    private List<DelegatingTaskParameterValueModel> delegatingTaskParameterValueModels;
 
     public String getCode() {
         return code;
@@ -93,5 +97,13 @@ public class ProcessStepModel extends DomainModel {
 
     public void setPredefinedTaskParameterValues(List<PredefinedTaskParameterValueModel> delegatingTaskParameterValues) {
         this.predefinedTaskParameterValues = delegatingTaskParameterValues;
+    }
+
+    public List<DelegatingTaskParameterValueModel> getDelegatingTaskParameterValueModels() {
+        return delegatingTaskParameterValueModels;
+    }
+
+    public void setDelegatingTaskParameterValueModels(List<DelegatingTaskParameterValueModel> delegatingTaskParameterValueModels) {
+        this.delegatingTaskParameterValueModels = delegatingTaskParameterValueModels;
     }
 }

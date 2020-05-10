@@ -1,10 +1,14 @@
 package com.placy.placycore.core.processes.data;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * @author a.yeremeiev@netconomy.net
  */
 public class ParamValueDefinition {
+    @NotEmpty
     private String code;
+    @NotEmpty
     private String value;
 
     public ParamValueDefinition() {
