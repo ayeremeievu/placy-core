@@ -1,4 +1,4 @@
-package com.placy.placycore.core.processes.populators;
+package com.placy.placycore.core.processes.mappers.populators;
 
 import com.placy.placycore.core.populators.Populator;
 import com.placy.placycore.core.processes.data.ParamDefinition;
@@ -8,7 +8,6 @@ import com.placy.placycore.core.processes.data.ProcessStepDefinitionInfo;
 import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.model.ProcessParameterModel;
 import com.placy.placycore.core.processes.model.ProcessStepModel;
-import com.placy.placycore.core.processes.model.TaskParameterModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

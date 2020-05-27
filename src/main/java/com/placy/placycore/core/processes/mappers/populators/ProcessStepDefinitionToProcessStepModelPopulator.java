@@ -1,4 +1,4 @@
-package com.placy.placycore.core.processes.populators;
+package com.placy.placycore.core.processes.mappers.populators;
 
 import com.placy.placycore.core.populators.Populator;
 import com.placy.placycore.core.processes.data.DelegatingParamDefinition;
@@ -14,14 +14,12 @@ import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.model.ProcessStepModel;
 import com.placy.placycore.core.processes.model.TaskModel;
 import com.placy.placycore.core.processes.services.TasksService;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author a.yeremeiev@netconomy.net

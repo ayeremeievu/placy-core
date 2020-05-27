@@ -25,7 +25,7 @@ import javax.persistence.UniqueConstraint;
         @UniqueConstraint(columnNames = "pi_code", name = "pi_code_unq_constraint")
     }
 )
-public class ProcessInstanceModel extends DomainModel {
+public class ProcessInstanceModel extends DomainModel implements ExecutableModel {
     @Column(name = "pi_code", nullable = false)
     private String code;
 

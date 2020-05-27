@@ -1,8 +1,7 @@
-package com.placy.placycore.core.processes.populators;
+package com.placy.placycore.core.processes.mappers.populators;
 
 import com.placy.placycore.core.populators.Populator;
 import com.placy.placycore.core.processes.data.ParamDefinition;
-import com.placy.placycore.core.processes.data.TaskParamDefinitionInfo;
 import com.placy.placycore.core.processes.data.TaskDefinition;
 import com.placy.placycore.core.processes.model.TaskModel;
 import com.placy.placycore.core.processes.model.TaskParameterModel;

@@ -22,7 +22,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "taskInstances")
-public class TaskInstanceModel extends DomainModel {
+public class TaskInstanceModel extends DomainModel implements ExecutableModel {
     @Column(name = "ti_startDate", nullable = true)
     private Date startDate;
 
