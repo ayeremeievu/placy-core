@@ -4,6 +4,7 @@ import com.placy.placycore.core.processes.executable.ExecutableBean;
 import com.placy.placycore.core.processes.executable.TaskRunner;
 import com.placy.placycore.core.processes.model.TaskInstanceModel;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -17,10 +18,13 @@ import java.util.Map;
 public class BeanRunnerService implements ApplicationContextAware {
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private TasksService tasksService;
+
     public void runTaskBean(TaskInstanceModel executableModel, String beanId, Map<String, Object> params) {
         ExecutableBean executableBean = searchBeanById(beanId);
 
-        TaskRunner taskRunner = new TaskRunner(executableModel, executableBean, params);
+        TaskRunner taskRunner = new TaskRunner(executableModel, executableBean, params, tasksService);
         Thread thread = new Thread(taskRunner);
 
         thread.start();

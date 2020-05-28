@@ -2,6 +2,7 @@ package com.placy.placycore.core.processes.executable;
 
 import com.placy.placycore.core.processes.model.TaskInstanceModel;
 import com.placy.placycore.core.processes.model.TaskInstanceStatusEnum;
+import com.placy.placycore.core.processes.services.TasksService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,25 +13,30 @@ import java.util.Map;
  * @author ayeremeiev@netconomy.net
  */
 public class TaskRunner implements Runnable {
+
     Logger LOG = LoggerFactory.getLogger(TaskRunner.class);
 
     private TaskInstanceModel taskInstanceModel = null;
     private final ExecutableBean executableBean;
     private final Map<String, Object> params;
+    private final TasksService tasksService;
 
-    public TaskRunner(ExecutableBean executableBean, Map<String, Object> params) {
+    public TaskRunner(ExecutableBean executableBean, Map<String, Object> params, TasksService tasksService) {
         this.executableBean = executableBean;
         this.params = params;
+        this.tasksService = tasksService;
     }
 
     public TaskRunner(
         TaskInstanceModel taskInstanceModel,
         ExecutableBean executableBean,
-        Map<String, Object> params
+        Map<String, Object> params,
+        TasksService tasksService
     ) {
         this.taskInstanceModel = taskInstanceModel;
         this.executableBean = executableBean;
         this.params = params;
+        this.tasksService = tasksService;
     }
 
     @Override
@@ -51,6 +57,7 @@ public class TaskRunner implements Runnable {
         );
         taskInstanceModel.setStatus(TaskInstanceStatusEnum.DONE);
         taskInstanceModel.setFinishDate(new Date());
+        tasksService.save(taskInstanceModel);
     }
 
     private void assignTaskInstanceIfAware() {

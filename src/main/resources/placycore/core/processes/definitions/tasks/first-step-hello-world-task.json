@@ -1,7 +1,7 @@
 {
     "code" : "first-step-hello-world-task",
     "name" : "First step hello world task",
-    "runnerBean" : "stringLoggerBean",
+    "runnerBean" : "stringLoggerExecutable",
     "params" : [
         {
             "code" : "stringValue",

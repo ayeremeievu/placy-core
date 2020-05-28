@@ -60,16 +60,16 @@ public class TasksController {
         );
     }
 
-    @RequestMapping(path = "/tasks", method = RequestMethod.POST)
+    @RequestMapping(path = "/task-instances", method = RequestMethod.GET)
+    public List<TaskInstanceDto> getAllTasks() {
+        List<TaskInstanceData> allTaskInstances = tasksService.getAllTaskInstances();
+        return taskInstanceMapper.taskInstancesDataToDtos(allTaskInstances);
+    }
+
+    @RequestMapping(path = "/task-instances", method = RequestMethod.POST)
     public void runTask(@RequestBody RunTaskDto runTaskDto) {
         RunTaskData runTaskData = runTaskMapper.runTaskDtoToData(runTaskDto);
 
         tasksService.runTask(runTaskData);
-    }
-
-    @RequestMapping(path = "/tasks", method = RequestMethod.GET)
-    public List<TaskInstanceDto> getAllTasks() {
-        List<TaskInstanceData> allTaskInstances = tasksService.getAllTaskInstances();
-        return taskInstanceMapper.taskInstancesDataToDtos(allTaskInstances);
     }
 }
