@@ -1,12 +1,15 @@
 package com.placy.placycore.corewebservices.processes.controllers;
 
 import com.placy.placycore.core.processes.data.RunTaskData;
+import com.placy.placycore.core.processes.data.TaskInstanceData;
 import com.placy.placycore.core.processes.model.TaskModel;
 import com.placy.placycore.core.processes.services.TasksService;
 import com.placy.placycore.corewebservices.constants.CorewebservicesRouteConstants;
 import com.placy.placycore.corewebservices.processes.dto.RunTaskDto;
 import com.placy.placycore.corewebservices.processes.dto.TaskDto;
+import com.placy.placycore.corewebservices.processes.dto.TaskInstanceDto;
 import com.placy.placycore.corewebservices.processes.mappers.RunTaskMapper;
+import com.placy.placycore.corewebservices.processes.mappers.TaskInstanceMapper;
 import com.placy.placycore.corewebservices.processes.mappers.TaskModelToDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +39,9 @@ public class TasksController {
     @Autowired
     private RunTaskMapper runTaskMapper;
 
+    @Autowired
+    private TaskInstanceMapper taskInstanceMapper;
+
     @RequestMapping(path = "/tasks", method = RequestMethod.GET)
     public List<TaskDto> getTasks() {
         List<TaskModel> allTasks = tasksService.getAllTasks();
@@ -59,5 +65,11 @@ public class TasksController {
         RunTaskData runTaskData = runTaskMapper.runTaskDtoToData(runTaskDto);
 
         tasksService.runTask(runTaskData);
+    }
+
+    @RequestMapping(path = "/tasks", method = RequestMethod.GET)
+    public List<TaskInstanceDto> getAllTasks() {
+        List<TaskInstanceData> allTaskInstances = tasksService.getAllTaskInstances();
+        return taskInstanceMapper.taskInstancesDataToDtos(allTaskInstances);
     }
 }

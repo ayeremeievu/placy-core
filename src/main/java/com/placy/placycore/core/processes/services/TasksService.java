@@ -1,14 +1,15 @@
 package com.placy.placycore.core.processes.services;
 
+import com.placy.placycore.core.processes.data.TaskInstanceData;
 import com.placy.placycore.core.processes.mappers.ParamValuesToMapMapper;
 import com.placy.placycore.core.processes.data.ParamValueData;
 import com.placy.placycore.core.processes.data.RunTaskData;
 import com.placy.placycore.core.processes.exceptions.TaskNotFoundException;
 import com.placy.placycore.core.processes.mappers.ParamValuesToTaskParamValuesModelsMapper;
+import com.placy.placycore.core.processes.mappers.TaskInstanceModelToDataMapper;
 import com.placy.placycore.core.processes.model.TaskInstanceModel;
 import com.placy.placycore.core.processes.model.TaskInstanceStatusEnum;
 import com.placy.placycore.core.processes.model.TaskModel;
-import com.placy.placycore.core.processes.model.TaskParameterModel;
 import com.placy.placycore.core.processes.model.TaskParameterValueModel;
 import com.placy.placycore.core.processes.repository.TaskInstancesRepository;
 import com.placy.placycore.core.processes.repository.TasksRepository;
@@ -17,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,6 +37,9 @@ public class TasksService {
 
     @Autowired
     private ParamValuesToTaskParamValuesModelsMapper paramValuesToTaskParamValuesModelsMapper;
+
+    @Autowired
+    private TaskInstanceModelToDataMapper taskInstanceModelToDataMapper;
 
     @Autowired
     private BeanRunnerService beanRunnerService;
@@ -76,6 +79,12 @@ public class TasksService {
         taskInstanceModel.setParamValues(taskParameterValueModels);
 
         save(taskInstanceModel);
+    }
+
+    public List<TaskInstanceData> getAllTaskInstances() {
+        List<TaskInstanceModel> taskInstanceModels = taskInstancesRepository.findAll();
+
+        return taskInstanceModelToDataMapper.mapAll(taskInstanceModels);
     }
 
     public void save(TaskInstanceModel taskInstanceModel) {
