@@ -55,7 +55,7 @@ public class TasksController {
     }
 
     @RequestMapping(path = "/tasks", method = RequestMethod.POST)
-    public RunTaskDto runTask(@RequestBody RunTaskDto runTaskDto) {
+    public void runTask(@RequestBody RunTaskDto runTaskDto) {
         RunTaskData runTaskData = runTaskMapper.runTaskDtoToData(runTaskDto);
     }
 }

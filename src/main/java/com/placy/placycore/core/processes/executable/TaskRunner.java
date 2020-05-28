@@ -45,6 +45,12 @@ public class TaskRunner implements Runnable {
              taskInstanceModel.getTask().getCode()
         );
         executableBean.execute(params);
+        LOG.info("The task instance with pk {} with a task code {} has finished",
+                 taskInstanceModel.getPk(),
+                 taskInstanceModel.getTask().getCode()
+        );
+        taskInstanceModel.setStatus(TaskInstanceStatusEnum.DONE);
+        taskInstanceModel.setFinishDate(new Date());
     }
 
     private void assignTaskInstanceIfAware() {
