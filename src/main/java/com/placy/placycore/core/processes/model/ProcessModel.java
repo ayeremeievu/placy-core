@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -31,6 +32,7 @@ public class ProcessModel extends DomainModel {
     private String name;
 
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL)
+    @OrderBy("order")
     private List<ProcessStepModel> processSteps;
 
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL)

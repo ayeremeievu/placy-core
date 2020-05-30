@@ -14,6 +14,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -21,8 +22,18 @@ import javax.persistence.UniqueConstraint;
  * @author a.yeremeiev@netconomy.net
  */
 @Entity
-@Table(name = "taskInstances")
+@Table(name = "taskInstances", indexes = {
+        @Index(columnList = "ti_code", name = "ti_code_idx"),
+    },
+    uniqueConstraints = {
+       @UniqueConstraint(columnNames = "ti_code", name = "ti_code_unq_constraint")
+    }
+)
 public class TaskInstanceModel extends DomainModel implements ExecutableModel {
+
+    @Column(name = "ti_code", nullable = false)
+    private String code;
+
     @Column(name = "ti_startDate", nullable = true)
     private Date startDate;
 
@@ -39,6 +50,21 @@ public class TaskInstanceModel extends DomainModel implements ExecutableModel {
 
     @OneToMany(mappedBy = "taskInstance", cascade = CascadeType.ALL)
     private List<TaskParameterValueModel> paramValues;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.code == null) {
+            this.code = String.format("%s-%s", task.getCode(), new Date());
+        }
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public Date getStartDate() {
         return startDate;

@@ -1,12 +1,11 @@
 package com.placy.placycore.core.processes.model;
 
 /**
- * @author a.yeremeiev@netconomy.net
+ * @author ayeremeiev@netconomy.net
  */
-public enum TaskInstanceStatusEnum {
+public enum ProcessInstanceStatusEnum {
     NOT_STARTED,
     PREPAIRING,
     RUNNING,
-    ERROR,
     DONE
 }

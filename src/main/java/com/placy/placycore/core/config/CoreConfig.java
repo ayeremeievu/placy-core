@@ -10,6 +10,8 @@ import com.placy.placycore.core.startuphooks.hooks.TaskDefinitionImporterHook;
 import com.placy.placycore.core.startuphooks.hooks.TaskDefinitionsProcessorHook;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,5 +94,16 @@ public class CoreConfig {
             "/placycore/core/processes/definitions/tasks/first-step-hello-world-task.json",
             "/placycore/core/processes/definitions/tasks/log-string-task.json"
         );
+    }
+
+    @Bean
+    public TaskExecutor threadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(4);
+        executor.setMaxPoolSize(4);
+        executor.setThreadNamePrefix("core_task_executor_thread");
+        executor.initialize();
+
+        return executor;
     }
 }

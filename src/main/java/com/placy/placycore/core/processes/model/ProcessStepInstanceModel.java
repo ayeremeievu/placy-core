@@ -10,6 +10,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -45,6 +46,13 @@ public class ProcessStepInstanceModel extends DomainModel {
     @OneToOne
     @JoinColumn(name = "psi_processStepInstanceResult_pk")
     private ProcessStepInstanceResultModel processStepInstanceResult;
+
+    @PrePersist
+    public void prePersist() {
+        if(this.code == null) {
+            this.code = String.format("%s-%s", processStep.getCode(), new Date());
+        }
+    }
 
     public String getCode() {
         return code;

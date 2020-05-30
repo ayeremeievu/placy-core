@@ -21,6 +21,10 @@ public class ProcessParameterValueModel extends DomainModel {
     @Column(name = "ppv_value", nullable = false)
     private String value;
 
+    @ManyToOne
+    @JoinColumn(name = "pi_processInstance_pk", nullable = false, updatable = false)
+    private ProcessInstanceModel processInstance;
+
     public ProcessParameterModel getParameter() {
         return parameter;
     }
@@ -35,5 +39,13 @@ public class ProcessParameterValueModel extends DomainModel {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public ProcessInstanceModel getProcessInstance() {
+        return processInstance;
+    }
+
+    public void setProcessInstance(ProcessInstanceModel processInstance) {
+        this.processInstance = processInstance;
     }
 }

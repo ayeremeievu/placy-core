@@ -53,13 +53,18 @@ public class TasksService {
         TaskModel taskModel = tasksRepository.findFirstByCode(taskCode)
                                              .orElseThrow(() -> new TaskNotFoundException(taskCode));
 
+        List<ParamValueData> paramValues = runTaskData.getParamValues();
+
+        runTask(taskModel, paramValues);
+    }
+
+    public void runTask(TaskModel taskModel, List<ParamValueData> paramValues) {
         String runnerBean = taskModel.getRunnerBean();
-        Map<String, Object> paramsMap = paramValuesToMapMapper.map(runTaskData.getParamValues());
 
         TaskInstanceModel taskInstanceModel = new TaskInstanceModel();
-        persistInstance(taskInstanceModel, taskModel, runTaskData.getParamValues());
+        persistInstance(taskInstanceModel, taskModel, paramValues);
 
-        beanRunnerService.runTaskBean(taskInstanceModel, runnerBean, paramsMap);
+        beanRunnerService.runTaskBean(taskInstanceModel, runnerBean);
 
         LOG.info("New Task instance with pk {} for task with {} instantiated.", taskInstanceModel.getPk(), taskModel.getCode());
     }

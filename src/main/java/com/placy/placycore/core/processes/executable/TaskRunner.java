@@ -1,10 +1,14 @@
 package com.placy.placycore.core.processes.executable;
 
+import com.placy.placycore.core.processes.mappers.TaskParamValueModelsToMapMapper;
 import com.placy.placycore.core.processes.model.TaskInstanceModel;
 import com.placy.placycore.core.processes.model.TaskInstanceStatusEnum;
 import com.placy.placycore.core.processes.services.TasksService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Map;
@@ -12,31 +16,27 @@ import java.util.Map;
 /**
  * @author ayeremeiev@netconomy.net
  */
+@Component
+@Scope("prototype")
 public class TaskRunner implements Runnable {
 
     Logger LOG = LoggerFactory.getLogger(TaskRunner.class);
 
     private TaskInstanceModel taskInstanceModel = null;
-    private final ExecutableBean executableBean;
-    private final Map<String, Object> params;
-    private final TasksService tasksService;
+    private ExecutableBean executableBean;
+    private Map<String, Object> params;
 
-    public TaskRunner(ExecutableBean executableBean, Map<String, Object> params, TasksService tasksService) {
-        this.executableBean = executableBean;
-        this.params = params;
-        this.tasksService = tasksService;
-    }
+    @Autowired
+    private TasksService tasksService;
 
-    public TaskRunner(
-        TaskInstanceModel taskInstanceModel,
-        ExecutableBean executableBean,
-        Map<String, Object> params,
-        TasksService tasksService
-    ) {
+    @Autowired
+    private TaskParamValueModelsToMapMapper taskParamValueModelsToMapMapper;
+
+    public TaskRunner(TaskInstanceModel taskInstanceModel,
+                      ExecutableBean executableBean) {
         this.taskInstanceModel = taskInstanceModel;
         this.executableBean = executableBean;
-        this.params = params;
-        this.tasksService = tasksService;
+        this.params = taskParamValueModelsToMapMapper.map(taskInstanceModel.getParamValues());
     }
 
     @Override
@@ -50,7 +50,16 @@ public class TaskRunner implements Runnable {
              taskInstanceModel.getPk(),
              taskInstanceModel.getTask().getCode()
         );
-        executableBean.execute(params);
+
+        taskInstanceModel.setStatus(TaskInstanceStatusEnum.RUNNING);
+
+        try {
+            executableBean.execute(params);
+        } catch (Exception ex) {
+            LOG.error("Exception occurred during task {} execution : {}", taskInstanceModel.getCode(), ex);
+            taskInstanceModel.setStatus(TaskInstanceStatusEnum.ERROR);
+        }
+
         LOG.info("The task instance with pk {} with a task code {} has finished",
                  taskInstanceModel.getPk(),
                  taskInstanceModel.getTask().getCode()
