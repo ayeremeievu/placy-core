@@ -4,6 +4,7 @@ import com.placy.placycore.core.model.DomainModel;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -54,7 +55,7 @@ public class TaskInstanceModel extends DomainModel implements ExecutableModel {
     @PrePersist
     public void prePersist() {
         if (this.code == null) {
-            this.code = String.format("%s-%s", task.getCode(), new Date());
+            this.code = String.format("%s-%s", task.getCode(), (new Date()).getTime());
         }
     }
 
@@ -104,5 +105,27 @@ public class TaskInstanceModel extends DomainModel implements ExecutableModel {
 
     public void setParamValues(List<TaskParameterValueModel> paramValues) {
         this.paramValues = paramValues;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TaskInstanceModel that = (TaskInstanceModel) o;
+        return Objects.equals(code, that.code) &&
+            Objects.equals(startDate, that.startDate) &&
+            Objects.equals(finishDate, that.finishDate) &&
+            status == that.status &&
+            Objects.equals(task, that.task) &&
+            Objects.equals(paramValues, that.paramValues);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, startDate, finishDate, status, task, paramValues);
     }
 }

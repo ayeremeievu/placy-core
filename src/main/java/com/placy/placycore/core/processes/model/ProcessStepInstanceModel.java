@@ -1,14 +1,19 @@
 package com.placy.placycore.core.processes.model;
 
 import com.placy.placycore.core.model.DomainModel;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -40,17 +45,21 @@ public class ProcessStepInstanceModel extends DomainModel {
     private ProcessInstanceModel processInstance;
 
     @OneToOne
+    @JoinColumn(name = "psi_taskInstance_pk")
+    private TaskInstanceModel taskInstanceModel;
+
+    @OneToOne
     @JoinColumn(name = "psi_processStep_pk")
     private ProcessStepModel processStep;
 
-    @OneToOne
-    @JoinColumn(name = "psi_processStepInstanceResult_pk")
-    private ProcessStepInstanceResultModel processStepInstanceResult;
+    @Column(name = "psi_processStepResult", nullable = true)
+    @Enumerated(EnumType.STRING)
+    private ProcessStepResultEnum processStepResult;
 
     @PrePersist
     public void prePersist() {
         if(this.code == null) {
-            this.code = String.format("%s-%s", processStep.getCode(), new Date());
+            this.code = String.format("%s-%s", processStep.getCode(), (new Date()).getTime());
         }
     }
 
@@ -86,6 +95,14 @@ public class ProcessStepInstanceModel extends DomainModel {
         this.processInstance = processInstance;
     }
 
+    public TaskInstanceModel getTaskInstanceModel() {
+        return taskInstanceModel;
+    }
+
+    public void setTaskInstanceModel(TaskInstanceModel taskInstanceModel) {
+        this.taskInstanceModel = taskInstanceModel;
+    }
+
     public ProcessStepModel getProcessStep() {
         return processStep;
     }
@@ -94,11 +111,11 @@ public class ProcessStepInstanceModel extends DomainModel {
         this.processStep = processStep;
     }
 
-    public ProcessStepInstanceResultModel getProcessStepInstanceResult() {
-        return processStepInstanceResult;
+    public ProcessStepResultEnum getProcessStepResult() {
+        return processStepResult;
     }
 
-    public void setProcessStepInstanceResult(ProcessStepInstanceResultModel processStepInstanceResult) {
-        this.processStepInstanceResult = processStepInstanceResult;
+    public void setProcessStepResult(ProcessStepResultEnum processResult) {
+        this.processStepResult = processResult;
     }
 }

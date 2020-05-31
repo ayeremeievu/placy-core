@@ -1,11 +1,14 @@
 package com.placy.placycore.corewebservices.processes.controllers;
 
+import com.placy.placycore.core.processes.data.ProcessInstanceData;
 import com.placy.placycore.core.processes.data.RunProcessData;
 import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.services.ProcessesService;
 import com.placy.placycore.corewebservices.constants.CorewebservicesRouteConstants;
 import com.placy.placycore.corewebservices.processes.dto.ProcessDto;
+import com.placy.placycore.corewebservices.processes.dto.ProcessInstanceDto;
 import com.placy.placycore.corewebservices.processes.dto.RunProcessDto;
+import com.placy.placycore.corewebservices.processes.mappers.ProcessInstanceMapper;
 import com.placy.placycore.corewebservices.processes.mappers.ProcessModelToDtoMapper;
 import com.placy.placycore.corewebservices.processes.mappers.RunProcessMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,9 @@ public class ProcessController {
     @Autowired
     private RunProcessMapper runProcessMapper;
 
+    @Autowired
+    private ProcessInstanceMapper processInstanceMapper;
+
     @RequestMapping(path = "/processes")
     public List<ProcessDto> getProcesses() {
         List<ProcessModel> processes = processesService.getProcesses();
@@ -43,5 +49,12 @@ public class ProcessController {
         RunProcessData runProcessData = runProcessMapper.map(runProcessDto);
 
         processesService.startProcess(runProcessData);
+    }
+
+    @RequestMapping(path = "/process-instances", method = RequestMethod.GET)
+    public List<ProcessInstanceDto> getAllProcessInstances() {
+        List<ProcessInstanceData> allProcessInstances = processesService.getAllProcessInstances();
+
+        return processInstanceMapper.processInstanceDataToDtoList(allProcessInstances);
     }
 }

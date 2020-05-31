@@ -25,33 +25,26 @@ public class ParamValuesToTaskParamValuesModelsMapper {
 
         return paramValuesData
             .stream()
-               .map(paramValueData -> {
-                   TaskParameterModel matchingTaskParameterModel =
-                       parameterModels.stream()
-                          .filter(
-                              taskParameterModel ->
-                                  taskParameterModel
-                                      .getCode()
-                                      .equals(
-                                          paramValueData
-                                              .getCode())
-                          )
-                          .findAny()
-                          .orElseThrow(
-                              () -> new TaskParamNotFoundException(
-                                  paramValueData
-                                      .getCode(),
-                                  taskModel
-                                      .getCode())
-                          );
-                   TaskParameterValueModel taskParameterValueModel =
-                       new TaskParameterValueModel();
+            .map(paramValueData -> getTaskParameterValueModel(taskModel, taskInstanceModel, parameterModels, paramValueData))
+            .collect(Collectors.toList());
+    }
 
-                   taskParameterValueModel.setParameter(matchingTaskParameterModel);
-                   taskParameterValueModel.setValue(paramValueData.getValue());
-                   taskParameterValueModel.setTaskInstance(taskInstanceModel);
+    private TaskParameterValueModel getTaskParameterValueModel(TaskModel taskModel,
+                                                               TaskInstanceModel taskInstanceModel,
+                                                               List<TaskParameterModel> parameterModels, ParamValueData paramValueData) {
+        TaskParameterModel matchingTaskParameterModel =
+            parameterModels.stream()
+               .filter(taskParameterModel -> taskParameterModel.getCode().equals(paramValueData.getCode()) )
+               .findAny()
+               .orElseThrow( () -> new TaskParamNotFoundException(paramValueData.getCode(), taskModel.getCode()));
 
-                   return taskParameterValueModel;
-               }).collect(Collectors.toList());
+        TaskParameterValueModel taskParameterValueModel =
+            new TaskParameterValueModel();
+
+        taskParameterValueModel.setParameter(matchingTaskParameterModel);
+        taskParameterValueModel.setValue(paramValueData.getValue());
+        taskParameterValueModel.setTaskInstance(taskInstanceModel);
+
+        return taskParameterValueModel;
     }
 }

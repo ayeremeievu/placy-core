@@ -1,9 +1,7 @@
 package com.placy.placycore.core.processes.services;
 
-import com.placy.placycore.core.factories.ProcessRunnerObjectFactory;
 import com.placy.placycore.core.processes.executable.ProcessRunner;
 import com.placy.placycore.core.processes.model.ProcessInstanceModel;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
@@ -22,7 +20,7 @@ public class ProcessRunnerService {
     private ObjectProvider<ProcessRunner> processRunnerObjectProvider;
 
     public void runProcess(ProcessInstanceModel processInstanceModel) {
-        ProcessRunner processRunner = processRunnerObjectProvider.getObject(processInstanceModel);
+        ProcessRunner processRunner = processRunnerObjectProvider.getObject(processInstanceModel.getCode());
 
         taskExecutor.execute(processRunner);
     }

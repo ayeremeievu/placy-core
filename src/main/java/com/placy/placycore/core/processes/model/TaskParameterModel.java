@@ -3,6 +3,7 @@ package com.placy.placycore.core.processes.model;
 import com.placy.placycore.core.model.DomainModel;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -70,5 +71,23 @@ public class TaskParameterModel extends DomainModel {
 
     public void setTask(TaskModel taskModel) {
         this.task = taskModel;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TaskParameterModel that = (TaskParameterModel) o;
+        return Objects.equals(code, that.code) &&
+            Objects.equals(defaultValue, that.defaultValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, defaultValue);
     }
 }

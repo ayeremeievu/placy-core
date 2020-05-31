@@ -9,9 +9,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Map;
+
+import javax.annotation.PostConstruct;
 
 /**
  * @author ayeremeiev@netconomy.net
@@ -36,18 +41,23 @@ public class TaskRunner implements Runnable {
                       ExecutableBean executableBean) {
         this.taskInstanceModel = taskInstanceModel;
         this.executableBean = executableBean;
+    }
+
+    @PostConstruct
+    public void init() {
         this.params = taskParamValueModelsToMapMapper.map(taskInstanceModel.getParamValues());
     }
 
     @Override
+    @Transactional(propagation= Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     public void run() {
         assignTaskInstanceIfAware();
 
         taskInstanceModel.setStatus(TaskInstanceStatusEnum.PREPAIRING);
         taskInstanceModel.setStartDate(new Date());
 
-        LOG.info("The task instance with pk {} with a task code {} has started",
-             taskInstanceModel.getPk(),
+        LOG.info("The task instance with code {} with a task code {} has started",
+             taskInstanceModel.getCode(),
              taskInstanceModel.getTask().getCode()
         );
 
@@ -55,16 +65,16 @@ public class TaskRunner implements Runnable {
 
         try {
             executableBean.execute(params);
+            taskInstanceModel.setStatus(TaskInstanceStatusEnum.DONE);
         } catch (Exception ex) {
-            LOG.error("Exception occurred during task {} execution : {}", taskInstanceModel.getCode(), ex);
+            LOG.error("Exception occurred during task {} execution.", taskInstanceModel.getCode(), ex);
             taskInstanceModel.setStatus(TaskInstanceStatusEnum.ERROR);
         }
 
-        LOG.info("The task instance with pk {} with a task code {} has finished",
-                 taskInstanceModel.getPk(),
+        LOG.info("The task instance with code {} with a task code {} has finished",
+                 taskInstanceModel.getCode(),
                  taskInstanceModel.getTask().getCode()
         );
-        taskInstanceModel.setStatus(TaskInstanceStatusEnum.DONE);
         taskInstanceModel.setFinishDate(new Date());
         tasksService.save(taskInstanceModel);
     }

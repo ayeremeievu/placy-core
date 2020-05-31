@@ -10,6 +10,7 @@ import com.placy.placycore.core.processes.mappers.TaskInstanceModelToDataMapper;
 import com.placy.placycore.core.processes.model.TaskInstanceModel;
 import com.placy.placycore.core.processes.model.TaskInstanceStatusEnum;
 import com.placy.placycore.core.processes.model.TaskModel;
+import com.placy.placycore.core.processes.model.TaskParameterModel;
 import com.placy.placycore.core.processes.model.TaskParameterValueModel;
 import com.placy.placycore.core.processes.repository.TaskInstancesRepository;
 import com.placy.placycore.core.processes.repository.TasksRepository;
@@ -18,9 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * @author a.yeremeiev@netconomy.net
@@ -47,7 +50,7 @@ public class TasksService {
     @Autowired
     private TaskInstancesRepository taskInstancesRepository;
 
-    public void runTask(RunTaskData runTaskData) {
+    public Future<?> runTask(RunTaskData runTaskData) {
         String taskCode = runTaskData.getCode();
 
         TaskModel taskModel = tasksRepository.findFirstByCode(taskCode)
@@ -55,25 +58,48 @@ public class TasksService {
 
         List<ParamValueData> paramValues = runTaskData.getParamValues();
 
-        runTask(taskModel, paramValues);
+        return runTask(taskModel, paramValues);
     }
 
-    public void runTask(TaskModel taskModel, List<ParamValueData> paramValues) {
+    public Future<?> runTask(TaskModel taskModel, List<ParamValueData> paramValues) {
+        TaskInstanceModel taskInstanceModel = createTaskInstanceModel(taskModel, paramValues);
+
+        persistInstance(taskInstanceModel);
+
+        return doRunTask(taskModel, taskInstanceModel);
+    }
+
+    public Future<?> doRunTask(TaskModel taskModel, TaskInstanceModel taskInstanceModel) {
         String runnerBean = taskModel.getRunnerBean();
-
-        TaskInstanceModel taskInstanceModel = new TaskInstanceModel();
-        persistInstance(taskInstanceModel, taskModel, paramValues);
-
-        beanRunnerService.runTaskBean(taskInstanceModel, runnerBean);
-
-        LOG.info("New Task instance with pk {} for task with {} instantiated.", taskInstanceModel.getPk(), taskModel.getCode());
+        return beanRunnerService.runTaskBean(taskInstanceModel, runnerBean);
     }
 
-    public void persistInstance(TaskInstanceModel taskInstanceModel,
-                                TaskModel taskModel,
-                                List<ParamValueData> paramValues) {
+    public TaskInstanceModel createTaskInstanceModel(TaskModel taskModel, List<ParamValueData> paramValues) {
+        TaskInstanceModel taskInstanceModel = new TaskInstanceModel();
+        populateTaskInstance(taskInstanceModel, taskModel, paramValues);
+
+        LOG.info("New Task instance with code {} for task with {} instantiated.", taskInstanceModel.getCode(), taskModel.getCode());
+
+        return taskInstanceModel;
+    }
+
+    public void persistInstance(TaskInstanceModel taskInstanceModel) {
+        save(taskInstanceModel);
+    }
+
+    private void populateTaskInstance(TaskInstanceModel taskInstanceModel, TaskModel taskModel, List<ParamValueData> paramValues) {
         taskInstanceModel.setTask(taskModel);
         taskInstanceModel.setStatus(TaskInstanceStatusEnum.NOT_STARTED);
+
+        List<TaskParameterValueModel> taskParameterValueModels = getTaskParameterValueModels(taskInstanceModel, taskModel, paramValues);
+
+        taskInstanceModel.setParamValues(taskParameterValueModels);
+    }
+
+    private List<TaskParameterValueModel> getTaskParameterValueModels(TaskInstanceModel taskInstanceModel,
+                                                                      TaskModel taskModel,
+                                                                      List<ParamValueData> paramValues) {
+        List<TaskParameterValueModel> allParameters = new ArrayList<>();
 
         List<TaskParameterValueModel> taskParameterValueModels = paramValuesToTaskParamValuesModelsMapper.map(
             taskModel,
@@ -81,9 +107,55 @@ public class TasksService {
             paramValues
         );
 
-        taskInstanceModel.setParamValues(taskParameterValueModels);
+        List<TaskParameterValueModel> valuesWithDefaultValue =
+            getValuesWithDefaultValue(taskParameterValueModels, taskInstanceModel, taskModel);
 
-        save(taskInstanceModel);
+        allParameters.addAll(taskParameterValueModels);
+        allParameters.addAll(valuesWithDefaultValue);
+
+        return allParameters;
+    }
+
+    private List<TaskParameterValueModel> getValuesWithDefaultValue(List<TaskParameterValueModel> taskParameterValueModels, TaskInstanceModel taskInstanceModel, TaskModel taskModel) {
+        List<TaskParameterModel> params = taskModel.getParams();
+
+        return params.stream()
+              .filter(taskParameterModel -> defaultValueShouldBeAdded(taskParameterValueModels, taskParameterModel))
+              .map(taskParameterModel -> createParamValueWithDefaultValue(taskInstanceModel, taskParameterModel))
+              .collect(Collectors.toList());
+    }
+
+    private TaskParameterValueModel createParamValueWithDefaultValue(TaskInstanceModel taskInstanceModel, TaskParameterModel taskParameterModel) {
+        TaskParameterValueModel taskParameterValueModel = new TaskParameterValueModel();
+
+        taskParameterValueModel.setParameter(taskParameterModel);
+        taskParameterValueModel.setTaskInstance(taskInstanceModel);
+        taskParameterValueModel.setValue(taskParameterModel.getDefaultValue());
+
+        return taskParameterValueModel;
+    }
+
+    private boolean defaultValueShouldBeAdded(List<TaskParameterValueModel> taskParameterValueModels,
+                                              TaskParameterModel taskParameterModel) {
+        return !isParameterValueSpecified(taskParameterValueModels, taskParameterModel) && hasParameterDefaultValue(taskParameterModel);
+    }
+
+    private boolean hasParameterDefaultValue(TaskParameterModel taskParameterModel) {
+        return taskParameterModel.getDefaultValue() != null;
+    }
+
+    private boolean isParameterValueSpecified(List<TaskParameterValueModel> taskParameterValueModels, TaskParameterModel taskParameterModel) {
+        Optional<TaskParameterValueModel> valueForParameter = findValueForParameter(taskParameterValueModels, taskParameterModel);
+
+        return valueForParameter.isPresent();
+    }
+
+    private Optional<TaskParameterValueModel> findValueForParameter(List<TaskParameterValueModel> taskParameterValueModels,
+                                                                    TaskParameterModel taskParameterModel) {
+        return taskParameterValueModels.stream()
+                                .filter(taskParameterValueModel -> taskParameterValueModel.getParameter().getCode()
+                                        .equals(taskParameterModel.getCode())
+                                ).findFirst();
     }
 
     public List<TaskInstanceData> getAllTaskInstances() {
@@ -106,6 +178,15 @@ public class TasksService {
 
     public Optional<TaskModel> getTaskByCodeOptional(String code) {
         return tasksRepository.findFirstByCode(code);
+    }
+
+    public Optional<TaskInstanceModel> getTaskInstanceModelByCode(String code) {
+        return taskInstancesRepository.findFirstByCode(code);
+    }
+
+
+    public Optional<TaskInstanceModel> getTaskInstanceModelByPk(String pk) {
+        return taskInstancesRepository.findById(pk);
     }
 
     public List<TaskModel> getAllTasks() {

@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -47,7 +48,7 @@ public class ProcessInstanceModel extends DomainModel implements ExecutableModel
     @JoinColumn(name = "pi_process_pk", nullable = false)
     private ProcessModel process;
 
-    @OneToMany(mappedBy = "processInstance")
+    @OneToMany(mappedBy = "processInstance", cascade=CascadeType.ALL)
     private List<ProcessStepInstanceModel> processStepsInstances;
 
     @OneToMany(mappedBy = "processInstance", cascade = CascadeType.ALL)
@@ -60,7 +61,7 @@ public class ProcessInstanceModel extends DomainModel implements ExecutableModel
     @PrePersist
     public void prePersist() {
         if(this.code == null) {
-            this.code = String.format("%s-%s", process.getCode(), new Date());
+            this.code = String.format("%s-%s", process.getCode(), (new Date()).getTime());
         }
     }
 

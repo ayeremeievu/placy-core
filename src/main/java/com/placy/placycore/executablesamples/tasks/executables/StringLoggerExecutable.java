@@ -26,7 +26,7 @@ public class StringLoggerExecutable implements ExecutableBean {
         LOG.info("The log : {}", stringValue);
 
         try {
-            Thread.sleep(1000 * 3);
+            Thread.sleep(100 * 3);
         } catch (InterruptedException e) {
             LOG.error(e.getMessage());
             e.printStackTrace();

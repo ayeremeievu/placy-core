@@ -11,7 +11,9 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * @author ayeremeiev@netconomy.net
@@ -21,17 +23,18 @@ public class BeanRunnerService implements ApplicationContextAware {
     private ApplicationContext applicationContext;
 
     @Autowired
-    private TaskExecutor taskExecutor;
-
-    @Autowired
     private ObjectProvider<TaskRunner> taskRunnerObjectProvider;
 
-    public void runTaskBean(TaskInstanceModel executableModel, String beanId) {
+    public Future<?> runTaskBean(TaskInstanceModel executableModel, String beanId) {
         ExecutableBean executableBean = searchBeanById(beanId);
 
         TaskRunner taskRunner = taskRunnerObjectProvider.getObject(executableModel, executableBean);
 
-        taskExecutor.execute(taskRunner);
+        return createSingleThreadExecutorService().submit(taskRunner);
+    }
+
+    private ExecutorService createSingleThreadExecutorService() {
+        return Executors.newSingleThreadExecutor();
     }
 
     public ExecutableBean searchBeanById(String beanId) {

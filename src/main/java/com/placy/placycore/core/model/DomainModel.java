@@ -12,7 +12,6 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class DomainModel {
     @Id
-    //    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "pk")
     private String pk;
 
@@ -29,9 +28,11 @@ public class DomainModel {
 
     @PrePersist
     public void init() {
-        pk = UUID.randomUUID().toString();
-        createdAt = new Date();
-        updatedAt = new Date();
+        if(pk == null) {
+            pk = UUID.randomUUID().toString();
+            createdAt = new Date();
+            updatedAt = new Date();
+        }
     }
 
     @PreUpdate

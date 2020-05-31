@@ -10,12 +10,14 @@ import com.placy.placycore.core.startuphooks.hooks.TaskDefinitionImporterHook;
 import com.placy.placycore.core.startuphooks.hooks.TaskDefinitionsProcessorHook;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author a.yeremeiev@netconomy.net

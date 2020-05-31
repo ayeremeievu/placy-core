@@ -7,5 +7,6 @@ public enum ProcessInstanceStatusEnum {
     NOT_STARTED,
     PREPAIRING,
     RUNNING,
-    DONE
+    DONE,
+    ERROR
 }
