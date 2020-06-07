@@ -15,5 +15,6 @@ public class ParamDefinitionToProcessParamModelPopulator implements Populator<Pa
     public void populate(ParamDefinition paramDefinition, ProcessParameterModel parameterModel) {
         parameterModel.setCode(paramDefinition.getCode());
         parameterModel.setDefaultValue(paramDefinition.getDefaultValue());
+        parameterModel.setRequired(paramDefinition.isRequired());
     }
 }

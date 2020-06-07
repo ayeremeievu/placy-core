@@ -56,8 +56,8 @@ public class TaskRunner implements Runnable {
         taskInstanceModel.setStatus(TaskInstanceStatusEnum.PREPAIRING);
         taskInstanceModel.setStartDate(new Date());
 
-        LOG.info("The task instance with code {} with a task code {} has started",
-             taskInstanceModel.getCode(),
+        LOG.info("The task instance at {} with a task code {} has started",
+             taskInstanceModel.getStartDate(),
              taskInstanceModel.getTask().getCode()
         );
 
@@ -71,8 +71,8 @@ public class TaskRunner implements Runnable {
             taskInstanceModel.setStatus(TaskInstanceStatusEnum.ERROR);
         }
 
-        LOG.info("The task instance with code {} with a task code {} has finished",
-                 taskInstanceModel.getCode(),
+        LOG.info("The task instance at {} with a task code {} has finished",
+                 taskInstanceModel.getStartDate(),
                  taskInstanceModel.getTask().getCode()
         );
         taskInstanceModel.setFinishDate(new Date());

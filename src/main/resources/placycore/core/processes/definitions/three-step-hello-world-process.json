@@ -3,7 +3,8 @@
     "name" : "Three step hello world",
     "params" : [
         {
-            "code" : "finishingSentence"
+            "code" : "finishingSentence",
+            "required" : true
         }
     ],
     "steps" : [

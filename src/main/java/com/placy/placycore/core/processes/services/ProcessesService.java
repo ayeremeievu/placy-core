@@ -3,14 +3,19 @@ package com.placy.placycore.core.processes.services;
 import com.placy.placycore.core.processes.data.ParamValueData;
 import com.placy.placycore.core.processes.data.ProcessInstanceData;
 import com.placy.placycore.core.processes.data.RunProcessData;
+import com.placy.placycore.core.processes.exceptions.BusinessException;
 import com.placy.placycore.core.processes.exceptions.ProcessNotFoundException;
 import com.placy.placycore.core.processes.mappers.ParamValuesToProcessParamValuesModelsMapper;
 import com.placy.placycore.core.processes.mappers.ProcessInstanceModelToDataMapper;
 import com.placy.placycore.core.processes.model.ProcessInstanceModel;
 import com.placy.placycore.core.processes.model.ProcessInstanceStatusEnum;
 import com.placy.placycore.core.processes.model.ProcessModel;
+import com.placy.placycore.core.processes.model.ProcessParameterModel;
 import com.placy.placycore.core.processes.model.ProcessParameterValueModel;
 import com.placy.placycore.core.processes.model.ProcessStepInstanceModel;
+import com.placy.placycore.core.processes.model.TaskInstanceModel;
+import com.placy.placycore.core.processes.model.TaskParameterModel;
+import com.placy.placycore.core.processes.model.TaskParameterValueModel;
 import com.placy.placycore.core.processes.repository.ProcessInstanceRepository;
 import com.placy.placycore.core.processes.repository.ProcessStepInstanceRepository;
 import com.placy.placycore.core.processes.repository.ProcessesRepository;
@@ -85,9 +90,39 @@ public class ProcessesService {
             paramValues
         );
 
+        validateParams(processInstanceModel, processParameterValueModels);
+
         processInstanceModel.setParamValues(processParameterValueModels);
 
         save(processInstanceModel);
+    }
+
+    private void validateParams(ProcessInstanceModel processInstanceModel,
+                                List<ProcessParameterValueModel> processParameterValueModels) {
+        List<ProcessParameterModel> params = processInstanceModel.getProcess().getParams();
+
+        params.stream()
+              .filter(ProcessParameterModel::isRequired)
+              .filter(taskParameterModel -> paramValueIsNotDeclared(processParameterValueModels, taskParameterModel))
+              .findAny()
+              .ifPresent((taskParameterModel) -> { throw new BusinessException(
+                             String.format("Value for parameter : '%s' is not declared", taskParameterModel.getCode())
+                         );
+                         }
+              );
+    }
+
+
+    private boolean paramValueIsNotDeclared(List<ProcessParameterValueModel> processParameterValueModels,
+                                            ProcessParameterModel processParameterModel) {
+        return !isValueDeclared(processParameterValueModels, processParameterModel);
+    }
+
+    private boolean isValueDeclared(List<ProcessParameterValueModel> processParameterValueModels,
+                                    ProcessParameterModel processParameterModel) {
+        return processParameterValueModels.stream()
+                                          .anyMatch(taskParameterValueModel -> taskParameterValueModel.getParameter().getCode()
+                                                                                                      .equals(processParameterModel.getCode()));
     }
 
     public List<ProcessInstanceData> getAllProcessInstances() {

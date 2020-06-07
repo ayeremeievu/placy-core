@@ -5,7 +5,8 @@
     "params" : [
         {
             "code" : "stringValue",
-            "defaultValue" : "first-step-hello-world!"
+            "defaultValue" : "first-step-hello-world!",
+            "required" : true
         }
     ]
 }

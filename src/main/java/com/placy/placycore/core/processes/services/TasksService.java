@@ -1,6 +1,7 @@
 package com.placy.placycore.core.processes.services;
 
 import com.placy.placycore.core.processes.data.TaskInstanceData;
+import com.placy.placycore.core.processes.exceptions.BusinessException;
 import com.placy.placycore.core.processes.mappers.ParamValuesToMapMapper;
 import com.placy.placycore.core.processes.data.ParamValueData;
 import com.placy.placycore.core.processes.data.RunTaskData;
@@ -93,7 +94,35 @@ public class TasksService {
 
         List<TaskParameterValueModel> taskParameterValueModels = getTaskParameterValueModels(taskInstanceModel, taskModel, paramValues);
 
+        validateParams(taskInstanceModel, taskParameterValueModels);
+
         taskInstanceModel.setParamValues(taskParameterValueModels);
+    }
+
+    private void validateParams(TaskInstanceModel taskInstanceModel,
+                                List<TaskParameterValueModel> taskParameterValueModels) {
+        List<TaskParameterModel> params = taskInstanceModel.getTask().getParams();
+
+        params.stream()
+              .filter(TaskParameterModel::isRequired)
+              .filter(taskParameterModel -> paramValueIsNotDeclared(taskParameterValueModels, taskParameterModel))
+              .findAny()
+              .ifPresent((taskParameterModel) -> { throw new BusinessException(
+                      String.format("Value for parameter : '%s' is not declared", taskParameterModel.getCode())
+                  );
+              });
+    }
+
+    private boolean paramValueIsNotDeclared(List<TaskParameterValueModel> taskParameterValueModels,
+                                            TaskParameterModel taskParameterModel) {
+        return !isValueDeclared(taskParameterValueModels, taskParameterModel);
+    }
+
+    private boolean isValueDeclared(List<TaskParameterValueModel> taskParameterValueModels,
+                                    TaskParameterModel taskParameterModel) {
+        return taskParameterValueModels.stream()
+                                       .anyMatch(taskParameterValueModel -> taskParameterValueModel.getParameter().getCode()
+                                                                                                   .equals(taskParameterModel.getCode()));
     }
 
     private List<TaskParameterValueModel> getTaskParameterValueModels(TaskInstanceModel taskInstanceModel,

@@ -4,7 +4,8 @@
     "runnerBean" : "stringLoggerExecutable",
     "params" : [
         {
-            "code" : "stringValue"
+            "code" : "stringValue",
+            "required" : true
         }
     ]
 }

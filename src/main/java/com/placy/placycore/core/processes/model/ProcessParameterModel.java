@@ -33,6 +33,9 @@ public class ProcessParameterModel extends DomainModel {
     @Column(name = "pp_defaultValue", nullable = true)
     private String defaultValue;
 
+    @Column(name = "pp_isRequired", nullable = false)
+    private boolean isRequired = false;
+
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "parameter")
     private List<ProcessParameterValueModel> parameterValues;
 
@@ -54,6 +57,14 @@ public class ProcessParameterModel extends DomainModel {
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    public boolean isRequired() {
+        return isRequired;
+    }
+
+    public void setRequired(boolean required) {
+        isRequired = required;
     }
 
     public List<ProcessParameterValueModel> getParameterValues() {

@@ -34,6 +34,9 @@ public class TaskParameterModel extends DomainModel {
     @Column(name = "tp_defaultValue", nullable = true)
     private String defaultValue;
 
+    @Column(name = "tp_isRequired", nullable = false)
+    private boolean isRequired = false;
+
     @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "parameter")
     private List<TaskParameterValueModel> parameterValues;
 
@@ -55,6 +58,14 @@ public class TaskParameterModel extends DomainModel {
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    public boolean isRequired() {
+        return isRequired;
+    }
+
+    public void setRequired(boolean required) {
+        isRequired = required;
     }
 
     public List<TaskParameterValueModel> getParameterValues() {

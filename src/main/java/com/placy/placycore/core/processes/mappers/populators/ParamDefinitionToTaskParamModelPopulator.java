@@ -15,5 +15,6 @@ public class ParamDefinitionToTaskParamModelPopulator implements Populator<Param
     public void populate(ParamDefinition paramDefinition, TaskParameterModel parameterModel) {
         parameterModel.setCode(paramDefinition.getCode());
         parameterModel.setDefaultValue(paramDefinition.getDefaultValue());
+        parameterModel.setRequired(paramDefinition.isRequired());
     }
 }

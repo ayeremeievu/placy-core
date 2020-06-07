@@ -8,6 +8,7 @@ import com.placy.placycore.core.processes.model.TaskParameterModel;
 import com.placy.placycore.core.processes.model.TaskParameterValueModel;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,10 @@ public class ParamValuesToTaskParamValuesModelsMapper {
                                       List<ParamValueData> paramValuesData
     ) {
         List<TaskParameterModel> parameterModels = taskModel.getParams();
+
+        if(paramValuesData == null) {
+            return new ArrayList<>();
+        }
 
         return paramValuesData
             .stream()
