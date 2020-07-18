@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -173,10 +174,12 @@ public class ProcessRunner implements Runnable {
         processStepInstanceModel.setTaskInstanceModel(taskInstance);
         processesService.save(processStepInstanceModel);
 
-        Future<?> taskFuture = tasksService.doRunTask(taskModel, taskInstance);
+        TaskRunner taskRunner = tasksService.doGetTaskRunnable(taskModel, taskInstance);
+
+        CompletableFuture<Void> taskRunnerCompletableFuture = CompletableFuture.runAsync(taskRunner);
 
         try {
-            taskFuture.get();
+            taskRunnerCompletableFuture.get();
 
             setResult(processStepInstanceModel);
         } catch (InterruptedException | ExecutionException e) {

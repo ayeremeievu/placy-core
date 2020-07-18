@@ -1,0 +1,11 @@
+{
+  "code": "full-update",
+  "name": "Full update",
+  "params": [],
+  "steps": [
+    {
+      "code": "collect-full-data-step",
+      "taskCode": "collect-full-data-task"
+    }
+  ]
+}

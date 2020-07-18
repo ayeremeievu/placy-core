@@ -3,7 +3,6 @@ spring:
     active: local
     include: dev
   datasource:
-    url: jdbc:mysql://localhost:3306/core?createDatabaseIfNotExist=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:postgresql://localhost:5432/core?createDatabaseIfNotExist=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC
 #    url : jdbc:h2:mem:ccore
-    username: root
-    password: admin
+    username: ayeremeiev

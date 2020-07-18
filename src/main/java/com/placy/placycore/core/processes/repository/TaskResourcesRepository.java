@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author a.yeremeiev@netconomy.net
@@ -13,4 +14,6 @@ import java.util.List;
 public interface TaskResourcesRepository extends JpaRepository<TaskResourceModel, String> {
 
     List<TaskResourceModel> findAllByTaskNull();
+
+    Optional<TaskResourceModel> findFirstByResource(String resource);
 }

@@ -87,14 +87,20 @@ public class CoreConfig {
 
     private List<String> processesResourcesPaths() {
         return Arrays.asList(
-            "/placycore/core/processes/definitions/three-step-hello-world-process.json"
+            "/placycore/core/processes/definitions/three-step-hello-world-process.json",
+
+            "/placycore/core/processes/definitions/collectors/processes/full-update-process.json"
         );
     }
 
     private List<String> tasksResourcesPaths() {
         return Arrays.asList(
             "/placycore/core/processes/definitions/tasks/first-step-hello-world-task.json",
-            "/placycore/core/processes/definitions/tasks/log-string-task.json"
+            "/placycore/core/processes/definitions/tasks/log-string-task.json",
+
+            "/placycore/core/processes/definitions/collectors/tasks/collect-data-task.json",
+            "/placycore/core/processes/definitions/collectors/tasks/collect-placy-data-task.json",
+            "/placycore/core/processes/definitions/collectors/tasks/collect-yelp-data.json"
         );
     }
 

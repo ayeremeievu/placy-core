@@ -10,6 +10,7 @@ import java.util.List;
  * @author ayeremeiev@netconomy.net
  */
 public class TaskInstanceDto {
+    private String code;
     private String taskCode;
     private TaskInstanceStatusEnum status;
     private List<ParamValueDto> params;
@@ -17,6 +18,14 @@ public class TaskInstanceDto {
     private Date finishDate;
 
     public TaskInstanceDto() {
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getTaskCode() {

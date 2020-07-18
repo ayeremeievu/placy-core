@@ -1,0 +1,5 @@
+{
+  "code": "collect-full-data-task",
+  "name": "Collect data task",
+  "runnerBean": "collectFullDataExecutable"
+}

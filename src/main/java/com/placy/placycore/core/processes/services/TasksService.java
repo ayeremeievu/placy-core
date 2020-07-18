@@ -2,6 +2,7 @@ package com.placy.placycore.core.processes.services;
 
 import com.placy.placycore.core.processes.data.TaskInstanceData;
 import com.placy.placycore.core.processes.exceptions.BusinessException;
+import com.placy.placycore.core.processes.executable.TaskRunner;
 import com.placy.placycore.core.processes.mappers.ParamValuesToMapMapper;
 import com.placy.placycore.core.processes.data.ParamValueData;
 import com.placy.placycore.core.processes.data.RunTaskData;
@@ -52,6 +53,12 @@ public class TasksService {
     private TaskInstancesRepository taskInstancesRepository;
 
     public Future<?> runTask(RunTaskData runTaskData) {
+        TaskRunner taskRunnable = getTaskRunnable(runTaskData);
+
+        return beanRunnerService.runTaskBean(taskRunnable);
+    }
+
+    public TaskRunner getTaskRunnable(RunTaskData runTaskData) {
         String taskCode = runTaskData.getCode();
 
         TaskModel taskModel = tasksRepository.findFirstByCode(taskCode)
@@ -59,20 +66,20 @@ public class TasksService {
 
         List<ParamValueData> paramValues = runTaskData.getParamValues();
 
-        return runTask(taskModel, paramValues);
+        return getTaskRunnable(taskModel, paramValues);
     }
 
-    public Future<?> runTask(TaskModel taskModel, List<ParamValueData> paramValues) {
+    public TaskRunner getTaskRunnable(TaskModel taskModel, List<ParamValueData> paramValues) {
         TaskInstanceModel taskInstanceModel = createTaskInstanceModel(taskModel, paramValues);
 
         persistInstance(taskInstanceModel);
 
-        return doRunTask(taskModel, taskInstanceModel);
+        return doGetTaskRunnable(taskModel, taskInstanceModel);
     }
 
-    public Future<?> doRunTask(TaskModel taskModel, TaskInstanceModel taskInstanceModel) {
+    public TaskRunner doGetTaskRunnable(TaskModel taskModel, TaskInstanceModel taskInstanceModel) {
         String runnerBean = taskModel.getRunnerBean();
-        return beanRunnerService.runTaskBean(taskInstanceModel, runnerBean);
+        return beanRunnerService.getTaskRunner(taskInstanceModel, runnerBean);
     }
 
     public TaskInstanceModel createTaskInstanceModel(TaskModel taskModel, List<ParamValueData> paramValues) {

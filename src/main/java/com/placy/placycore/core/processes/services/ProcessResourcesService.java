@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author a.yeremeiev@netconomy.net
@@ -28,6 +29,10 @@ public class ProcessResourcesService {
 
     public void saveAll(List<ProcessResourceModel> models) {
         processResourcesRepository.saveAll(models);
+    }
+
+    public Optional<ProcessResourceModel> getProcessResourceByResource(String resource) {
+        return processResourcesRepository.getFirstByResource(resource);
     }
 
     public List<ProcessResourceModel> getAllUnprocessedProcessResources() {

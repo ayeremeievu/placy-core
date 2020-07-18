@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author a.yeremeiev@netconomy.net
@@ -29,11 +30,15 @@ public class TaskDefinitionImporterHook implements PostStartupHook {
         List<TaskResourceModel> taskResourceModels = new ArrayList<>();
 
         for (String taskResourcesPath : tasksResourcesPaths) {
-            TaskResourceModel taskResourceModel = new TaskResourceModel();
+            Optional<TaskResourceModel> alreadyExistingResource = tasksResourcesService.getTaskByResource(taskResourcesPath);
 
-            taskResourceModel.setResource(taskResourcesPath);
+            if(alreadyExistingResource.isEmpty()) {
+                TaskResourceModel taskResourceModel = new TaskResourceModel();
 
-            taskResourceModels.add(taskResourceModel);
+                taskResourceModel.setResource(taskResourcesPath);
+
+                taskResourceModels.add(taskResourceModel);
+            }
         }
 
         tasksResourcesService.saveAll(taskResourceModels);

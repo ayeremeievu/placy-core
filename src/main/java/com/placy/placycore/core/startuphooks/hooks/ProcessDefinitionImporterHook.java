@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author a.yeremeiev@netconomy.net
@@ -27,11 +28,16 @@ public class ProcessDefinitionImporterHook implements PostStartupHook {
         List<ProcessResourceModel> processResourceModels = new ArrayList<>();
 
         for (String processResourcesPath : processesResourcesPaths) {
-            ProcessResourceModel processResourceModel = new ProcessResourceModel();
+            Optional<ProcessResourceModel> alreadyExistingResource =
+                processResourcesService.getProcessResourceByResource(processResourcesPath);
 
-            processResourceModel.setResource(processResourcesPath);
+            if(alreadyExistingResource.isEmpty()) {
+                ProcessResourceModel processResourceModel = new ProcessResourceModel();
 
-            processResourceModels.add(processResourceModel);
+                processResourceModel.setResource(processResourcesPath);
+
+                processResourceModels.add(processResourceModel);
+            }
         }
 
         processResourcesService.saveAll(processResourceModels);

@@ -18,6 +18,7 @@ public class TaskInstanceModelToDataMapper extends AbstractSimpleMapper<TaskInst
     public TaskInstanceData map(TaskInstanceModel taskInstanceModel) {
         TaskInstanceData taskInstanceData = new TaskInstanceData();
 
+        taskInstanceData.setCode(taskInstanceModel.getCode());
         taskInstanceData.setTaskCode(taskInstanceModel.getTask().getCode());
         taskInstanceData.setParams(taskParamValueModelToDataMapper.mapAll(taskInstanceModel.getParamValues()));
         taskInstanceData.setStatus(taskInstanceModel.getStatus());

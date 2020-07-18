@@ -26,11 +26,19 @@ public class BeanRunnerService implements ApplicationContextAware {
     private ObjectProvider<TaskRunner> taskRunnerObjectProvider;
 
     public Future<?> runTaskBean(TaskInstanceModel executableModel, String beanId) {
-        ExecutableBean executableBean = searchBeanById(beanId);
-
-        TaskRunner taskRunner = taskRunnerObjectProvider.getObject(executableModel, executableBean);
+        TaskRunner taskRunner = getTaskRunner(executableModel, beanId);
 
         return createSingleThreadExecutorService().submit(taskRunner);
+    }
+
+    public Future<?> runTaskBean(TaskRunner taskRunner) {
+        return createSingleThreadExecutorService().submit(taskRunner);
+    }
+
+    public TaskRunner getTaskRunner(TaskInstanceModel executableModel, String beanId) {
+        ExecutableBean executableBean = searchBeanById(beanId);
+
+        return taskRunnerObjectProvider.getObject(executableModel, executableBean);
     }
 
     private ExecutorService createSingleThreadExecutorService() {

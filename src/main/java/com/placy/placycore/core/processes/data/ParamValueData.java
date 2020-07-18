@@ -10,6 +10,11 @@ public class ParamValueData {
     public ParamValueData() {
     }
 
+    public ParamValueData(String code, String value) {
+        this.code = code;
+        this.value = value;
+    }
+
     public String getCode() {
         return code;
     }

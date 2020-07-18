@@ -9,6 +9,7 @@ import java.util.List;
  * @author ayeremeiev@netconomy.net
  */
 public class TaskInstanceData {
+    private String code;
     private String taskCode;
     private TaskInstanceStatusEnum status;
     private List<ParamValueData> params;
@@ -16,6 +17,14 @@ public class TaskInstanceData {
     private Date finishDate;
 
     public TaskInstanceData() {
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getTaskCode() {

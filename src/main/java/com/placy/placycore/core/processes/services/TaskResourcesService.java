@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author a.yeremeiev@netconomy.net
@@ -31,6 +32,10 @@ public class TaskResourcesService {
 
     public void saveAll(List<TaskResourceModel> taskResourceModelList) {
         taskResourcesRepository.saveAll(taskResourceModelList);
+    }
+
+    public Optional<TaskResourceModel> getTaskByResource(String resource) {
+        return taskResourcesRepository.findFirstByResource(resource);
     }
 
     public List<TaskResourceModel> getAllUnprocessedTasks() {
