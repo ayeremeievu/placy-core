@@ -22,12 +22,11 @@ public class ProcessLoader {
     @Autowired
     private ProcessDefinitionToModelPopulator processDefinitionToModelPopulator;
 
-    public ProcessModel loadProcess(String filepath) {
-        LOG.info("Loading process : " + filepath);
+    public ProcessModel loadProcess(String resourceValue) {
         ProcessModel processModel = new ProcessModel();
 
         try {
-            ProcessDefinition processDefinition = processReader.readProcess(filepath);
+            ProcessDefinition processDefinition = processReader.readProcess(resourceValue);
 
             processDefinitionToModelPopulator.populate(processDefinition, processModel);
         } catch (RuntimeException ex) {

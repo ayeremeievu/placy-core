@@ -21,10 +21,8 @@ public class ProcessReader {
     @Autowired
     private ResourceReader resourceReader;
 
-    public ProcessDefinition readProcess(String path) {
-        LOG.info("Reading process : " + path);
-
-        ProcessDefinition obj = resourceReader.readResource(path, ProcessDefinition.class);
+    public ProcessDefinition readProcess(String resourceData) {
+        ProcessDefinition obj = resourceReader.readResource(resourceData, ProcessDefinition.class);
 
         propertiesValidator.validate(obj);
 

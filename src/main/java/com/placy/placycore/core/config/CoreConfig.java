@@ -2,6 +2,7 @@ package com.placy.placycore.core.config;
 
 import com.placy.placycore.core.processes.services.ProcessResourcesService;
 import com.placy.placycore.core.processes.services.TaskResourcesService;
+import com.placy.placycore.core.services.FileScannerService;
 import com.placy.placycore.core.startuphooks.ApplicationReadyEventListener;
 import com.placy.placycore.core.startuphooks.PostStartupHook;
 import com.placy.placycore.core.startuphooks.hooks.ProcessDefinitionImporterHook;
@@ -24,6 +25,9 @@ import java.util.concurrent.ExecutorService;
  */
 @Configuration
 public class CoreConfig {
+    private final static String TASK_RESOURCES_BASE_PATH = "placycore/core/processes/definitions";
+    private final static String PROCESS_RESOURCES_BASE_PATH = "placycore/core/processes/definitions";
+
     @Bean
     public ApplicationReadyEventListener applicationReadyEventListener() {
         ApplicationReadyEventListener applicationReadyEventListener = new ApplicationReadyEventListener();
@@ -49,10 +53,16 @@ public class CoreConfig {
     public TaskDefinitionImporterHook taskDefinitionImporterHook() {
         TaskDefinitionImporterHook taskDefinitionImporterHook = new TaskDefinitionImporterHook();
 
-        taskDefinitionImporterHook.setTasksResourcesPaths(tasksResourcesPaths());
+        taskDefinitionImporterHook.setTasksResourcesBasePath(TASK_RESOURCES_BASE_PATH);
+        taskDefinitionImporterHook.setFileScannerService(fileScannerService());
         taskDefinitionImporterHook.setTasksResourcesService(taskResourcesService());
 
         return taskDefinitionImporterHook;
+    }
+
+    @Bean
+    public FileScannerService fileScannerService() {
+        return new FileScannerService();
     }
 
     @Bean
@@ -64,7 +74,8 @@ public class CoreConfig {
     public ProcessDefinitionImporterHook processDefinitionImporterHook() {
         ProcessDefinitionImporterHook processDefinitionImporterHook = new ProcessDefinitionImporterHook();
 
-        processDefinitionImporterHook.setProcessesResourcesPaths(processesResourcesPaths());
+        processDefinitionImporterHook.setProcessesResourcesBasePath(PROCESS_RESOURCES_BASE_PATH);
+        processDefinitionImporterHook.setFileScannerService(fileScannerService());
         processDefinitionImporterHook.setProcessResourcesService(processResourcesService());
 
         return processDefinitionImporterHook;
@@ -85,24 +96,24 @@ public class CoreConfig {
         return new TaskResourcesService();
     }
 
-    private List<String> processesResourcesPaths() {
-        return Arrays.asList(
-            "/placycore/core/processes/definitions/three-step-hello-world-process.json",
-
-            "/placycore/core/processes/definitions/collectors/processes/full-update-process.json"
-        );
-    }
-
-    private List<String> tasksResourcesPaths() {
-        return Arrays.asList(
-            "/placycore/core/processes/definitions/tasks/first-step-hello-world-task.json",
-            "/placycore/core/processes/definitions/tasks/log-string-task.json",
-
-            "/placycore/core/processes/definitions/collectors/tasks/collect-data-task.json",
-            "/placycore/core/processes/definitions/collectors/tasks/collect-placy-data-task.json",
-            "/placycore/core/processes/definitions/collectors/tasks/collect-yelp-data.json"
-        );
-    }
+//    private List<String> processesResourcesPaths() {
+//        return Arrays.asList(
+//            "/placycore/core/processes/definitions/three-step-hello-world.process.json",
+//
+//            "/placycore/core/processes/definitions/collectors/processes/full-update.process.json"
+//        );
+//    }
+//
+//    private List<String> tasksResourcesPaths() {
+//        return Arrays.asList(
+//            "/placycore/core/processes/definitions/tasks/first-step-hello-world.task.json",
+//            "/placycore/core/processes/definitions/tasks/log-string.task.json",
+//
+//            "/placycore/core/processes/definitions/collectors/tasks/collect-data.task.json",
+//            "/placycore/core/processes/definitions/collectors/tasks/collect-placy-data.task.json",
+//            "/placycore/core/processes/definitions/collectors/tasks/collect-yelp-data.task.json"
+//        );
+//    }
 
     @Bean
     public TaskExecutor threadPoolTaskExecutor() {

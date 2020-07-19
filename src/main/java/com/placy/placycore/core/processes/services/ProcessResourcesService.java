@@ -4,8 +4,10 @@ import com.placy.placycore.core.processes.loaders.ProcessLoader;
 import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.model.ProcessResourceModel;
 import com.placy.placycore.core.processes.repository.ProcessResourcesRepository;
+import com.placy.placycore.core.startuphooks.hooks.ProcessDefinitionsProcessorHook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +16,7 @@ import java.util.Optional;
  * @author a.yeremeiev@netconomy.net
  */
 public class ProcessResourcesService {
+    private final static Logger LOG = LoggerFactory.getLogger(ProcessResourcesService.class);
     @Autowired
     private ProcessResourcesRepository processResourcesRepository;
 
@@ -31,8 +34,8 @@ public class ProcessResourcesService {
         processResourcesRepository.saveAll(models);
     }
 
-    public Optional<ProcessResourceModel> getProcessResourceByResource(String resource) {
-        return processResourcesRepository.getFirstByResource(resource);
+    public Optional<ProcessResourceModel> getProcessResourceByResourceName(String resource) {
+        return processResourcesRepository.getFirstByResourceName(resource);
     }
 
     public List<ProcessResourceModel> getAllUnprocessedProcessResources() {
@@ -46,9 +49,10 @@ public class ProcessResourcesService {
     }
 
     public ProcessResourceModel processResource(ProcessResourceModel processResourceModel) {
-        String resourcePath = processResourceModel.getResource();
+        LOG.info("Processing process : " + processResourceModel.getResourceName());
+        String resourceValue = processResourceModel.getResourceValue();
 
-        ProcessModel processModel = processLoader.loadProcess(resourcePath);
+        ProcessModel processModel = processLoader.loadProcess(resourceValue);
 
         processesService.save(processModel);
 

@@ -37,4 +37,8 @@ public class JsonReader {
     public <T> T readJson(InputStream inputStream, Class<T> clazz) throws IOException {
         return mapper.readValue(inputStream, clazz);
     }
+
+    public <T> T readJson(String jsonData, Class<T> clazz) throws IOException {
+        return mapper.readValue(jsonData, clazz);
+    }
 }

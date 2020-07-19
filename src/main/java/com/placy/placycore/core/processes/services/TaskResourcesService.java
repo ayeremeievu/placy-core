@@ -15,7 +15,7 @@ import java.util.Optional;
  * @author a.yeremeiev@netconomy.net
  */
 public class TaskResourcesService {
-    Logger LOG = LoggerFactory.getLogger(TaskResourcesService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TaskResourcesService.class);
 
     @Autowired
     private TaskResourcesRepository taskResourcesRepository;
@@ -34,8 +34,8 @@ public class TaskResourcesService {
         taskResourcesRepository.saveAll(taskResourceModelList);
     }
 
-    public Optional<TaskResourceModel> getTaskByResource(String resource) {
-        return taskResourcesRepository.findFirstByResource(resource);
+    public Optional<TaskResourceModel> getTaskByResourceName(String resource) {
+        return taskResourcesRepository.findFirstByResourceName(resource);
     }
 
     public List<TaskResourceModel> getAllUnprocessedTasks() {
@@ -50,9 +50,10 @@ public class TaskResourcesService {
     }
 
     private TaskResourceModel process(TaskResourceModel taskResource) {
-        String resourcePath = taskResource.getResource();
+        LOG.info("Processing task : " + taskResource.getResourceName());
+        String resourceValue = taskResource.getResourceValue();
 
-        TaskModel taskModel = taskLoader.loadProcess(resourcePath);
+        TaskModel taskModel = taskLoader.loadProcess(resourceValue);
 
         tasksService.save(taskModel);
 
@@ -60,7 +61,7 @@ public class TaskResourcesService {
 
         save(taskResource);
 
-        LOG.info("Task resource with path : {} processsed", taskResource.getResource());
+        LOG.info("Task resource with path : {} processsed", taskResource.getResourceName());
 
         return taskResource;
     }

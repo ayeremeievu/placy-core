@@ -22,12 +22,11 @@ public class TaskLoader {
     @Autowired
     private TaskDefinitionToModelPopulator taskDefinitionToModelPopulator;
 
-    public TaskModel loadProcess(String filepath) {
-        LOG.info("Loading task : " + filepath);
+    public TaskModel loadProcess(String resourceValue) {
         TaskModel taskModel = new TaskModel();
 
         try {
-            TaskDefinition taskDefinition = taskReader.readTask(filepath);
+            TaskDefinition taskDefinition = taskReader.readTask(resourceValue);
 
             taskDefinitionToModelPopulator.populate(taskDefinition, taskModel);
         } catch (RuntimeException ex) {

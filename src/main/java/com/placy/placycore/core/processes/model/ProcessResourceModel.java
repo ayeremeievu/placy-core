@@ -4,11 +4,9 @@ import com.placy.placycore.core.model.DomainModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 /**
  * @author a.yeremeiev@netconomy.net
@@ -20,8 +18,14 @@ public class ProcessResourceModel extends DomainModel {
     @JoinColumn(name = "pr_process_pk", unique = true)
     private ProcessModel process;
 
-    @Column(name = "pr_resource", nullable = false, updatable = false)
-    private String resource;
+    @Column(name = "pr_resource_name", nullable = false, updatable = false)
+    private String resourceName;
+
+    @Column(name = "pr_resource_value", nullable = false, updatable = false)
+    private String resourceValue;
+
+    @Column(name = "pr_resource_checksum", nullable = false, updatable = false)
+    private String resourceChecksum;
 
     public ProcessModel getProcess() {
         return process;
@@ -31,11 +35,27 @@ public class ProcessResourceModel extends DomainModel {
         this.process = process;
     }
 
-    public String getResource() {
-        return resource;
+    public String getResourceName() {
+        return resourceName;
     }
 
-    public void setResource(String resource) {
-        this.resource = resource;
+    public void setResourceName(String resource) {
+        this.resourceName = resource;
+    }
+
+    public String getResourceValue() {
+        return resourceValue;
+    }
+
+    public void setResourceValue(String resourceValue) {
+        this.resourceValue = resourceValue;
+    }
+
+    public String getResourceChecksum() {
+        return resourceChecksum;
+    }
+
+    public void setResourceChecksum(String resourceChecksum) {
+        this.resourceChecksum = resourceChecksum;
     }
 }

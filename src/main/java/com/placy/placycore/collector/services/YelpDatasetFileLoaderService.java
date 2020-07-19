@@ -1,6 +1,7 @@
 package com.placy.placycore.collector.services;
 
 import com.placy.placycore.collector.context.DataLoaderContext;
+import eu.bitm.NominatimReverseGeocoding.NominatimReverseGeocodingJAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

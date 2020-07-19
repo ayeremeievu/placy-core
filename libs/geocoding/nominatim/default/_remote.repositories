@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Sat Jul 18 22:25:31 CEST 2020
+nominatim-default.jar>=
+nominatim-default.pom>=
+nominatim-default.jar>LocalProjectRepo=

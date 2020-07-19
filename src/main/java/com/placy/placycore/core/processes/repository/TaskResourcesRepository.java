@@ -15,5 +15,5 @@ public interface TaskResourcesRepository extends JpaRepository<TaskResourceModel
 
     List<TaskResourceModel> findAllByTaskNull();
 
-    Optional<TaskResourceModel> findFirstByResource(String resource);
+    Optional<TaskResourceModel> findFirstByResourceName(String resource);
 }

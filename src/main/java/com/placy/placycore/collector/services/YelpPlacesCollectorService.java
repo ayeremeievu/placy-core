@@ -11,10 +11,10 @@ public class YelpPlacesCollectorService {
     private final static String YELP_PLACES_FILENAME = "places.json";
 
     @Autowired
-    private YelpDatasetPlacesProcessorService yelpDatasetPlacesProcessorService;
+    private YelpDatasetFileProcessorService yelpDatasetFileProcessorService;
 
     public void collect() {
-        yelpDatasetPlacesProcessorService.process(YELP_PLACES_FILENAME);
+        yelpDatasetFileProcessorService.processFile();
     }
 
 }

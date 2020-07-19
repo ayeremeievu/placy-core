@@ -14,5 +14,5 @@ import java.util.Optional;
 public interface ProcessResourcesRepository extends JpaRepository<ProcessResourceModel, String> {
     List<ProcessResourceModel> getAllByProcessNull();
 
-    Optional<ProcessResourceModel> getFirstByResource(String resource);
+    Optional<ProcessResourceModel> getFirstByResourceName(String resource);
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>geocoding</groupId>
+  <artifactId>nominatim</artifactId>
+  <versioning>
+    <release>default</release>
+    <versions>
+      <version>default</version>
+    </versions>
+    <lastUpdated>20200718202531</lastUpdated>
+  </versioning>
+</metadata>

@@ -21,10 +21,8 @@ public class TaskReader {
     @Autowired
     private ResourceReader resourceReader;
 
-    public TaskDefinition readTask( String path) {
-        LOG.info("Reading task : " + path);
-
-        TaskDefinition obj = resourceReader.readResource(path, TaskDefinition.class);
+    public TaskDefinition readTask( String resourceValue) {
+        TaskDefinition obj = resourceReader.readResource(resourceValue, TaskDefinition.class);
 
         propertiesValidator.validate(obj);
 

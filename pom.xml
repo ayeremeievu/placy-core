@@ -14,6 +14,15 @@
     <name>placy-core</name>
     <description>Placy</description>
 
+    <repositories>
+        <repository>
+            <id>LocalProjectRepo</id>
+            <name>LocalProjectRepo</name>
+            <url>file:///${project.basedir}/libs</url>
+        </repository>
+    </repositories>
+
+
     <properties>
         <java.version>11</java.version>
     </properties>
@@ -63,6 +72,29 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>geocoding</groupId>
+            <artifactId>nominatim</artifactId>
+            <version>default</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.14</version>
         </dependency>
     </dependencies>
 
