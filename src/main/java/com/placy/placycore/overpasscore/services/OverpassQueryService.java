@@ -1,0 +1,83 @@
+package com.placy.placycore.overpasscore.services;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.placy.placycore.core.exceptions.HttpRequestResultException;
+import com.placy.placycore.overpasscore.adapter.SimpleOverpassQueryAdapter;
+import com.placy.placycore.overpasscore.mappers.FeatureMapper;
+import com.placy.placycore.overpasscore.query.SimpleOverpassQuery;
+import org.geojson.Feature;
+import org.geojson.FeatureCollection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.exception.ExceptionUtils.rethrow;
+
+/**
+ * @author ayeremeiev@netconomy.net
+ */
+@Component
+public class OverpassQueryService {
+    private final static String OVERPASS_BASE_URI = "http://overpass-api.de/api/interpreter";
+    private final static ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    private SimpleOverpassQueryAdapter simpleOverpassQueryAdapter;
+
+    public FeatureCollection queryOverpassSync(SimpleOverpassQuery simpleOverpassQuery) {
+        FeatureCollection result = null;
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = buildHttpRequest(simpleOverpassQuery);
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if(response.statusCode() == HttpStatus.OK.value()) {
+                String body = response.body();
+
+                result = objectMapper.readValue(body, FeatureCollection.class);
+            } else {
+                throw new HttpRequestResultException(
+                    String.format("Overpass responded not successfully. Status : %s, body : %s", response.statusCode(), response.body())
+                );
+            }
+        } catch (IOException | InterruptedException ex) {
+            rethrow(ex);
+        }
+
+        return result;
+    }
+
+    public <T> List<T> mapFeatureCollection(FeatureCollection featureCollection, FeatureMapper<T> featureMapper) {
+        List<Feature> features = featureCollection.getFeatures();
+
+        return features.stream()
+                .map(featureMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    private HttpRequest buildHttpRequest(SimpleOverpassQuery simpleOverpassQuery) {
+        String overpassQuery = simpleOverpassQueryAdapter.resolveOverpassQuery(simpleOverpassQuery);
+        return HttpRequest.newBuilder()
+                         .uri(URI.create(OVERPASS_BASE_URI))
+                         .POST(HttpRequest.BodyPublishers.ofString(overpassQuery))
+                         .build();
+    }
+
+    public SimpleOverpassQueryAdapter getSimpleOverpassQueryAdapter() {
+        return simpleOverpassQueryAdapter;
+    }
+
+    public void setSimpleOverpassQueryAdapter(SimpleOverpassQueryAdapter simpleOverpassQueryAdapter) {
+        this.simpleOverpassQueryAdapter = simpleOverpassQueryAdapter;
+    }
+}

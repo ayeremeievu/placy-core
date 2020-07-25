@@ -1,11 +1,13 @@
 package com.placy.placycore.core.model;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -25,7 +27,7 @@ public class CountryModel {
 
     @Id
     @Column(name = "c_id", nullable = false)
-    private String id;
+    private int id;
 
     @Column(name = "c_iso", nullable = false)
     private String iso;
@@ -39,6 +41,9 @@ public class CountryModel {
     @Column(name = "c_iso3")
     private String iso3;
 
+    @OneToMany(mappedBy = "country")
+    private List<DivisionModel> divisions;
+
     @Column(name = "c_numcode")
     private int numcode;
 
@@ -48,11 +53,11 @@ public class CountryModel {
     public CountryModel() {
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -102,6 +107,14 @@ public class CountryModel {
 
     public void setPhonecode(int phonecode) {
         this.phonecode = phonecode;
+    }
+
+    public List<DivisionModel> getDivisions() {
+        return divisions;
+    }
+
+    public void setDivisions(List<DivisionModel> divisions) {
+        this.divisions = divisions;
     }
 
     @Override

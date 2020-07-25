@@ -1,0 +1,11 @@
+{
+  "code": "collect-osm-cities",
+  "name": "Queries and saves osm cities",
+  "runnerBean": "collectOsmCitiesExecutable",
+  "params" : [
+    {
+      "code" : "countryIso",
+      "required" : true
+    }
+  ]
+}

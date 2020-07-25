@@ -1,5 +1,6 @@
 package com.placy.placycore.core.model;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -8,8 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 /**
  * @author ayeremeiev@netconomy.net
@@ -23,26 +24,29 @@ import javax.persistence.UniqueConstraint;
 public class DivisionModel {
     @Id
     @Column(name = "d_id", nullable = false)
-    private String id;
+    private int id;
 
     @Column(name = "d_name", nullable = false)
     private String name;
 
     @Column(name = "d_code", nullable = false)
-    private String d_code;
+    private String code;
 
     @ManyToOne
     @JoinColumn(name = "d_country_id", nullable = false)
-    private CountryModel countryModel;
+    private CountryModel country;
+
+    @OneToMany(mappedBy = "division")
+    private List<CityModel> citites;
 
     public DivisionModel() {
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -54,20 +58,28 @@ public class DivisionModel {
         this.name = name;
     }
 
-    public String getD_code() {
-        return d_code;
+    public String getCode() {
+        return code;
     }
 
-    public void setD_code(String d_code) {
-        this.d_code = d_code;
+    public void setCode(String d_code) {
+        this.code = d_code;
     }
 
-    public CountryModel getCountryModel() {
-        return countryModel;
+    public CountryModel getCountry() {
+        return country;
     }
 
-    public void setCountryModel(CountryModel countryModel) {
-        this.countryModel = countryModel;
+    public void setCountry(CountryModel countryModel) {
+        this.country = countryModel;
+    }
+
+    public List<CityModel> getCitites() {
+        return citites;
+    }
+
+    public void setCitites(List<CityModel> citites) {
+        this.citites = citites;
     }
 
     @Override
@@ -81,13 +93,13 @@ public class DivisionModel {
         DivisionModel that = (DivisionModel) o;
         return Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
-            Objects.equals(d_code, that.d_code) &&
-            Objects.equals(countryModel, that.countryModel);
+            Objects.equals(code, that.code) &&
+            Objects.equals(country, that.country);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, d_code, countryModel);
+        return Objects.hash(id, name, code, country);
     }
 
     @Override
@@ -95,8 +107,8 @@ public class DivisionModel {
         return "DivisionModel{" +
             "id='" + id + '\'' +
             ", name='" + name + '\'' +
-            ", d_code='" + d_code + '\'' +
-            ", countryModel=" + countryModel +
+            ", d_code='" + code + '\'' +
+            ", countryModel=" + country +
             '}';
     }
 }
