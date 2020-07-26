@@ -1,5 +1,6 @@
 package com.placy.placycore.core.processes.repository;
 
+import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.model.ProcessResourceModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,6 @@ public interface ProcessResourcesRepository extends JpaRepository<ProcessResourc
     List<ProcessResourceModel> getAllByProcessNull();
 
     Optional<ProcessResourceModel> getFirstByResourceName(String resource);
+
+    Optional<ProcessResourceModel> getFirstByProcess(ProcessModel process);
 }

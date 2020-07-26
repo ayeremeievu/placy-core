@@ -1,5 +1,0 @@
-{
-  "code": "collect-only-placy-data-task",
-  "name": "Collect only placy data task",
-  "runnerBean": "collectOnlyPlacyDataExecutable"
-}

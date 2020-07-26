@@ -1,0 +1,15 @@
+{
+  "code": "yelp-update",
+  "name": "Yelp update",
+  "params": [],
+  "steps": [
+    {
+      "code": "import-yelp-data-step",
+      "taskCode": "import-yelp-data-task"
+    },
+    {
+      "code": "save-yelp-data-step",
+      "taskCode": "save-yelp-data-task"
+    }
+  ]
+}

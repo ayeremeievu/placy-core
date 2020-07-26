@@ -12,28 +12,25 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
 /**
  * @author ayeremeiev@netconomy.net
  */
-public class CollectDataExecutable implements ExecutableBean {
-    Logger LOG = LoggerFactory.getLogger(CollectDataExecutable.class);
+public class ImportDataExecutable implements ExecutableBean {
+    Logger LOG = LoggerFactory.getLogger(ImportDataExecutable.class);
 
     private final int NUMBER_OF_THREADS = 4;
 
-    List<String> dataCollectorsTasks;
+    List<String> dataImporterTasks;
 
     TasksService tasksService;
 
     @PostConstruct
     public void init() {
-        if (dataCollectorsTasks == null) {
-            dataCollectorsTasks = new ArrayList<>();
+        if (dataImporterTasks == null) {
+            dataImporterTasks = new ArrayList<>();
         }
     }
 
@@ -44,7 +41,7 @@ public class CollectDataExecutable implements ExecutableBean {
         ExecutorCompletionService executorCompletionService =
             new ExecutorCompletionService(Executors.newFixedThreadPool(NUMBER_OF_THREADS));
 
-        long countOfFutures = dataCollectorsTasks
+        long countOfFutures = dataImporterTasks
             .stream()
             .map(RunTaskDataFactory::createRunTaskData)
             .map(tasksService::getTaskRunnable)
@@ -67,12 +64,12 @@ public class CollectDataExecutable implements ExecutableBean {
         return null;
     }
 
-    public List<String> getDataCollectorsTasks() {
-        return dataCollectorsTasks;
+    public List<String> getDataImporterTasks() {
+        return dataImporterTasks;
     }
 
-    public void setDataCollectorsTasks(List<String> dataCollectorsTasks) {
-        this.dataCollectorsTasks = dataCollectorsTasks;
+    public void setDataImporterTasks(List<String> dataImporterTasks) {
+        this.dataImporterTasks = dataImporterTasks;
     }
 
     public TasksService getTasksService() {

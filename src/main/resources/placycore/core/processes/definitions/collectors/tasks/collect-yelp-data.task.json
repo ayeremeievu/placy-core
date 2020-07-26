@@ -1,5 +1,0 @@
-{
-  "code": "collect-yelp-data-task",
-  "name": "Collect Yelp Data task",
-  "runnerBean": "collectYelpDataExecutable"
-}

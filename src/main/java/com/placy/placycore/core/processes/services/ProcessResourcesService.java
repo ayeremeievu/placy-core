@@ -48,6 +48,10 @@ public class ProcessResourcesService {
         return resourceModels;
     }
 
+    public Optional<ProcessResourceModel> getResourceByProcess(ProcessModel processModel) {
+        return processResourcesRepository.getFirstByProcess(processModel);
+    }
+
     public ProcessResourceModel processResource(ProcessResourceModel processResourceModel) {
         LOG.info("Processing process : " + processResourceModel.getResourceName());
         String resourceValue = processResourceModel.getResourceValue();
@@ -61,5 +65,17 @@ public class ProcessResourcesService {
         save(processResourceModel);
 
         return processResourceModel;
+    }
+
+    public List<ProcessResourceModel> getAllResources() {
+        return processResourcesRepository.findAll();
+    }
+
+    public void removeAll(List<ProcessResourceModel> processResourceModels) {
+        processResourcesRepository.deleteAll(processResourceModels);
+    }
+
+    public void flush() {
+        processResourcesRepository.flush();
     }
 }

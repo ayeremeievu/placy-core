@@ -1,0 +1,5 @@
+{
+  "code": "save-yelp-data-task",
+  "name": "Save Yelp Data task",
+  "runnerBean": "saveYelpDataExecutable"
+}

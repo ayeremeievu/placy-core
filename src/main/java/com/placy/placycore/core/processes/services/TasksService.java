@@ -228,4 +228,12 @@ public class TasksService {
     public List<TaskModel> getAllTasks() {
         return tasksRepository.findAll();
     }
+
+    public void remove(TaskModel obsoleteTask) {
+        tasksRepository.delete(obsoleteTask);
+    }
+
+    public void removeAll(List<TaskModel> obsoleteTasks) {
+        tasksRepository.deleteAll(obsoleteTasks);
+    }
 }

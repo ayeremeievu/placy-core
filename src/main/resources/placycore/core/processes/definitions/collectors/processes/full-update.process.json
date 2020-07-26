@@ -4,8 +4,8 @@
   "params": [],
   "steps": [
     {
-      "code": "collect-full-data-step",
-      "taskCode": "collect-full-data-task"
+      "code": "import-full-data-step",
+      "taskCode": "import-full-data-task"
     }
   ]
 }

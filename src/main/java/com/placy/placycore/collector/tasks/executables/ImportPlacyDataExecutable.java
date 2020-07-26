@@ -2,7 +2,6 @@ package com.placy.placycore.collector.tasks.executables;
 
 import com.placy.placycore.collector.services.YelpPlacesCollectorService;
 import com.placy.placycore.core.processes.executable.ExecutableBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -10,15 +9,10 @@ import java.util.Map;
 /**
  * @author ayeremeiev@netconomy.net
  */
-@Component(value = "collectYelpDataExecutable")
-public class CollectYelpDataExecutable implements ExecutableBean {
-    @Autowired
-    private YelpPlacesCollectorService yelpPlacesCollectorService;
-
+@Component(value = "importPlacyDataExecutable")
+public class ImportPlacyDataExecutable implements ExecutableBean {
     @Override
     public Object execute(Map<String, Object> params) {
-        yelpPlacesCollectorService.collect();
-
         return null;
     }
 }

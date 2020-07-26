@@ -144,4 +144,12 @@ public class ProcessesService {
     public Optional<ProcessInstanceModel> getProcessInstanceByCodeOptional(String processInstanceCode) {
         return processInstanceRepository.getFirstByCode(processInstanceCode);
     }
+
+    public void remove(ProcessModel obsoleteProcess) {
+        processesRepository.delete(obsoleteProcess);
+    }
+
+    public void removeAll(List<ProcessModel> obsoleteProcesses) {
+        processesRepository.deleteAll(obsoleteProcesses);
+    }
 }

@@ -1,24 +1,34 @@
 package com.placy.placycore.core.startuphooks.hooks;
 
+import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.model.ProcessResourceModel;
 import com.placy.placycore.core.processes.services.ProcessResourcesService;
+import com.placy.placycore.core.processes.services.ProcessesService;
 import com.placy.placycore.core.startuphooks.PostStartupHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author a.yeremeiev@netconomy.net
  */
 public class ProcessDefinitionsProcessorHook implements PostStartupHook {
+
     Logger LOG = LoggerFactory.getLogger(ProcessDefinitionsProcessorHook.class);
 
     @Autowired
     private ProcessResourcesService processResourcesService;
 
+    @Autowired
+    private ProcessesService processesService;
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public Object run(ApplicationContext applicationContext) {
         LOG.info("ProcessDefinitionImporterHook started");

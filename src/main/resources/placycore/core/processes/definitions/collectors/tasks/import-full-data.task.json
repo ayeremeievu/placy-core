@@ -1,0 +1,5 @@
+{
+  "code": "import-full-data-task",
+  "name": "import data task",
+  "runnerBean": "importFullDataExecutable"
+}

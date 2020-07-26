@@ -1,0 +1,5 @@
+{
+  "code": "import-yelp-data-task",
+  "name": "Import Yelp Data task",
+  "runnerBean": "importYelpDataExecutable"
+}

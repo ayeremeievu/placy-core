@@ -1,6 +1,8 @@
 package com.placy.placycore.core.processes.services;
 
 import com.placy.placycore.core.processes.loaders.TaskLoader;
+import com.placy.placycore.core.processes.model.ProcessModel;
+import com.placy.placycore.core.processes.model.ProcessResourceModel;
 import com.placy.placycore.core.processes.model.TaskModel;
 import com.placy.placycore.core.processes.model.TaskResourceModel;
 import com.placy.placycore.core.processes.repository.TaskResourcesRepository;
@@ -38,6 +40,10 @@ public class TaskResourcesService {
         return taskResourcesRepository.findFirstByResourceName(resource);
     }
 
+    public Optional<TaskResourceModel> getResourceByTask(TaskModel taskModel) {
+        return taskResourcesRepository.findFirstByTask(taskModel);
+    }
+
     public List<TaskResourceModel> getAllUnprocessedTasks() {
         return taskResourcesRepository.findAllByTaskNull();
     }
@@ -64,5 +70,17 @@ public class TaskResourcesService {
         LOG.info("Task resource with path : {} processsed", taskResource.getResourceName());
 
         return taskResource;
+    }
+
+    public List<TaskResourceModel> getAllResources() {
+        return taskResourcesRepository.findAll();
+    }
+
+    public void removeAll(List<TaskResourceModel> obsoleteResources) {
+        taskResourcesRepository.deleteAll(obsoleteResources);
+    }
+
+    public void flush() {
+        taskResourcesRepository.flush();
     }
 }
