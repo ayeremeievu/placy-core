@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface CityRepository extends JpaRepository<CityModel, String> {
     // TODO has to check by import and that it was not imported from certain channel yet.
-    Optional<CityModel> getFirstByCityNameAndDivisionId(String cityName, int divisionId);
+    Optional<CityModel> getFirstByCityNameAndDivisionId(String name, int divisionId);
 }

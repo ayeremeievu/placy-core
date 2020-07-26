@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS core.country
+CREATE TABLE IF NOT EXISTS core.countries
 (
     c_id        int          NOT NULL GENERATED ALWAYS AS IDENTITY,
     c_iso       char(2)      NOT NULL,
@@ -14,10 +14,10 @@ CREATE TABLE IF NOT EXISTS core.country
 );
 
 CREATE INDEX c_iso_idx
-    ON core.country (c_id);
+    ON core.countries (c_id);
 
 
-INSERT INTO core.country (c_iso, c_name, c_nicename, c_iso3, c_numcode, c_phonecode)
+INSERT INTO core.countries (c_iso, c_name, c_nicename, c_iso3, c_numcode, c_phonecode)
 VALUES ('AF', 'AFGHANISTAN', 'Afghanistan', 'AFG', 4, 93),
        ('AL', 'ALBANIA', 'Albania', 'ALB', 8, 355),
        ('DZ', 'ALGERIA', 'Algeria', 'DZA', 12, 213),
@@ -43,7 +43,7 @@ VALUES ('AF', 'AFGHANISTAN', 'Afghanistan', 'AFG', 4, 93),
        ('BJ', 'BENIN', 'Benin', 'BEN', 204, 229);
 
 
-INSERT INTO core.country (c_iso, c_name, c_nicename, c_iso3, c_numcode, c_phonecode)
+INSERT INTO core.countries (c_iso, c_name, c_nicename, c_iso3, c_numcode, c_phonecode)
 VALUES ('BM', 'BERMUDA', 'Bermuda', 'BMU', 60, 1441),
        ('BT', 'BHUTAN', 'Bhutan', 'BTN', 64, 975),
        ('BO', 'BOLIVIA', 'Bolivia', 'BOL', 68, 591),
@@ -79,7 +79,7 @@ VALUES ('BM', 'BERMUDA', 'Bermuda', 'BMU', 60, 1441),
        ('CY', 'CYPRUS', 'Cyprus', 'CYP', 196, 357);
 
 
-INSERT INTO core.country (c_iso, c_name, c_nicename, c_iso3, c_numcode, c_phonecode)
+INSERT INTO core.countries (c_iso, c_name, c_nicename, c_iso3, c_numcode, c_phonecode)
 VALUES ('CZ', 'CZECH REPUBLIC', 'Czech Republic', 'CZE', 203, 420),
        ('DK', 'DENMARK', 'Denmark', 'DNK', 208, 45),
        ('DJ', 'DJIBOUTI', 'Djibouti', 'DJI', 262, 253),
@@ -134,7 +134,7 @@ VALUES ('CZ', 'CZECH REPUBLIC', 'Czech Republic', 'CZE', 203, 420),
        ('JO', 'JORDAN', 'Jordan', 'JOR', 400, 962);
 
 
-INSERT INTO core.country (c_iso, c_name, c_nicename, c_iso3, c_numcode, c_phonecode)
+INSERT INTO core.countries (c_iso, c_name, c_nicename, c_iso3, c_numcode, c_phonecode)
 VALUES ('KZ', 'KAZAKHSTAN', 'Kazakhstan', 'KAZ', 398, 7),
        ('KE', 'KENYA', 'Kenya', 'KEN', 404, 254),
        ('KI', 'KIRIBATI', 'Kiribati', 'KIR', 296, 686),
@@ -213,7 +213,7 @@ VALUES ('KZ', 'KAZAKHSTAN', 'Kazakhstan', 'KAZ', 398, 7),
        ('WS', 'SAMOA', 'Samoa', 'WSM', 882, 684);
 
 
-INSERT INTO core.country (c_iso, c_name, c_nicename, c_iso3, c_numcode, c_phonecode)
+INSERT INTO core.countries (c_iso, c_name, c_nicename, c_iso3, c_numcode, c_phonecode)
 VALUES ('SM', 'SAN MARINO', 'San Marino', 'SMR', 674, 378),
        ('ST', 'SAO TOME AND PRINCIPE', 'Sao Tome and Principe', 'STP', 678, 239),
        ('SA', 'SAUDI ARABIA', 'Saudi Arabia', 'SAU', 682, 966),

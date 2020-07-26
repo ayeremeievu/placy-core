@@ -16,7 +16,7 @@ public class StringParametersUtils {
         String result = str;
 
         for (Map.Entry<String, String> paramEntry : params.entrySet()) {
-            result = StringUtils.replace(str, formatParamKey(paramEntry.getKey()), paramEntry.getValue());
+            result = StringUtils.replace(result, formatParamKey(paramEntry.getKey()), paramEntry.getValue());
         }
 
         return result;

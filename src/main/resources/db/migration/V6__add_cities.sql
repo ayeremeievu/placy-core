@@ -10,5 +10,5 @@ CREATE TABLE core.cities
     PRIMARY KEY (c_id),
     CONSTRAINT fr_division_code_country_id
         FOREIGN KEY (c_division_id)
-            REFERENCES core.division (d_id)
+            REFERENCES core.divisions (d_id)
 );

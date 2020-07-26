@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -16,15 +18,16 @@ import javax.persistence.Table;
  * @author ayeremeiev@netconomy.net
  */
 @Entity
-@Table(name = "division",
+@Table(name = "divisions",
        indexes = {
            @Index(columnList = "d_name", name = "d_name_idx"),
        }
 )
 public class DivisionModel {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "d_id", nullable = false)
-    private int id;
+    private Integer id;
 
     @Column(name = "d_name", nullable = false)
     private String name;

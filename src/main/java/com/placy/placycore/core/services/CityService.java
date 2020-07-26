@@ -18,7 +18,9 @@ public class CityService {
     private CityRepository cityRepository;
 
     public Optional<CityModel> getCityByNameAndDivision(String name, DivisionModel divisionModel) {
-        return cityRepository.getFirstByCityNameAndDivisionId(name, divisionModel.getId());
+        int divisionId = divisionModel.getId();
+
+        return cityRepository.getFirstByCityNameAndDivisionId(name, divisionId);
     }
 
     public boolean existsCityByNameAndDivision(String name, DivisionModel divisionModel) {

@@ -7,9 +7,9 @@ import com.placy.placycore.core.processes.executable.ExecutableBean;
 import com.placy.placycore.core.services.CityService;
 import com.placy.placycore.core.services.CountryService;
 import com.placy.placycore.core.services.DivisionService;
-import com.placy.placycore.osmcollector.data.CollectorCityData;
 import com.placy.placycore.overpass.citites.data.OverpassCityResponseData;
 import com.placy.placycore.overpass.citites.services.OverpassCitiesService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
  * @author ayeremeiev@netconomy.net
  */
 @Component
-public class CollectOsmCountriesExecutable implements ExecutableBean {
+public class CollectOsmCitiesExecutable implements ExecutableBean {
 
-    private final static Logger LOG = LoggerFactory.getLogger(CollectOsmCountriesExecutable.class);
+    private final static Logger LOG = LoggerFactory.getLogger(CollectOsmCitiesExecutable.class);
 
     private final static String COUNTRY_ISO_PARAM = "countryIso";
 
@@ -56,11 +56,13 @@ public class CollectOsmCountriesExecutable implements ExecutableBean {
                      countryModel.getIso());
 
             List<OverpassCityResponseData> overpassCitiesResponses =
-                overpassCitiesService.getOverpassCities(countryModel.getName(), division.getName());
+                overpassCitiesService.getOverpassCities(countryModel.getNicename(), division.getName());
 
             if (overpassCitiesResponses == null) {
                 overpassCitiesResponses = new ArrayList<>();
             }
+
+            overpassCitiesResponses = filterCitiesResponse(overpassCitiesResponses);
 
             List<CityModel> cities = overpassCitiesResponses
                 .stream()
@@ -69,7 +71,7 @@ public class CollectOsmCountriesExecutable implements ExecutableBean {
 
             List<CityModel> citiesToSave = cities
                 .stream()
-                .filter(cityModel -> cityService.existsCityByNameAndDivision(cityModel.getCityName(), division))
+                .filter(cityModel -> !cityService.existsCityByNameAndDivision(cityModel.getCityName(), division))
                 .collect(Collectors.toList());
 
             cityService.saveAll(citiesToSave);
@@ -81,6 +83,16 @@ public class CollectOsmCountriesExecutable implements ExecutableBean {
         }
 
         return null;
+    }
+
+    private List<OverpassCityResponseData> filterCitiesResponse(List<OverpassCityResponseData> overpassCitiesResponses) {
+        return overpassCitiesResponses.stream()
+            .filter(this::hasName)
+            .collect(Collectors.toList());
+    }
+
+    private boolean hasName(OverpassCityResponseData overpassCityResponseData) {
+        return StringUtils.isNoneBlank(overpassCityResponseData.getName());
     }
 
     private CityModel buildCityModel(OverpassCityResponseData overpassCityResponseData, DivisionModel division) {

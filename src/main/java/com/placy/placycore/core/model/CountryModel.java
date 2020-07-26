@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
@@ -15,7 +17,8 @@ import javax.persistence.UniqueConstraint;
  * @author ayeremeiev@netconomy.net
  */
 @Entity
-@Table(name = "country",
+@Table(name = "countries",
+
        indexes = {
            @Index(columnList = "c_iso", name = "c_iso_idx"),
        },
@@ -26,8 +29,9 @@ import javax.persistence.UniqueConstraint;
 public class CountryModel {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "c_id", nullable = false)
-    private int id;
+    private Integer id;
 
     @Column(name = "c_iso", nullable = false)
     private String iso;

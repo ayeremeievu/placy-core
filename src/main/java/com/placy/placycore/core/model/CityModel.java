@@ -2,6 +2,8 @@ package com.placy.placycore.core.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -13,11 +15,12 @@ import javax.persistence.UniqueConstraint;
  * @author ayeremeiev@netconomy.net
  */
 @Entity
-@Table(name = "city")
+@Table(name = "cities")
 public class CityModel {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "c_id", nullable = false)
-    private int id;
+    private Integer id;
 
     @Column(name = "c_city_name", nullable = false)
     private String cityName;
@@ -29,11 +32,11 @@ public class CityModel {
     public CityModel() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
