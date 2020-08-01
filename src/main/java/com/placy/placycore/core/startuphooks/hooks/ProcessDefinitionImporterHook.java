@@ -40,7 +40,6 @@ public class ProcessDefinitionImporterHook implements PostStartupHook {
     @Autowired
     private ProcessesService processesService;
 
-    @Transactional(propagation = REQUIRES_NEW)
     @Override
     public Object run(ApplicationContext applicationContext) {
         LOG.info("ProcessDefinitionImporterHook started");
@@ -136,7 +135,7 @@ public class ProcessDefinitionImporterHook implements PostStartupHook {
 
     private void saveResource(ProcessResourceModel processResourceModel) {
         try {
-            processResourcesService.save(processResourceModel);
+            processResourcesService.saveAndFlush(processResourceModel);
         } catch (RuntimeException ex) {
             throw new IllegalStateException(
                 String.format("Exception occurred during saving of process resource with name '%s' and id '%s'",

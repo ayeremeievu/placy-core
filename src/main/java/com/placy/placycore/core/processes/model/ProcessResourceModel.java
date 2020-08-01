@@ -18,13 +18,13 @@ public class ProcessResourceModel extends DomainModel {
     @JoinColumn(name = "pr_process_pk", unique = true)
     private ProcessModel process;
 
-    @Column(name = "pr_resource_name", nullable = false, updatable = false)
+    @Column(name = "pr_resource_name", nullable = false)
     private String resourceName;
 
-    @Column(name = "pr_resource_value", nullable = false, updatable = false)
+    @Column(name = "pr_resource_value", nullable = false)
     private String resourceValue;
 
-    @Column(name = "pr_resource_checksum", nullable = false, updatable = false)
+    @Column(name = "pr_resource_checksum", nullable = false)
     private String resourceChecksum;
 
     public ProcessModel getProcess() {

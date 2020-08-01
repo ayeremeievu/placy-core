@@ -25,10 +25,6 @@ public class ProcessDefinitionsProcessorHook implements PostStartupHook {
     @Autowired
     private ProcessResourcesService processResourcesService;
 
-    @Autowired
-    private ProcessesService processesService;
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public Object run(ApplicationContext applicationContext) {
         LOG.info("ProcessDefinitionImporterHook started");

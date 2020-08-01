@@ -78,4 +78,8 @@ public class ProcessResourcesService {
     public void flush() {
         processResourcesRepository.flush();
     }
+
+    public void saveAndFlush(ProcessResourceModel processResourceModel) {
+        processResourcesRepository.saveAndFlush(processResourceModel);
+    }
 }

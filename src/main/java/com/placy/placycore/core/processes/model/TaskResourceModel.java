@@ -19,13 +19,13 @@ public class TaskResourceModel extends DomainModel {
     @JoinColumn(name = "tr_task_pk", unique = true)
     private TaskModel task;
 
-    @Column(name = "tr_resource_name", nullable = false, updatable = false)
+    @Column(name = "tr_resource_name", nullable = false)
     private String resourceName;
 
-    @Column(name = "tr_resource_value", nullable = false, updatable = false)
+    @Column(name = "tr_resource_value", nullable = false)
     private String resourceValue;
 
-    @Column(name = "tr_resource_checksum", nullable = false, updatable = false)
+    @Column(name = "tr_resource_checksum", nullable = false)
     private String resourceChecksum;
 
     public TaskModel getTask() {
