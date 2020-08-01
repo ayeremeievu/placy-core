@@ -1,6 +1,6 @@
 package com.placy.placycore.core.processes.model;
 
-import com.placy.placycore.core.model.DomainModel;
+import com.placy.placycore.core.model.UuidDomainModel;
 
 import java.util.Date;
 import java.util.List;
@@ -30,7 +30,7 @@ import javax.persistence.UniqueConstraint;
        @UniqueConstraint(columnNames = "ti_code", name = "ti_code_unq_constraint")
     }
 )
-public class TaskInstanceModel extends DomainModel implements ExecutableModel {
+public class TaskInstanceModel extends UuidDomainModel implements ExecutableModel {
 
     @Column(name = "ti_code", nullable = false)
     private String code;

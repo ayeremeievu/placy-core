@@ -1,6 +1,6 @@
 package com.placy.placycore.core.processes.model;
 
-import com.placy.placycore.core.model.DomainModel;
+import com.placy.placycore.core.model.UuidDomainModel;
 
 import java.util.Objects;
 
@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "taskParameterValues")
-public class TaskParameterValueModel extends DomainModel {
+public class TaskParameterValueModel extends UuidDomainModel {
     @ManyToOne
     @JoinColumn(name = "tpv_parameter_pk", nullable = false, updatable = false)
     private TaskParameterModel parameter;

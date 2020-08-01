@@ -1,7 +1,6 @@
 package com.placy.placycore.core.processes.model;
 
-import com.placy.placycore.core.model.DomainModel;
-import org.hibernate.annotations.TypeDef;
+import com.placy.placycore.core.model.UuidDomainModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "taskResources")
-public class TaskResourceModel extends DomainModel {
+public class TaskResourceModel extends UuidDomainModel {
     @OneToOne
     @JoinColumn(name = "tr_task_pk", unique = true)
     private TaskModel task;
