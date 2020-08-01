@@ -1,6 +1,6 @@
 package com.placy.placycore.core.processes.model;
 
-import com.placy.placycore.core.model.DomainModel;
+import com.placy.placycore.core.model.UuidDomainModel;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import javax.persistence.UniqueConstraint;
            @UniqueConstraint(columnNames = "pp_code", name = "pp_code_unq_constraint")
        }
 )
-public class ProcessParameterModel extends DomainModel {
+public class ProcessParameterModel extends UuidDomainModel {
     @Column(name = "pp_code", nullable = false)
     private String code;
 

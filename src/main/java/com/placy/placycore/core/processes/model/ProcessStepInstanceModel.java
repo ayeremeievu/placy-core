@@ -1,8 +1,6 @@
 package com.placy.placycore.core.processes.model;
 
-import com.placy.placycore.core.model.DomainModel;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import com.placy.placycore.core.model.UuidDomainModel;
 
 import java.util.Date;
 
@@ -13,7 +11,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -30,7 +27,7 @@ import javax.persistence.UniqueConstraint;
        uniqueConstraints = {
            @UniqueConstraint(columnNames = "psi_code", name = "psi_code_unq_constraint")
        })
-public class ProcessStepInstanceModel extends DomainModel {
+public class ProcessStepInstanceModel extends UuidDomainModel {
     @Column(name = "psi_code", nullable = false)
     private String code;
 

@@ -1,6 +1,6 @@
 package com.placy.placycore.core.processes.model;
 
-import com.placy.placycore.core.model.DomainModel;
+import com.placy.placycore.core.model.UuidDomainModel;
 
 import java.util.Date;
 import java.util.List;
@@ -10,7 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -30,7 +29,7 @@ import javax.persistence.UniqueConstraint;
         @UniqueConstraint(columnNames = "pi_code", name = "pi_code_unq_constraint")
     }
 )
-public class ProcessInstanceModel extends DomainModel implements ExecutableModel {
+public class ProcessInstanceModel extends UuidDomainModel implements ExecutableModel {
     @Column(name = "pi_code", nullable = false)
     private String code;
 

@@ -1,6 +1,6 @@
 package com.placy.placycore.core.processes.model;
 
-import com.placy.placycore.core.model.DomainModel;
+import com.placy.placycore.core.model.UuidDomainModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "processParameterValues")
-public class ProcessParameterValueModel extends DomainModel {
+public class ProcessParameterValueModel extends UuidDomainModel {
     @ManyToOne
     @JoinColumn(name = "ppv_parameter_pk", nullable = false)
     private ProcessParameterModel parameter;

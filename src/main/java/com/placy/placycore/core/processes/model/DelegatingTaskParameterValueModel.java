@@ -1,6 +1,6 @@
 package com.placy.placycore.core.processes.model;
 
-import com.placy.placycore.core.model.DomainModel;
+import com.placy.placycore.core.model.UuidDomainModel;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -15,7 +15,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "delegatingTaskParameterValues", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"dtpv_processStep_pk", "dtpv_taskParameter_pk"}, name = "dtpv_processStep_parameter_unq_constraint")
 })
-public class DelegatingTaskParameterValueModel extends DomainModel {
+public class DelegatingTaskParameterValueModel extends UuidDomainModel {
     @ManyToOne(optional = false)
     @JoinColumn(name = "dtpv_processStep_pk")
     private ProcessStepModel processStep;

@@ -1,6 +1,6 @@
 package com.placy.placycore.core.processes.model;
 
-import com.placy.placycore.core.model.DomainModel;
+import com.placy.placycore.core.model.UuidDomainModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "processResources")
-public class ProcessResourceModel extends DomainModel {
+public class ProcessResourceModel extends UuidDomainModel {
     @OneToOne
     @JoinColumn(name = "pr_process_pk", unique = true)
     private ProcessModel process;
