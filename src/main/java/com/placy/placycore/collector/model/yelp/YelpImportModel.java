@@ -33,13 +33,13 @@ public class YelpImportModel extends IncrementalDomainModel {
     @Column(name = "yi_finishDate", nullable = true)
     private Date finishDate;
 
-    @OneToMany(mappedBy = "yelpImport", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "id.yelpImport", cascade = CascadeType.ALL)
     private List<YelpPlaceRawModel> yelpPlaces;
 
-    @OneToMany(mappedBy = "yelpImport", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "id.yelpImport", cascade = CascadeType.ALL)
     private List<YelpReviewRawModel> yelpReviews;
 
-    @OneToMany(mappedBy = "yelpImport", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "id.yelpImport", cascade = CascadeType.ALL)
     private List<YelpUserRawModel> yelpUsers;
 
     public YelpImportModel() {

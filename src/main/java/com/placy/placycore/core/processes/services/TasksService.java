@@ -9,6 +9,7 @@ import com.placy.placycore.core.processes.data.RunTaskData;
 import com.placy.placycore.core.processes.exceptions.TaskNotFoundException;
 import com.placy.placycore.core.processes.mappers.ParamValuesToTaskParamValuesModelsMapper;
 import com.placy.placycore.core.processes.mappers.TaskInstanceModelToDataMapper;
+import com.placy.placycore.core.processes.model.ResourceImportModel;
 import com.placy.placycore.core.processes.model.TaskInstanceModel;
 import com.placy.placycore.core.processes.model.TaskInstanceStatusEnum;
 import com.placy.placycore.core.processes.model.TaskModel;
@@ -33,6 +34,9 @@ import java.util.stream.Collectors;
 @Component
 public class TasksService {
     Logger LOG = LoggerFactory.getLogger(TasksService.class);
+
+    @Autowired
+    private ResourceImportService resourceImportService;
 
     @Autowired
     private TasksRepository tasksRepository;
@@ -61,7 +65,7 @@ public class TasksService {
     public TaskRunner getTaskRunnable(RunTaskData runTaskData) {
         String taskCode = runTaskData.getCode();
 
-        TaskModel taskModel = tasksRepository.findFirstByCode(taskCode)
+        TaskModel taskModel = getLastTaskByCodeOptional(taskCode)
                                              .orElseThrow(() -> new TaskNotFoundException(taskCode));
 
         List<ParamValueData> paramValues = runTaskData.getParamValues();
@@ -212,8 +216,25 @@ public class TasksService {
         tasksRepository.saveAll(taskModelList);
     }
 
-    public Optional<TaskModel> getTaskByCodeOptional(String code) {
-        return tasksRepository.findFirstByCode(code);
+    public Optional<TaskModel> getLastTaskByCodeOptional(String code) {
+        Optional<ResourceImportModel> lastResourceImport = resourceImportService.getLastResourceImport();
+
+        if(lastResourceImport.isPresent()) {
+            ResourceImportModel resourceImportModel = lastResourceImport.get();
+
+            Integer version = resourceImportModel.getVersion();
+            return tasksRepository.getFirstByCodeAndTaskResourceResourceImportVersion(code, version);
+        }
+
+        return Optional.empty();
+    }
+
+    public ResourceImportService getResourceImportService() {
+        return resourceImportService;
+    }
+
+    public void setResourceImportService(ResourceImportService resourceImportService) {
+        this.resourceImportService = resourceImportService;
     }
 
     public Optional<TaskInstanceModel> getTaskInstanceModelByCode(String code) {
@@ -225,8 +246,17 @@ public class TasksService {
         return taskInstancesRepository.findById(pk);
     }
 
-    public List<TaskModel> getAllTasks() {
-        return tasksRepository.findAll();
+    public List<TaskModel> getAllTasksFromLastImport() {
+        Optional<ResourceImportModel> lastResourceImport = resourceImportService.getLastResourceImport();
+
+        if(lastResourceImport.isPresent()) {
+            ResourceImportModel resourceImportModel = lastResourceImport.get();
+
+            Integer version = resourceImportModel.getVersion();
+            return tasksRepository.getAllByTaskResourceResourceImportVersion(version);
+        }
+
+        return new ArrayList<>();
     }
 
     public void remove(TaskModel obsoleteTask) {

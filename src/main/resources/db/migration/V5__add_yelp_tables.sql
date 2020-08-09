@@ -11,7 +11,7 @@ CREATE TABLE core.yelpImports
 
 CREATE TABLE core.yelpPlacesRaw
 (
-    ypr_id             INT       NOT NULL GENERATED ALWAYS AS IDENTITY,
+    ypr_id             VARCHAR(255) NOT NULL,
     createdAt          TIMESTAMP NOT NULL,
     updatedAt          TIMESTAMP NOT NULL,
     ypr_name           VARCHAR(255),
@@ -24,7 +24,7 @@ CREATE TABLE core.yelpPlacesRaw
     ypr_stars          DOUBLE PRECISION,
     ypr_reviewCount    VARCHAR(255),
     ypr_yelp_import_pk INT       NOT NULL,
-    PRIMARY KEY (ypr_id),
+    PRIMARY KEY (ypr_id, ypr_yelp_import_pk),
     CONSTRAINT fk_ypr_yelp_import_pk
         FOREIGN KEY (ypr_yelp_import_pk)
             REFERENCES core.yelpImports (pk)
@@ -32,14 +32,14 @@ CREATE TABLE core.yelpPlacesRaw
 
 CREATE TABLE core.yelpReviewsRaw
 (
-    yrr_id             INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+    yrr_id             VARCHAR(255) NOT NULL,
     createdAt          TIMESTAMP NOT NULL,
     updatedAt          TIMESTAMP NOT NULL,
     yrr_userId         VARCHAR(255),
     yrr_businessId     VARCHAR(255),
     yrr_stars          DOUBLE PRECISION,
     yrr_yelp_import_pk INT NOT NULL,
-    PRIMARY KEY (yrr_id),
+    PRIMARY KEY (yrr_id, yrr_yelp_import_pk),
     CONSTRAINT fk_yrr_yelp_import_pk
         FOREIGN KEY (yrr_yelp_import_pk)
             REFERENCES core.yelpImports (pk)
@@ -47,14 +47,14 @@ CREATE TABLE core.yelpReviewsRaw
 
 CREATE TABLE core.yelpUsersRaw
 (
-    yur_id             INT NOT NULL GENERATED ALWAYS AS IDENTITY,
+    yur_id             VARCHAR(255) NOT NULL,
     createdAt          TIMESTAMP NOT NULL,
     updatedAt          TIMESTAMP NOT NULL,
     yur_name           VARCHAR(255),
     yur_reviewCount    INTEGER,
     yur_yelpingSince   VARCHAR(255),
     yur_yelp_import_pk INT NOT NULL,
-    PRIMARY KEY (yur_id),
+    PRIMARY KEY (yur_id, yur_yelp_import_pk),
     CONSTRAINT fk_yur_yelp_import_pk
         FOREIGN KEY (yur_yelp_import_pk)
             REFERENCES core.yelpImports (pk)

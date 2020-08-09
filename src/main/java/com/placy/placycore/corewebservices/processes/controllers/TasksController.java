@@ -44,14 +44,14 @@ public class TasksController {
 
     @RequestMapping(path = "/tasks", method = RequestMethod.GET)
     public List<TaskDto> getTasks() {
-        List<TaskModel> allTasks = tasksService.getAllTasks();
+        List<TaskModel> allTasks = tasksService.getAllTasksFromLastImport();
 
         return taskModelToDtoMapper.mapAll(allTasks);
     }
 
     @RequestMapping(path = "/tasks/{code}", method = RequestMethod.GET)
     public TaskDto getTaskByCode(@PathVariable(name = "code") String code) {
-        Optional<TaskModel> taskByCodeOptional = tasksService.getTaskByCodeOptional(code);
+        Optional<TaskModel> taskByCodeOptional = tasksService.getLastTaskByCodeOptional(code);
 
         return taskModelToDtoMapper.map(
             taskByCodeOptional.orElseThrow(() ->

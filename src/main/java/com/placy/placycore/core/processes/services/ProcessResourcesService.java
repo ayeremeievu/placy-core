@@ -3,12 +3,13 @@ package com.placy.placycore.core.processes.services;
 import com.placy.placycore.core.processes.loaders.ProcessLoader;
 import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.model.ProcessResourceModel;
+import com.placy.placycore.core.processes.model.ResourceImportModel;
 import com.placy.placycore.core.processes.repository.ProcessResourcesRepository;
-import com.placy.placycore.core.startuphooks.hooks.ProcessDefinitionsProcessorHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class ProcessResourcesService {
     }
 
     public List<ProcessResourceModel> getAllUnprocessedProcessResources() {
-        return processResourcesRepository.getAllByProcessNull();
+        return processResourcesRepository.getAllProcessesToProcess();
     }
 
     public List<ProcessResourceModel> processResources(List<ProcessResourceModel> resourceModels) {
@@ -54,14 +55,22 @@ public class ProcessResourcesService {
 
     public ProcessResourceModel processResource(ProcessResourceModel processResourceModel) {
         LOG.info("Processing process : " + processResourceModel.getResourceName());
-        String resourceValue = processResourceModel.getResourceValue();
+        String resourceContent = processResourceModel.getResourceContent();
 
-        ProcessModel processModel = processLoader.loadProcess(resourceValue);
+        ProcessModel processToSave;
 
-        processesService.save(processModel);
+        if(processResourceModel.getProcess() != null) {
+            processToSave = processResourceModel.getProcess();
+        } else {
+            processToSave = new ProcessModel();
+            processResourceModel.setProcess(processToSave);
+        }
 
-        processResourceModel.setProcess(processModel);
+        ProcessModel loadedProcessModel = processLoader.loadProcess(resourceContent, processToSave);
 
+        processesService.save(loadedProcessModel);
+
+        processResourceModel.setLatestDateProcessed(new Date());
         save(processResourceModel);
 
         return processResourceModel;
@@ -69,6 +78,10 @@ public class ProcessResourcesService {
 
     public List<ProcessResourceModel> getAllResources() {
         return processResourcesRepository.findAll();
+    }
+
+    public List<ProcessResourceModel> getAllResourcesByImport(ResourceImportModel resourceImportModel) {
+        return processResourcesRepository.getAllByResourceImport(resourceImportModel);
     }
 
     public void removeAll(List<ProcessResourceModel> processResourceModels) {

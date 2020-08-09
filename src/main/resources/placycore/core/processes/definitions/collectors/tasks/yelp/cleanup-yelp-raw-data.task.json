@@ -1,0 +1,5 @@
+{
+  "code": "cleanup-yelp-raw-data-task",
+  "name": "Clean up Yelp Raw Data",
+  "runnerBean": "cleanupYelpRawDataExecutable"
+}

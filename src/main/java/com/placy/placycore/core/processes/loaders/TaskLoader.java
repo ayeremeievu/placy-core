@@ -22,9 +22,7 @@ public class TaskLoader {
     @Autowired
     private TaskDefinitionToModelPopulator taskDefinitionToModelPopulator;
 
-    public TaskModel loadProcess(String resourceValue) {
-        TaskModel taskModel = new TaskModel();
-
+    public TaskModel loadProcess(String resourceValue, TaskModel taskModel) {
         try {
             TaskDefinition taskDefinition = taskReader.readTask(resourceValue);
 

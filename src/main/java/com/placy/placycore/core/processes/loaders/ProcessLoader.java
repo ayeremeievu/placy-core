@@ -22,9 +22,7 @@ public class ProcessLoader {
     @Autowired
     private ProcessDefinitionToModelPopulator processDefinitionToModelPopulator;
 
-    public ProcessModel loadProcess(String resourceValue) {
-        ProcessModel processModel = new ProcessModel();
-
+    public ProcessModel loadProcess(String resourceValue, ProcessModel processModel) {
         try {
             ProcessDefinition processDefinition = processReader.readProcess(resourceValue);
 

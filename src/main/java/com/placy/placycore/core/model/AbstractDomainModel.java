@@ -32,12 +32,9 @@ public abstract class AbstractDomainModel<T> {
     @LastModifiedDate
     private Date updatedAt;
 
-    @PrePersist
-    public void init() {
-        if(createdAt == null) {
-            createdAt = new Date();
-            updatedAt = new Date();
-        }
+    public AbstractDomainModel () {
+        createdAt = new Date();
+        updatedAt = new Date();
     }
 
     @PreUpdate

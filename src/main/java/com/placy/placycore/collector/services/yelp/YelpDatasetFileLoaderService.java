@@ -1,7 +1,6 @@
-package com.placy.placycore.collector.services;
+package com.placy.placycore.collector.services.yelp;
 
 import com.placy.placycore.collector.context.DataLoaderContext;
-import eu.bitm.NominatimReverseGeocoding.NominatimReverseGeocodingJAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,7 @@ public class YelpDatasetFileLoaderService {
             while ((line = br.readLine()) != null) {
                 processor.accept(line);
 
-                if(i % CHUNK_SIZE == 0) {
+                if(i != 0 && i % CHUNK_SIZE == 0) {
                     LOG.info("{} of objects from {} are processed.", i, filename);
                 }
 
@@ -43,6 +42,8 @@ public class YelpDatasetFileLoaderService {
         } catch (IOException ex) {
             LOG.error("Error occurred during parsing file {} ", yelpFeedFilePath, ex);
         }
+
+        LOG.info("File loading finished. {} of objects from {} are processed.", i, filename);
     }
 
     private String getYelpFeedFolderPath() {

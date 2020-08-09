@@ -1,4 +1,4 @@
-package com.placy.placycore.collector.services;
+package com.placy.placycore.collector.services.yelp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ public class YelpPlacesCollectorService {
     private YelpDatasetFileProcessorService yelpDatasetFileProcessorService;
 
     public void collect() {
-        yelpDatasetFileProcessorService.processFile();
+        yelpDatasetFileProcessorService.processFiles();
     }
 
 }

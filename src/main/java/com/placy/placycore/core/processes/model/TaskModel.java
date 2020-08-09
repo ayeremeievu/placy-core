@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -30,6 +31,9 @@ public class TaskModel extends UuidDomainModel {
 
     @Column(name = "t_name", nullable = true)
     private String name;
+
+    @OneToOne(mappedBy = "task")
+    private TaskResourceModel taskResource;
 
     @Column(name = "t_runnerBean", nullable = false)
     private String runnerBean;
@@ -54,6 +58,14 @@ public class TaskModel extends UuidDomainModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public TaskResourceModel getTaskResource() {
+        return taskResource;
+    }
+
+    public void setTaskResource(TaskResourceModel taskResourceModel) {
+        this.taskResource = taskResourceModel;
     }
 
     public String getRunnerBean() {

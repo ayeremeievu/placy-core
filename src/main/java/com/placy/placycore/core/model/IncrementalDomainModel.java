@@ -18,7 +18,7 @@ public class IncrementalDomainModel extends AbstractDomainModel<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "pk", nullable = false)
     private Integer pk;
 
     public IncrementalDomainModel() {

@@ -13,6 +13,7 @@ import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.model.ProcessParameterModel;
 import com.placy.placycore.core.processes.model.ProcessParameterValueModel;
 import com.placy.placycore.core.processes.model.ProcessStepInstanceModel;
+import com.placy.placycore.core.processes.model.ResourceImportModel;
 import com.placy.placycore.core.processes.model.TaskInstanceModel;
 import com.placy.placycore.core.processes.model.TaskParameterModel;
 import com.placy.placycore.core.processes.model.TaskParameterValueModel;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +35,9 @@ import java.util.Optional;
 @Component
 public class ProcessesService {
     private final Logger LOG = LoggerFactory.getLogger(ProcessesService.class);
+
+    @Autowired
+    private ResourceImportService resourceImportService;
 
     @Autowired
     private ProcessesRepository processesRepository;
@@ -56,18 +61,36 @@ public class ProcessesService {
         processesRepository.save(processModel);
     }
 
-    public Optional<ProcessModel> getProcessByCodeOptional(String code) {
-        return processesRepository.getFirstByCode(code);
+    public Optional<ProcessModel> getLastProcessByCodeOptional(String code) {
+        Optional<ResourceImportModel> lastResourceImport = resourceImportService.getLastResourceImport();
+
+        if(lastResourceImport.isPresent()) {
+            ResourceImportModel resourceImportModel = lastResourceImport.get();
+
+            Integer version = resourceImportModel.getVersion();
+            return processesRepository.getFirstByCodeAndProcessResourceResourceImportVersion(code, version);
+        }
+
+        return Optional.empty();
     }
 
-    public List<ProcessModel> getProcesses() {
-        return processesRepository.findAll();
+    public List<ProcessModel> getAllLastProcesses() {
+        Optional<ResourceImportModel> lastResourceImport = resourceImportService.getLastResourceImport();
+
+        if(lastResourceImport.isPresent()) {
+            ResourceImportModel resourceImportModel = lastResourceImport.get();
+
+            Integer version = resourceImportModel.getVersion();
+            return processesRepository.getAllByProcessResourceResourceImportVersion(version);
+        }
+
+        return new ArrayList<>();
     }
 
     public void startProcess(RunProcessData runProcessData) {
         String processCode = runProcessData.getProcessCode();
 
-        ProcessModel processModel = processesRepository.getFirstByCode(processCode)
+        ProcessModel processModel = getLastProcessByCodeOptional(processCode)
                                              .orElseThrow(() -> new ProcessNotFoundException(processCode));
 
         ProcessInstanceModel processInstanceModel = new ProcessInstanceModel();

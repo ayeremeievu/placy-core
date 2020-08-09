@@ -36,7 +36,7 @@ public class DeleteOrphanProcesses implements PostStartupHook {
     }
 
     private void cleanOrphanProcesses() {
-        List<ProcessModel> processes = processesService.getProcesses();
+        List<ProcessModel> processes = processesService.getAllLastProcesses();
 
         List<ProcessModel> orphanProcesses = processes.stream()
                                                       .filter(this::doesntExistsResource)

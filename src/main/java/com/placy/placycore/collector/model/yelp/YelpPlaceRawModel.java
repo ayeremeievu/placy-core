@@ -3,6 +3,7 @@ package com.placy.placycore.collector.model.yelp;
 import com.placy.placycore.core.model.AbstractDomainModel;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -14,11 +15,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "yelpPlacesRaw")
-public class YelpPlaceRawModel extends AbstractDomainModel<String> {
+public class YelpPlaceRawModel extends AbstractDomainModel<YelpPlaceRawId> {
 
-    @Id
-    @Column(name = "ypr_id")
-    private String id;
+    @EmbeddedId
+    private YelpPlaceRawId id;
 
     @Column(name = "ypr_name")
     private String name;
@@ -47,21 +47,17 @@ public class YelpPlaceRawModel extends AbstractDomainModel<String> {
     @Column(name = "ypr_reviewCount")
     private double reviewCount;
 
-    @ManyToOne
-    @JoinColumn(name = "ypr_yelp_import_pk", nullable = false)
-    private YelpImportModel yelpImport;
-
     @Override
-    public String getPk() {
+    public YelpPlaceRawId getPk() {
         return id;
     }
 
-    public String getId() {
-        return id;
+    public YelpPlaceRawModel() {
+        id = new YelpPlaceRawId();
     }
 
-    public void setId(String businessId) {
-        this.id = businessId;
+    public void setId(String id) {
+        this.id.setId(id);
     }
 
     public String getName() {
@@ -137,10 +133,10 @@ public class YelpPlaceRawModel extends AbstractDomainModel<String> {
     }
 
     public YelpImportModel getYelpImport() {
-        return yelpImport;
+        return id.getYelpImport();
     }
 
     public void setYelpImport(YelpImportModel yelpImportModel) {
-        this.yelpImport = yelpImportModel;
+        id.setYelpImport(yelpImportModel);
     }
 }

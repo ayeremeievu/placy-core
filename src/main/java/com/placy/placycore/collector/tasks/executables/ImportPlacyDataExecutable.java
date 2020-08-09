@@ -1,6 +1,5 @@
 package com.placy.placycore.collector.tasks.executables;
 
-import com.placy.placycore.collector.services.YelpPlacesCollectorService;
 import com.placy.placycore.core.processes.executable.ExecutableBean;
 import org.springframework.stereotype.Component;
 

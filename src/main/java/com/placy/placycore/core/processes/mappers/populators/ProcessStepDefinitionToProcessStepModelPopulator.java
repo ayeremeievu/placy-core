@@ -51,7 +51,7 @@ public class ProcessStepDefinitionToProcessStepModelPopulator implements Populat
         ProcessStepDefinition processStepDefinition = processStepDefinitionInfo.getProcessStepDefinition();
         String taskCode = processStepDefinition.getTaskCode();
 
-        return tasksService.getTaskByCodeOptional(taskCode)
+        return tasksService.getLastTaskByCodeOptional(taskCode)
                            .orElseThrow(() -> new TaskNotFoundException(taskCode));
     }
 

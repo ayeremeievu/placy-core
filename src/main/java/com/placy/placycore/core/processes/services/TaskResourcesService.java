@@ -2,7 +2,8 @@ package com.placy.placycore.core.processes.services;
 
 import com.placy.placycore.core.processes.loaders.TaskLoader;
 import com.placy.placycore.core.processes.model.ProcessModel;
-import com.placy.placycore.core.processes.model.ProcessResourceModel;
+import com.placy.placycore.core.processes.model.ResourceImportModel;
+import com.placy.placycore.core.processes.model.ResourceImportResultEnum;
 import com.placy.placycore.core.processes.model.TaskModel;
 import com.placy.placycore.core.processes.model.TaskResourceModel;
 import com.placy.placycore.core.processes.repository.TaskResourcesRepository;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +23,9 @@ public class TaskResourcesService {
 
     @Autowired
     private TaskResourcesRepository taskResourcesRepository;
+
+    @Autowired
+    private ResourceImportService resourceImportService;
 
     @Autowired
     private TasksService tasksService;
@@ -44,10 +49,6 @@ public class TaskResourcesService {
         return taskResourcesRepository.findFirstByTask(taskModel);
     }
 
-    public List<TaskResourceModel> getAllUnprocessedTasks() {
-        return taskResourcesRepository.findAllByTaskNull();
-    }
-
     public Object processAll(List<TaskResourceModel> taskResources) {
         for (TaskResourceModel task : taskResources) {
             process(task);
@@ -57,19 +58,31 @@ public class TaskResourcesService {
 
     private TaskResourceModel process(TaskResourceModel taskResource) {
         LOG.info("Processing task : " + taskResource.getResourceName());
-        String resourceValue = taskResource.getResourceValue();
+        String resourceContent = taskResource.getResourceContent();
 
-        TaskModel taskModel = taskLoader.loadProcess(resourceValue);
+        TaskModel taskToSave;
 
-        tasksService.save(taskModel);
+        if(taskResource.getTask() != null) {
+            taskToSave = taskResource.getTask();
+        } else {
+            taskToSave = new TaskModel();
+            taskResource.setTask(taskToSave);
+        }
 
-        taskResource.setTask(taskModel);
+        TaskModel loadedTask = taskLoader.loadProcess(resourceContent, taskToSave);
 
+        tasksService.save(loadedTask);
+
+        taskResource.setLatestDateProcessed(new Date());
         save(taskResource);
 
         LOG.info("Task resource with path : {} processsed", taskResource.getResourceName());
 
         return taskResource;
+    }
+
+    public List<TaskResourceModel> getAllResourcesByImport(ResourceImportModel resourceImportModel) {
+        return taskResourcesRepository.findAllByResourceImport(resourceImportModel);
     }
 
     public List<TaskResourceModel> getAllResources() {
@@ -83,4 +96,5 @@ public class TaskResourcesService {
     public void flush() {
         taskResourcesRepository.flush();
     }
+
 }

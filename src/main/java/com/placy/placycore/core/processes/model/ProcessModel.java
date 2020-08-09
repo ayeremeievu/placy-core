@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -30,6 +31,9 @@ public class ProcessModel extends UuidDomainModel {
 
     @Column(name = "p_name", nullable = true)
     private String name;
+
+    @OneToOne(mappedBy = "process")
+    private ProcessResourceModel processResource;
 
     @OneToMany(mappedBy = "process", cascade = CascadeType.ALL)
     @OrderBy("order")
@@ -55,6 +59,14 @@ public class ProcessModel extends UuidDomainModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ProcessResourceModel getProcessResource() {
+        return processResource;
+    }
+
+    public void setProcessResource(ProcessResourceModel processResourceModel) {
+        this.processResource = processResourceModel;
     }
 
     public List<ProcessStepModel> getProcessSteps() {

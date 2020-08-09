@@ -36,7 +36,11 @@ public class TaskDefinitionToModelPopulator implements Populator<TaskDefinition,
         }
 
         params.stream().map(paramDefinition -> {
-            TaskParameterModel parameterModel = new TaskParameterModel();
+            TaskParameterModel parameterModel = findParam(taskModel, paramDefinition.getCode());
+
+            if(parameterModel == null) {
+                parameterModel = new TaskParameterModel();
+            }
 
             paramDefinitionToTaskParamModelPopulator.populate(paramDefinition, parameterModel);
 
@@ -45,5 +49,21 @@ public class TaskDefinitionToModelPopulator implements Populator<TaskDefinition,
             return parameterModel;
         }).forEach(taskParameters::add);
         return taskParameters;
+    }
+
+    private TaskParameterModel findParam(TaskModel taskModel, String code) {
+        TaskParameterModel result = null;
+
+        List<TaskParameterModel> params = taskModel.getParams();
+
+        if(params != null) {
+            for (TaskParameterModel param : params) {
+                if(param.getCode().equals(code)) {
+                    result = param;
+                }
+            }
+        }
+
+        return result;
     }
 }

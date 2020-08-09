@@ -8,6 +8,8 @@ import com.placy.placycore.core.processes.data.ProcessStepDefinitionInfo;
 import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.model.ProcessParameterModel;
 import com.placy.placycore.core.processes.model.ProcessStepModel;
+import com.placy.placycore.core.processes.model.TaskModel;
+import com.placy.placycore.core.processes.model.TaskParameterModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +48,7 @@ public class ProcessDefinitionToModelPopulator implements Populator<ProcessDefin
 
             processSteps.add(
                 convertIntoProcessStepModel(
+                    processModel,
                     new ProcessStepDefinitionInfo(processStepDefinition, i, processModel)
                 )
             );
@@ -54,12 +57,34 @@ public class ProcessDefinitionToModelPopulator implements Populator<ProcessDefin
         return processSteps;
     }
 
-    private ProcessStepModel convertIntoProcessStepModel(ProcessStepDefinitionInfo processStepDefinitionInfo) {
-        ProcessStepModel processStepModel = new ProcessStepModel();
+    private ProcessStepModel convertIntoProcessStepModel(ProcessModel processModel,
+                                                         ProcessStepDefinitionInfo processStepDefinitionInfo) {
+        ProcessStepModel processStepModel = findProcessStep(processModel, processStepDefinitionInfo);
+
+        if(processStepModel == null) {
+            processStepModel = new ProcessStepModel();
+        }
 
         processStepDefinitionToProcessStepModelPopulator.populate(processStepDefinitionInfo, processStepModel);
 
         return processStepModel;
+    }
+
+    private ProcessStepModel findProcessStep(ProcessModel processModel,
+                                             ProcessStepDefinitionInfo processStepDefinitionInfo) {
+        ProcessStepModel result = null;
+
+        List<ProcessStepModel> processSteps = processModel.getProcessSteps();
+
+        if(processSteps != null ) {
+            for (ProcessStepModel processStep : processSteps) {
+                if(processStep.getCode().equals(processStepDefinitionInfo.getProcessStepDefinition().getCode())) {
+                    result = processStep;
+                }
+            }
+        }
+
+        return result;
     }
 
     private List<ProcessParameterModel> getProcessParameters(ProcessDefinition processDefinition, ProcessModel processModel) {
@@ -71,7 +96,11 @@ public class ProcessDefinitionToModelPopulator implements Populator<ProcessDefin
         }
 
         params.stream().map(paramDefinition -> {
-            ProcessParameterModel parameterModel = new ProcessParameterModel();
+            ProcessParameterModel parameterModel = findParam(processModel, paramDefinition.getCode());
+
+            if(parameterModel == null) {
+                parameterModel = new ProcessParameterModel();
+            }
 
             paramDefinitionToTaskParamModelPopulator.populate(paramDefinition, parameterModel);
 
@@ -81,5 +110,21 @@ public class ProcessDefinitionToModelPopulator implements Populator<ProcessDefin
         }).forEach(processParameters::add);
 
         return processParameters;
+    }
+
+    private ProcessParameterModel findParam(ProcessModel processModel, String code) {
+        ProcessParameterModel result = null;
+
+        List<ProcessParameterModel> params = processModel.getParams();
+
+        if(params != null) {
+            for (ProcessParameterModel param : params) {
+                if(param.getCode().equals(code)) {
+                    result = param;
+                }
+            }
+        }
+
+        return result;
     }
 }

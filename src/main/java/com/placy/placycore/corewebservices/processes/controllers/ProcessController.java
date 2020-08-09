@@ -3,13 +3,11 @@ package com.placy.placycore.corewebservices.processes.controllers;
 import com.placy.placycore.core.processes.data.ProcessInstanceData;
 import com.placy.placycore.core.processes.data.RunProcessData;
 import com.placy.placycore.core.processes.model.ProcessModel;
-import com.placy.placycore.core.processes.model.TaskModel;
 import com.placy.placycore.core.processes.services.ProcessesService;
 import com.placy.placycore.corewebservices.constants.CorewebservicesRouteConstants;
 import com.placy.placycore.corewebservices.processes.dto.ProcessDto;
 import com.placy.placycore.corewebservices.processes.dto.ProcessInstanceDto;
 import com.placy.placycore.corewebservices.processes.dto.RunProcessDto;
-import com.placy.placycore.corewebservices.processes.dto.TaskDto;
 import com.placy.placycore.corewebservices.processes.mappers.ProcessInstanceMapper;
 import com.placy.placycore.corewebservices.processes.mappers.ProcessModelToDtoMapper;
 import com.placy.placycore.corewebservices.processes.mappers.RunProcessMapper;
@@ -47,14 +45,14 @@ public class ProcessController {
 
     @RequestMapping(path = "/processes")
     public List<ProcessDto> getProcesses() {
-        List<ProcessModel> processes = processesService.getProcesses();
+        List<ProcessModel> processes = processesService.getAllLastProcesses();
 
         return processModelToDtoMapper.mapAll(processes);
     }
 
     @RequestMapping(path = "/processes/{code}", method = RequestMethod.GET)
     public ProcessDto getProcessByCode(@PathVariable(name = "code") String code) {
-        Optional<ProcessModel> processByCodeOptional = processesService.getProcessByCodeOptional(code);
+        Optional<ProcessModel> processByCodeOptional = processesService.getLastProcessByCodeOptional(code);
 
         return processModelToDtoMapper.map(
             processByCodeOptional.orElseThrow(() ->

@@ -37,7 +37,7 @@ public class DeleteOrphanTasks implements PostStartupHook {
     }
 
     private void cleanOrphanTasks() {
-        List<TaskModel> tasks = tasksService.getAllTasks();
+        List<TaskModel> tasks = tasksService.getAllTasksFromLastImport();
 
         List<TaskModel> orphanTasks = tasks.stream()
                                            .filter(this::doesntExistsResource)

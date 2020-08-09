@@ -76,9 +76,9 @@ create table core.processResources (
                                        pk varchar(255) not null,
                                        createdAt timestamp not null,
                                        updatedAt timestamp not null,
-                                       pr_resource_name varchar(255) not null,
-                                       pr_resource_value text not null,
-                                       pr_resource_checksum varchar(255) not null,
+                                       r_resource_name varchar(255) not null,
+                                       r_resource_content text not null,
+                                       r_resource_checksum varchar(255) not null,
                                        pr_process_pk varchar(255),
                                        primary key (pk)
 );
@@ -135,9 +135,9 @@ create table core.taskResources (
                                     pk varchar(255) not null,
                                     createdAt timestamp not null,
                                     updatedAt timestamp not null,
-                                    tr_resource_name varchar(255) not null,
-                                    tr_resource_value text not null,
-                                    tr_resource_checksum varchar(255) not null,
+                                    r_resource_name varchar(255) not null,
+                                    r_resource_content text not null,
+                                    r_resource_checksum varchar(255) not null,
                                     tr_task_pk varchar(255),
                                     primary key (pk)
 );

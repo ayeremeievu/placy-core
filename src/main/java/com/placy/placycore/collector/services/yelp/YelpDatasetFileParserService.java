@@ -1,4 +1,4 @@
-package com.placy.placycore.collector.services;
+package com.placy.placycore.collector.services.yelp;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
