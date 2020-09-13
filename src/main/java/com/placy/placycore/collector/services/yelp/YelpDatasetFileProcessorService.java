@@ -11,7 +11,6 @@ import com.placy.placycore.collector.model.yelp.YelpImportStatusEnum;
 import com.placy.placycore.collector.model.yelp.YelpPlaceRawModel;
 import com.placy.placycore.collector.model.yelp.YelpReviewRawModel;
 import com.placy.placycore.collector.model.yelp.YelpUserRawModel;
-import com.placy.placycore.collector.repository.yelp.YelpImportRepository;
 import com.placy.placycore.collector.repository.yelp.YelpPlaceRawRepository;
 import com.placy.placycore.collector.repository.yelp.YelpReviewRawRepository;
 import com.placy.placycore.collector.repository.yelp.YelpUserRawRepository;
@@ -60,7 +59,7 @@ public class YelpDatasetFileProcessorService {
     public void processFiles() {
         YelpImportModel yelpImportModel = new YelpImportModel();
 
-        yelpImportModel.setStatus(YelpImportStatusEnum.RUNNING);
+        yelpImportModel.setStatus(YelpImportStatusEnum.IMPORTING);
         yelpImportModel.setStartDate(new Date());
         yelpImportModel = yelpImportService.save(yelpImportModel);
 
@@ -68,7 +67,7 @@ public class YelpDatasetFileProcessorService {
         processReviewsFiles(YELP_REVIEWS_FILENAME, yelpImportModel);
         processUsersFiles(YELP_USERS_FILENAME, yelpImportModel);
 
-        yelpImportModel.setStatus(YelpImportStatusEnum.FINISHED);
+        yelpImportModel.setStatus(YelpImportStatusEnum.FINISHED_IMPORTING);
         yelpImportModel.setFinishDate(new Date());
         yelpImportService.save(yelpImportModel);
     }

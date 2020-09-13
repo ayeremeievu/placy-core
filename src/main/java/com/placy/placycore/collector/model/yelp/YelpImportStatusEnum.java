@@ -5,6 +5,9 @@ package com.placy.placycore.collector.model.yelp;
  */
 public enum YelpImportStatusEnum {
     NOT_STARTED,
-    RUNNING,
+    IMPORTING,
+    FINISHED_IMPORTING,
+    SAVING,
+    FINISHED_SAVING,
     FINISHED
 }

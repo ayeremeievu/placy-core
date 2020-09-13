@@ -62,6 +62,7 @@ public class TaskRunner implements Runnable {
         );
 
         taskInstanceModel.setStatus(TaskInstanceStatusEnum.RUNNING);
+        tasksService.save(taskInstanceModel);
 
         try {
             executableBean.execute(params);

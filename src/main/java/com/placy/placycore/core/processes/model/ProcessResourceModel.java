@@ -4,13 +4,7 @@ import com.placy.placycore.core.model.UuidDomainModel;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 /**
  * @author a.yeremeiev@netconomy.net
@@ -18,7 +12,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "processResources")
 public class ProcessResourceModel extends ResourceModel {
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pr_process_pk", unique = true)
     private ProcessModel process;
 

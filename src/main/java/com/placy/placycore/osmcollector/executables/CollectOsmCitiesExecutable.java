@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -75,6 +76,12 @@ public class CollectOsmCitiesExecutable implements ExecutableBean {
                 .collect(Collectors.toList());
 
             cityService.saveAll(citiesToSave);
+
+            try {
+                TimeUnit.MINUTES.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             LOG.info("Returned {} cities from Overpass for division {}. New {} cities are added",
                      overpassCitiesResponses.size(),

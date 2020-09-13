@@ -19,7 +19,7 @@ public class CleanupYelpRawDataExecutable implements ExecutableBean {
 
     @Override
     public Object execute(Map<String, Object> params) {
-        yelpImportService.removeAllYelpImportsWithStatus(YelpImportStatusEnum.FINISHED);
+        yelpImportService.removeAllYelpImportsWithStatus(YelpImportStatusEnum.FINISHED_IMPORTING);
 
         return null;
     }

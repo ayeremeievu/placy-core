@@ -4,10 +4,7 @@ import com.placy.placycore.core.processes.model.ProcessResourceModel;
 import com.placy.placycore.core.processes.model.ResourceImportModel;
 import com.placy.placycore.core.processes.model.ResourceImportResultEnum;
 import com.placy.placycore.core.processes.model.TaskResourceModel;
-import com.placy.placycore.core.processes.services.ProcessResourcesService;
-import com.placy.placycore.core.processes.services.ResourceImportService;
-import com.placy.placycore.core.processes.services.TaskResourcesService;
-import com.placy.placycore.core.processes.services.TasksService;
+import com.placy.placycore.core.processes.services.*;
 import com.placy.placycore.core.startuphooks.PostStartupHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +26,7 @@ public class ResourceDefinitionsProcessorHook implements PostStartupHook {
     private ResourceImportService resourceImportService;
 
     @Autowired
-    private TaskResourcesService taskResourcesService;
-
-    @Autowired
-    private TasksService tasksService;
-
-    @Autowired
-    private ProcessResourcesService processResourcesService;
+    private ResourceProcessorService resourceProcessorService;
 
     @Override
     public Object run(ApplicationContext applicationContext) {
@@ -58,9 +49,11 @@ public class ResourceDefinitionsProcessorHook implements PostStartupHook {
 
     public void processResources(ResourceImportModel resourceImportModel) {
         try {
-            doProcessResources(resourceImportModel);
+            resourceProcessorService.processResources(resourceImportModel);
 
             resourceImportModel.setResult(ResourceImportResultEnum.SUCCESS);
+
+            resourceImportService.save(resourceImportModel);
         } catch (Exception ex) {
             LOG.error("Error occurred during process of resourceImportModel with version '{}'", resourceImportModel.getVersion(), ex);
 
@@ -70,18 +63,5 @@ public class ResourceDefinitionsProcessorHook implements PostStartupHook {
         }
     }
 
-    public void doProcessResources(ResourceImportModel resourceImportModel) {
-        processTasks(resourceImportModel);
-        processProcesses(resourceImportModel);
-    }
 
-    public void processProcesses(ResourceImportModel resourceImportModel) {
-        List<ProcessResourceModel> processResources = processResourcesService.getAllResourcesByImport(resourceImportModel);
-        processResourcesService.processResources(processResources);
-    }
-
-    public void processTasks(ResourceImportModel resourceImportModel) {
-        List<TaskResourceModel> taskResources = taskResourcesService.getAllResourcesByImport(resourceImportModel);
-        taskResourcesService.processAll(taskResources);
-    }
 }
