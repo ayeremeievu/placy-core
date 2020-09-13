@@ -1,8 +1,8 @@
 package com.placy.placycore.collector.tasks.executables;
 
-import com.placy.placycore.collector.model.yelp.YelpImportModel;
-import com.placy.placycore.collector.model.yelp.YelpImportStatusEnum;
+import com.placy.placycore.collector.model.yelp.*;
 import com.placy.placycore.collector.services.yelp.YelpImportService;
+import com.placy.placycore.collector.services.yelp.YelpRawDataService;
 import com.placy.placycore.core.processes.executable.ExecutableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +19,9 @@ public class SaveYelpDataExecutable implements ExecutableBean {
     @Autowired
     private YelpImportService yelpImportService;
 
+    @Autowired
+    private YelpRawDataService yelpRawDataService;
+
     @Override
     public Object execute(Map<String, Object> params) {
         List<YelpImportModel> yelpImportsToSave = yelpImportService
@@ -31,6 +34,8 @@ public class SaveYelpDataExecutable implements ExecutableBean {
     }
 
     private void saveYelpImport(YelpImportModel yelpImportModel) {
-
+        yelpRawDataService.saveUsers(yelpImportModel);
+        yelpRawDataService.savePlaces(yelpImportModel);
+        yelpRawDataService.saveReviews(yelpImportModel);
     }
 }
