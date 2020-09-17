@@ -1,7 +1,6 @@
 package com.placy.placycore.reviewscore.model;
 
 import com.placy.placycore.core.model.AddressModel;
-import com.placy.placycore.core.model.CityModel;
 import com.placy.placycore.core.model.OriginModel;
 import com.placy.placycore.core.model.UuidDomainModel;
 
@@ -35,7 +34,7 @@ public class PlaceModel extends UuidDomainModel {
     private String originCode;
 
     @ManyToMany(mappedBy = "places")
-    private List<CategoryModel> places;
+    private List<CategoryModel> categories;
 
     @OneToMany(mappedBy = "place")
     private List<ReviewModel> reviews;
@@ -99,12 +98,12 @@ public class PlaceModel extends UuidDomainModel {
         this.originCode = originCode;
     }
 
-    public List<CategoryModel> getPlaces() {
-        return places;
+    public List<CategoryModel> getCategories() {
+        return categories;
     }
 
-    public void setPlaces(List<CategoryModel> places) {
-        this.places = places;
+    public void setCategories(List<CategoryModel> categories) {
+        this.categories = categories;
     }
 
     public List<ReviewModel> getReviews() {

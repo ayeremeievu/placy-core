@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author ayeremeiev@netconomy.net
@@ -15,6 +16,10 @@ public class DivisionService {
 
     @Autowired
     private DivisionRepository divisionRepository;
+
+    public Optional<DivisionModel> getDivisionByCode(String code) {
+        return divisionRepository.findFirstByCode(code);
+    }
 
     public DivisionModel save(DivisionModel divisionModel) {
         return divisionRepository.save(divisionModel);
