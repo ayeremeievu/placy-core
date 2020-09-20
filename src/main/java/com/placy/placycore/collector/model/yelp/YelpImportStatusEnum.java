@@ -7,7 +7,9 @@ public enum YelpImportStatusEnum {
     NOT_STARTED,
     IMPORTING,
     FINISHED_IMPORTING,
+    ERROR_IMPORTING,
     SAVING,
     FINISHED_SAVING,
+    ERROR_SAVING,
     FINISHED
 }

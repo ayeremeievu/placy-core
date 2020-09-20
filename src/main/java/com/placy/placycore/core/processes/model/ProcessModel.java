@@ -20,9 +20,6 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "processes", indexes = {
         @Index(columnList = "p_code", name = "p_code_idx"),
-    },
-    uniqueConstraints = {
-       @UniqueConstraint(columnNames = "p_code", name = "p_code_unq_constraint")
     }
 )
 public class ProcessModel extends UuidDomainModel {

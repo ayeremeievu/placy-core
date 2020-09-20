@@ -27,7 +27,7 @@ public class PlaceModel extends UuidDomainModel {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "p_origin")
+    @JoinColumn(name = "p_origin_pk")
     private OriginModel origin;
 
     @Column(name = "p_originCode")

@@ -1,5 +1,22 @@
 {
   "code": "save-yelp-data-task",
   "name": "Save Yelp Data task",
-  "runnerBean": "saveYelpDataExecutable"
+  "runnerBean": "saveYelpDataExecutable",
+  "params" : [
+    {
+      "code" : "excludeUsers",
+      "defaultValue" : "false",
+      "required" : false
+    },
+    {
+      "code" : "excludePlaces",
+      "defaultValue" : "false",
+      "required" : false
+    },
+    {
+      "code" : "excludeReviews",
+      "defaultValue" : "false",
+      "required" : false
+    }
+  ]
 }

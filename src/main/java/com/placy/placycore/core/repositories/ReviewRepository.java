@@ -1,6 +1,7 @@
 package com.placy.placycore.core.repositories;
 
 import com.placy.placycore.core.model.OriginModel;
+import com.placy.placycore.core.model.UserModel;
 import com.placy.placycore.reviewscore.model.PlaceModel;
 import com.placy.placycore.reviewscore.model.ReviewModel;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewModel, String> {
     Optional<ReviewModel> findFirstByOriginAndOriginCode(OriginModel originModel, String originCode);
+
+    List<ReviewModel> findByOriginAndOriginCodeIn(OriginModel originModel, List<String> originCodes);
 }

@@ -33,7 +33,7 @@ public class CountryModel {
     @Column(name = "c_id", nullable = false)
     private Integer id;
 
-    @Column(name = "c_iso", nullable = false)
+    @Column(name = "c_iso", nullable = false, columnDefinition = " bpchar")
     private String iso;
 
     @Column(name = "c_name", nullable = false)
@@ -42,13 +42,13 @@ public class CountryModel {
     @Column(name = "c_nicename", nullable = false)
     private String nicename;
 
-    @Column(name = "c_iso3")
+    @Column(name = "c_iso3", columnDefinition = " bpchar")
     private String iso3;
 
     @OneToMany(mappedBy = "country")
     private List<DivisionModel> divisions;
 
-    @Column(name = "c_numcode")
+    @Column(name = "c_numcode", columnDefinition = " int2")
     private int numcode;
 
     @Column(name = "c_phonecode")

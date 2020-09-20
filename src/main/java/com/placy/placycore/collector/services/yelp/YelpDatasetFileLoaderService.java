@@ -20,12 +20,18 @@ public class YelpDatasetFileLoaderService {
 
     private static final String YELP_FEED_FOLDER_NAME = "yelp-feed";
 
-    private static final int CHUNK_SIZE = 100;
+    private static final int CHUNK_SIZE = 10000;
 
     public void loadFileLineByLine(String filename, Consumer<String> processor) {
         String yelpFeedFilePath = getYelpFeedFilePath(filename);
         LOG.info("Parsing : {}", yelpFeedFilePath);
 
+        int i = doLoadFileLineByLine(filename, processor, yelpFeedFilePath);
+
+        LOG.info("File loading finished. {} of objects from {} are processed.", i, filename);
+    }
+
+    private int doLoadFileLineByLine(String filename, Consumer<String> processor, String yelpFeedFilePath) {
         int i = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(yelpFeedFilePath))) {
@@ -42,8 +48,7 @@ public class YelpDatasetFileLoaderService {
         } catch (IOException ex) {
             LOG.error("Error occurred during parsing file {} ", yelpFeedFilePath, ex);
         }
-
-        LOG.info("File loading finished. {} of objects from {} are processed.", i, filename);
+        return i;
     }
 
     private String getYelpFeedFolderPath() {

@@ -12,4 +12,6 @@ import java.util.Optional;
 @Repository
 public interface PlaceRepository extends JpaRepository<PlaceModel, String> {
     Optional<PlaceModel> findFirstByOriginAndOriginCode(OriginModel originModel, String originCode);
+
+    List<PlaceModel> findByOriginAndOriginCodeIn(OriginModel originModel, List<String> originCodes);
 }

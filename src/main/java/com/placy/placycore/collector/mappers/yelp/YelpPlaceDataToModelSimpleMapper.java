@@ -24,7 +24,7 @@ public class YelpPlaceDataToModelSimpleMapper extends AbstractSimpleMapper<YelpP
         yelpPlaceRawModel.setLatitude(yelpPlaceJsonData.getLatitude());
         yelpPlaceRawModel.setLongitude(yelpPlaceJsonData.getLongitude());
         yelpPlaceRawModel.setStars(yelpPlaceJsonData.getStars());
-        yelpPlaceRawModel.setReviewCount(yelpPlaceJsonData.getReview_count());
+        yelpPlaceRawModel.setReviewCount(String.valueOf(yelpPlaceJsonData.getReview_count()));
 
         return yelpPlaceRawModel;
     }

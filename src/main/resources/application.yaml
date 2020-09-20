@@ -22,11 +22,11 @@ spring:
     properties:
       javax:
         persistence:
-          schema-generation:
-            scripts:
-              action: create
-              create-target : create.sql
-              create-source : metadata
+#          schema-generation:
+#            scripts:
+#              action: create
+#              create-target : create.sql
+#              create-source : metadata
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true

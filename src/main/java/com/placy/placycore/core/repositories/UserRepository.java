@@ -12,4 +12,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserModel, String> {
     Optional<UserModel> findFirstByOriginAndOriginCode(OriginModel originModel, String originCode);
+
+    List<UserModel> findByOriginAndOriginCodeIn(OriginModel originModel, List<String> originCodes);
 }

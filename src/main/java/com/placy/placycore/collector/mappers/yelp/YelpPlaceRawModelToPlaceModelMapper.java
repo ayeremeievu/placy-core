@@ -34,13 +34,17 @@ public class YelpPlaceRawModelToPlaceModelMapper extends AbstractSimpleMapper<Ye
      * */
     @Override
     public PlaceModel map(YelpPlaceRawModel yelpPlaceRawModel) {
+        long milisBeforeMap = System.currentTimeMillis();
         PlaceModel placeModel = new PlaceModel();
 
         String state = yelpPlaceRawModel.getState();
+
+        long milisBeforeDivision = System.currentTimeMillis();
         Optional<DivisionModel> division = divisionService.getDivisionByCode(state.trim());
+        long tookToFetchDivision = System.currentTimeMillis() - milisBeforeDivision;
 
         if(division.isEmpty()) {
-            LOG.warn("Yelp place with id '{}' has unknown state '{}'", yelpPlaceRawModel.getPk().getId(), state);
+//            LOG.debug("Yelp place with id '{}' has unknown division state '{}'", yelpPlaceRawModel.getPk().getId(), state);
             return null;
         }
 
@@ -48,24 +52,39 @@ public class YelpPlaceRawModelToPlaceModelMapper extends AbstractSimpleMapper<Ye
 
         String city = yelpPlaceRawModel.getCity();
 
+        long milisBeforeCity = System.currentTimeMillis();
         Optional<CityModel> cityByNameAndDivision = cityService.getCityByNameAndDivision(city.trim(), divisionModel);
+        long tookToFetchCity = System.currentTimeMillis() - milisBeforeCity;
 
         if(cityByNameAndDivision.isEmpty()) {
-            LOG.warn("Yelp place with id '{}' has unknown city '{}'", yelpPlaceRawModel.getPk().getId(), state);
+//            LOG.debug("Yelp place with id '{}' has unknown city '{}'", yelpPlaceRawModel.getPk().getId(), state);
             return null;
         }
 
+
+        long milisBeforeTheSimpleProperties = System.currentTimeMillis();
         CityModel cityModel = cityByNameAndDivision.get();
 
         populateSimplePlace(yelpPlaceRawModel, placeModel);
+        long tookToPopulateSimpleProperties = System.currentTimeMillis() - milisBeforeTheSimpleProperties;
 
+        long milisBeforeAddress = System.currentTimeMillis();
         populateAddress(placeModel, yelpPlaceRawModel, cityModel);
+        long tookToPopulateAddress = System.currentTimeMillis() - milisBeforeAddress;
+
+        long tookToMap = System.currentTimeMillis() - milisBeforeMap;
+
+        if(tookToMap > 50) {
+            LOG.info("Took to map in total {}. Took time to get division {} milis. " +
+                            "Took time to get city {} milis. Took to populate simple attributes {} milis. Took to populate address {} milis.",
+                    tookToMap, tookToFetchDivision, tookToFetchCity, tookToPopulateSimpleProperties, tookToPopulateAddress);
+        }
 
         return placeModel;
     }
 
     private void populateSimplePlace(YelpPlaceRawModel yelpPlaceRawModel, PlaceModel placeModel) {
-        OriginModel originModel = originService.getFirstByCodeMandatory(CollectorConstants.Yelp.ORIGIN_CODE);
+        OriginModel originModel = originService.geMandatoryByCodeCached(CollectorConstants.Yelp.ORIGIN_CODE);
 
         placeModel.setOrigin(originModel);
         placeModel.setName(yelpPlaceRawModel.getName());

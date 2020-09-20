@@ -7,6 +7,8 @@ import com.placy.placycore.core.services.AbstractModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +29,11 @@ public class YelpImportService extends AbstractModelService<YelpImportModel, Int
         List<YelpImportModel> yelpImports = getAllYelpImportsWithStatus(yelpImportStatusEnum);
 
         deleteAll(yelpImports);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public YelpImportModel saveAndFlushTransactional(YelpImportModel yelpImportModel) {
+        return saveAndFlush(yelpImportModel);
     }
 
     @Override

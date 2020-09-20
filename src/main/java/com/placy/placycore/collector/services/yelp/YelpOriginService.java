@@ -13,6 +13,6 @@ public class YelpOriginService {
     private OriginService originService;
 
     public OriginModel getYelpOrigin() {
-        return originService.getFirstByCodeMandatory(CollectorConstants.Yelp.ORIGIN_CODE);
+        return originService.geMandatoryByCodeCached(CollectorConstants.Yelp.ORIGIN_CODE);
     }
 }

@@ -20,9 +20,6 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "tasks", indexes = {
         @Index(columnList = "t_code", name = "t_code_idx"),
-    },
-    uniqueConstraints = {
-       @UniqueConstraint(columnNames = "t_code", name = "t_code_unq_constraint")
     }
 )
 public class TaskModel extends UuidDomainModel {

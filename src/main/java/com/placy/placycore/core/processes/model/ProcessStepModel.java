@@ -24,7 +24,8 @@ import javax.persistence.UniqueConstraint;
     },
         uniqueConstraints = {
             @UniqueConstraint(columnNames = "ps_code", name = "ps_code_unq_constraint"),
-            @UniqueConstraint(columnNames = {"ps_task_pk","ps_order"}, name = "ps_task_order_unq_constraint")
+            @UniqueConstraint(columnNames = {"ps_code", "ps_process_pk"}, name = "ps_code_process_pk_unq_constraint"),
+            @UniqueConstraint(columnNames = {"ps_task_pk", "ps_order"}, name = "ps_task_order_unq_constraint")
     })
 public class ProcessStepModel extends UuidDomainModel {
     @Column(name = "ps_code", nullable = false)

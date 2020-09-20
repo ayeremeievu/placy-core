@@ -23,7 +23,7 @@ import javax.persistence.UniqueConstraint;
            @Index(columnList = "pp_code", name = "pp_code_idx"),
        },
        uniqueConstraints = {
-           @UniqueConstraint(columnNames = "pp_code", name = "pp_code_unq_constraint")
+           @UniqueConstraint(columnNames = {"pp_code", "pp_process"}, name = "pp_code_process_unq_constraint")
        }
 )
 public class ProcessParameterModel extends UuidDomainModel {

@@ -16,6 +16,9 @@ import java.util.List;
 @Repository
 public interface YelpUserRawRepository extends JpaRepository<YelpUserRawModel, String> {
 
-    List<YelpUserRawModel> findAllByIdYelpImportOrderByCreatedAtDescGreaterThanEqualCreatedAt(
-            YelpImportModel yelpImportModel, Date startingFrom, Pageable pageable);
+    List<YelpUserRawModel> findAllByIdYelpImportAndIdIdGreaterThanOrderByIdId(
+            YelpImportModel yelpImportModel, String id, Pageable pageable);
+
+    List<YelpUserRawModel> findAllByIdYelpImportOrderByIdId(
+            YelpImportModel yelpImportModel, Pageable pageable);
 }

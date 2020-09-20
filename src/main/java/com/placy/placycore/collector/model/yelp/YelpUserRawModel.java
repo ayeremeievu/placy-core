@@ -1,6 +1,7 @@
 package com.placy.placycore.collector.model.yelp;
 
 import com.placy.placycore.core.model.AbstractDomainModel;
+import com.placy.placycore.core.model.Identifiable;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -15,7 +16,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "yelpUsersRaw")
-public class YelpUserRawModel extends AbstractDomainModel<YelpUserRawId> {
+public class YelpUserRawModel extends AbstractDomainModel<YelpUserRawId> implements Identifiable<String> {
     @EmbeddedId
     private YelpUserRawId id;
 
@@ -37,6 +38,7 @@ public class YelpUserRawModel extends AbstractDomainModel<YelpUserRawId> {
         this.id = new YelpUserRawId();
     }
 
+    @Override
     public String getId() {
         return this.id.getId();
     }

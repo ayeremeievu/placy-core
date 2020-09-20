@@ -1,6 +1,7 @@
 package com.placy.placycore.collector.model.yelp;
 
 import com.placy.placycore.core.model.AbstractDomainModel;
+import com.placy.placycore.core.model.Identifiable;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -15,7 +16,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "yelpPlacesRaw")
-public class YelpPlaceRawModel extends AbstractDomainModel<YelpPlaceRawId> {
+public class YelpPlaceRawModel extends AbstractDomainModel<YelpPlaceRawId> implements Identifiable<String>  {
 
     @EmbeddedId
     private YelpPlaceRawId id;
@@ -45,7 +46,7 @@ public class YelpPlaceRawModel extends AbstractDomainModel<YelpPlaceRawId> {
     private double stars;
 
     @Column(name = "ypr_reviewCount")
-    private double reviewCount;
+    private String reviewCount;
 
     @Override
     public YelpPlaceRawId getPk() {
@@ -124,11 +125,11 @@ public class YelpPlaceRawModel extends AbstractDomainModel<YelpPlaceRawId> {
         this.stars = stars;
     }
 
-    public double getReviewCount() {
+    public String getReviewCount() {
         return reviewCount;
     }
 
-    public void setReviewCount(double reviewCount) {
+    public void setReviewCount(String reviewCount) {
         this.reviewCount = reviewCount;
     }
 
@@ -138,5 +139,10 @@ public class YelpPlaceRawModel extends AbstractDomainModel<YelpPlaceRawId> {
 
     public void setYelpImport(YelpImportModel yelpImportModel) {
         id.setYelpImport(yelpImportModel);
+    }
+
+    @Override
+    public String getId() {
+        return id.getId();
     }
 }
