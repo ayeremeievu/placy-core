@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class UuidDomainModel extends AbstractDomainModel<String> {
+public class UuidDomainModel extends AbstractDomainModel<String> implements Identifiable<String> {
     @Id
     @Column(name = "pk")
     private String pk;
@@ -32,5 +32,10 @@ public class UuidDomainModel extends AbstractDomainModel<String> {
 
     public void setPk(String pk) {
         this.pk = pk;
+    }
+
+    @Override
+    public String getId() {
+        return pk;
     }
 }

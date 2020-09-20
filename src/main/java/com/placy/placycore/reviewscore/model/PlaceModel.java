@@ -1,6 +1,7 @@
 package com.placy.placycore.reviewscore.model;
 
 import com.placy.placycore.core.model.AddressModel;
+import com.placy.placycore.core.model.Identifiable;
 import com.placy.placycore.core.model.OriginModel;
 import com.placy.placycore.core.model.UuidDomainModel;
 

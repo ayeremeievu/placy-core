@@ -26,8 +26,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,6 +36,10 @@ public class YelpRawDataFacade {
     private static final Logger LOG = LoggerFactory.getLogger(YelpRawDataFacade.class);
 
     private static final int DEFAULT_PAGE_SIZE = 1000;
+
+    private static final int DEFAULT_PLACES_SIZE = 100;
+
+    private static final int THRESHOLD_TO_PROCESS_REVIEWS = 1000;
 
     @Autowired
     private YelpPlaceRawRepository yelpPlaceRawRepository;
@@ -69,14 +73,14 @@ public class YelpRawDataFacade {
 
     public void saveUsers(YelpImportModel yelpImportModel) {
         LOG.info("Starting processing users.");
-        Consumer<List<YelpUserRawModel>> processPageConsumer = this::processUsersPage;
+        Function<List<YelpUserRawModel>, Integer> processPageConsumer = this::processUsersPage;
         Function<String, List<YelpUserRawModel>> getNewPage = (id) -> getYelpUsersPage(yelpImportModel, id);
 
         processAllPages(processPageConsumer, getNewPage);
         LOG.info("Finished processing users.");
     }
 
-    private void processUsersPage(List<YelpUserRawModel> yelpUsersPage) {
+    private int processUsersPage(List<YelpUserRawModel> yelpUsersPage) {
         List<UserModel> userPage = new ArrayList<>();
 
         long startingMilis = System.currentTimeMillis();
@@ -108,7 +112,7 @@ public class YelpRawDataFacade {
         long tookToTimeToFilterDublicates = System.currentTimeMillis() - milisBeforeRemovingDublicates;
 
         long milisBeforeSave = System.currentTimeMillis();
-        userService.saveAllTransactional(usersToSave);
+        Collection<UserModel> savedUsers = userService.saveAllTransactional(usersToSave);
         long tookToTimeToActualSave = System.currentTimeMillis() - milisBeforeSave;
 
         long tookTime = System.currentTimeMillis() - startingMilis;
@@ -118,6 +122,8 @@ public class YelpRawDataFacade {
                         "Took to query origin {} milis. " +
                         "Took to map {} milis",
                 usersToSave.size(), tookTime, tookToTimeToActualSave, tookToTimeToFilterDublicates, tookToQueryOrigin, tookToMap);
+
+        return savedUsers.size();
     }
 
     private boolean containsUserWithCode(List<UserModel> existingUsersByCodes, UserModel userFromRawData) {
@@ -130,14 +136,14 @@ public class YelpRawDataFacade {
 
     public void savePlaces(YelpImportModel yelpImportModel) {
         LOG.info("Starting processing places.");
-        Consumer<List<YelpPlaceRawModel>> processPageConsumer = this::processPlacesPage;
+        Function<List<YelpPlaceRawModel>, Integer> processPageConsumer = this::processPlacesPage;
         Function<String, List<YelpPlaceRawModel>> getNewPage = (id) -> getYelpPlacesPage(yelpImportModel, id);
 
         processAllPages(processPageConsumer, getNewPage);
         LOG.info("Finished processing places.");
     }
 
-    private void processPlacesPage(List<YelpPlaceRawModel> placesPage) {
+    private int processPlacesPage(List<YelpPlaceRawModel> placesPage) {
         List<PlaceModel> places = new ArrayList<>();
 
         long milisBeforePrefilter = System.currentTimeMillis();
@@ -154,8 +160,10 @@ public class YelpRawDataFacade {
         }
         long tookTimeToMap = System.currentTimeMillis() - milisBeforeMap;
 
-        placeService.saveAllTransactional(places);
-        LOG.info("Saved {} new places. Took time to prefilter {} milis. Took time to map {} milis", places.size(), tookToPrefilter, tookTimeToMap);
+        Collection<PlaceModel> savedPlaces = placeService.saveAllTransactional(places);
+        LOG.info("Saved {} new places. Took time to prefilter {} milis. Took time to map {} milis", savedPlaces, tookToPrefilter, tookTimeToMap);
+
+        return savedPlaces.size();
     }
 
     private List<YelpPlaceRawModel> prefilterAlreadyProcessedPlaces(List<YelpPlaceRawModel> placesRawPage) {
@@ -181,38 +189,129 @@ public class YelpRawDataFacade {
 
     public void saveReviews(YelpImportModel yelpImportModel) {
         LOG.info("Starting processing reviews.");
-        Consumer<List<YelpReviewRawModel>> processPageConsumer = this::processReviewsPage;
-        Function<String, List<YelpReviewRawModel>> getNewPage = (id) -> getYelpReviewsPage(yelpImportModel, id);
+        Function<List<PlaceModel>, Integer> processPageConsumer = this::processReviewsPage;
+        Function<String, List<PlaceModel>> getNewPage = (id) -> getPlacesPage(id);
 
         processAllPages(processPageConsumer, getNewPage);
         LOG.info("Finished processing reviews.");
     }
 
-    private void processReviewsPage(List<YelpReviewRawModel> reviewsPage) {
+//    public void saveReviewsOrderedByDate(YelpImportModel yelpImportModel) {
+//        LOG.info("Starting processing reviews.");
+//        Consumer<List<YelpPlaceRawModel>> processPageConsumer = this::processReviewsPage;
+//        Function<String, List<YelpPlaceRawModel>> getNewPage = (id) -> getYelpPlacesPage(yelpImportModel, id);
+//
+//        processAllPages(processPageConsumer, getNewPage);
+//        LOG.info("Finished processing reviews.");
+//    }
+
+//    private void processReviewsPage(List<YelpReviewRawModel> reviewsPage) {
+//        List<ReviewModel> reviews = new ArrayList<>();
+//
+//        long beforePrefiltering = System.currentTimeMillis();
+//
+//        long beforePrefilteringAlreadyProcessed = System.currentTimeMillis();
+//        List<YelpReviewRawModel> reviewsToProcess = prefilterAlreadyProcessedReviews(reviewsPage);
+//        long tookToPrefilterAlreadyProcessed = System.currentTimeMillis() - beforePrefilteringAlreadyProcessed;
+//
+//        long beforePrefilteringByUnknownUsers = System.currentTimeMillis();
+//        List<UserModel> prefetchedExistingUsers = prefetchExistingUsersByReview(reviewsToProcess);
+//        reviewsToProcess = prefilterUnknownUsers(reviewsToProcess, prefetchedExistingUsers);
+//        long tookToPrefilterUnknownUsers = System.currentTimeMillis() - beforePrefilteringByUnknownUsers;
+//
+//        long beforePrefilteringByUnknownPlaces = System.currentTimeMillis();
+//        List<PlaceModel> prefetchedExistingPlaces = prefetchExistingPlacesByReview(reviewsToProcess);
+//        reviewsToProcess = prefilterUnknownPlaces(reviewsToProcess, prefetchedExistingPlaces);
+//        long tookToPrefilterUnknownPlaces = System.currentTimeMillis() - beforePrefilteringByUnknownPlaces;
+//
+//        long tookToPrefilter = System.currentTimeMillis() - beforePrefiltering;
+//
+//        long beforeMappingMilis = System.currentTimeMillis();
+//        for (YelpReviewRawModel yelpReviewRawModel : reviewsToProcess) {
+//            ReviewModel reviewModel = yelpReviewRawModelToReviewModelMapper
+//                    .map(yelpReviewRawModel, prefetchedExistingUsers, prefetchedExistingPlaces);
+//
+//            if(reviewModel != null) {
+//                reviews.add(reviewModel);
+//            }
+//        }
+//        long tookToMap = System.currentTimeMillis() - beforeMappingMilis;
+//
+//        reviewService.saveAllTransactional(reviews);
+//        LOG.info("Saved {} new reviews. Took to profilter {} milis. Took to map {} milis. " +
+//                        "Took to prefilter already processes {} milis. " +
+//                        "Took to prefilter unknown users {} milis. " +
+//                        "Took to prefilter unknown places {} milis. ",
+//                reviews.size(), tookToPrefilter, tookToMap,
+//                tookToPrefilterAlreadyProcessed, tookToPrefilterUnknownUsers, tookToPrefilterUnknownPlaces);
+//    }
+
+    private int processReviewsPage(List<PlaceModel> placesPage) {
+        int totalProcessed = 0;
+//        LOG.info("Processing {} places. ", placesPage.size());
+
+        long beforePlaces = System.currentTimeMillis();
+        List<PlaceModel> placesBuffer = new ArrayList<>();
+        List<YelpReviewRawModel> reviewsToProcessBuffer = new ArrayList<>();
+        for (PlaceModel placeModel : placesPage) {
+            placesBuffer.add(placeModel);
+            long beforeGettingReviews = System.currentTimeMillis();
+            reviewsToProcessBuffer.addAll(yelpReviewRawRepository.findAllByBusinessId(placeModel.getOriginCode()));
+            long tookToGetReviews = System.currentTimeMillis() - beforeGettingReviews;
+
+            if(reviewsToProcessBuffer.size() >= THRESHOLD_TO_PROCESS_REVIEWS) {
+                totalProcessed += processPlaceReviews(reviewsToProcessBuffer, placesBuffer);
+                reviewsToProcessBuffer = new ArrayList<>();
+            }
+        }
+
+        if(reviewsToProcessBuffer.size() > 0) {
+            totalProcessed += processPlaceReviews(reviewsToProcessBuffer, placesBuffer);
+            reviewsToProcessBuffer = new ArrayList<>();
+            placesBuffer = new ArrayList<>();
+        }
+
+        long tookToProcessPlaces = System.currentTimeMillis() - beforePlaces;
+//        LOG.info("Processed {} places. Took {} milis. Processed {} reviews.", placesPage.size(), tookToProcessPlaces, totalProcessed);
+
+        return totalProcessed;
+    }
+
+    private int processPlaceReviews(List<YelpReviewRawModel> reviewsToProcess, List<PlaceModel> placesBuffer) {
+        long beforeProcessPlace = System.currentTimeMillis();
+
         List<ReviewModel> reviews = new ArrayList<>();
 
-        long beforePrefiltering = System.currentTimeMillis();
+//        LOG.info("Place with origin id {} has {} reviews. ", placeModel.getOriginCode(), reviewsToProcess.size());
+
+        if(CollectionUtils.isEmpty(reviewsToProcess)) {
+            return 0;
+        }
+
+        int reviewsToProcessCount = reviewsToProcess.size();
 
         long beforePrefilteringAlreadyProcessed = System.currentTimeMillis();
-        List<YelpReviewRawModel> reviewsToProcess = prefilterAlreadyProcessedReviews(reviewsPage);
+        reviewsToProcess = prefilterAlreadyProcessedReviews(reviewsToProcess);
         long tookToPrefilterAlreadyProcessed = System.currentTimeMillis() - beforePrefilteringAlreadyProcessed;
+
+        if(reviewsToProcess.size() == 0) {
+//            LOG.info("All data is prefiltered. Processed {} reviews. " +
+//                            "Took to prefilter already processes {} milis. " +
+//                            "Took to get raw reviews {} milis",
+//                    reviewsToProcessCount, tookToPrefilterAlreadyProcessed, tookToGetReviews);
+
+            return reviewsToProcessCount;
+        }
 
         long beforePrefilteringByUnknownUsers = System.currentTimeMillis();
         List<UserModel> prefetchedExistingUsers = prefetchExistingUsersByReview(reviewsToProcess);
-        reviewsToProcess = prefilterUnknownUsers(reviewsToProcess, prefetchedExistingUsers);
         long tookToPrefilterUnknownUsers = System.currentTimeMillis() - beforePrefilteringByUnknownUsers;
-
-        long beforePrefilteringByUnknownPlaces = System.currentTimeMillis();
-        List<PlaceModel> prefetchedExistingPlaces = prefetchExistingPlacesByReview(reviewsToProcess);
-        reviewsToProcess = prefilterUnknownPlaces(reviewsToProcess, prefetchedExistingPlaces);
-        long tookToPrefilterUnknownPlaces = System.currentTimeMillis() - beforePrefilteringByUnknownPlaces;
-
-        long tookToPrefilter = System.currentTimeMillis() - beforePrefiltering;
+        reviewsToProcess = prefilterUnknownUsers(reviewsToProcess, prefetchedExistingUsers);
 
         long beforeMappingMilis = System.currentTimeMillis();
-        for (YelpReviewRawModel yelpReviewRawModel : reviewsToProcess) {
+        for (YelpReviewRawModel reviewToProcess : reviewsToProcess) {
             ReviewModel reviewModel = yelpReviewRawModelToReviewModelMapper
-                    .map(yelpReviewRawModel, prefetchedExistingUsers, prefetchedExistingPlaces);
+                    .map(reviewToProcess, prefetchedExistingUsers, placesBuffer);
 
             if(reviewModel != null) {
                 reviews.add(reviewModel);
@@ -220,13 +319,18 @@ public class YelpRawDataFacade {
         }
         long tookToMap = System.currentTimeMillis() - beforeMappingMilis;
 
+        long tookToProcessPlace = System.currentTimeMillis() - beforeProcessPlace;
+
+        if(tookToProcessPlace > 100) {
+//            LOG.info("Processed {} reviews Took to map {} milis. Took to process place {} " +
+//                            "Took to prefilter already processes {} milis. " +
+//                            "Took to prefilter unknown users {} milis. ",
+//                    reviewsToProcessCount, tookToMap, tookToProcessPlace,
+//                    tookToPrefilterAlreadyProcessed, tookToPrefilterUnknownUsers);
+        }
         reviewService.saveAllTransactional(reviews);
-        LOG.info("Saved {} new reviews. Took to profilter {} milis. Took to map {} milis. " +
-                        "Took to prefilter already processes {} milis. " +
-                        "Took to prefilter unknown users {} milis. " +
-                        "Took to prefilter unknown places {} milis. ",
-                reviews.size(), tookToPrefilter, tookToMap,
-                tookToPrefilterAlreadyProcessed, tookToPrefilterUnknownUsers, tookToPrefilterUnknownPlaces);
+
+        return reviewsToProcessCount;
     }
 
     private List<YelpReviewRawModel> prefilterUnknownUsers(List<YelpReviewRawModel> reviewsToProcess, List<UserModel> prefetchedExistingUsers) {
@@ -298,23 +402,27 @@ public class YelpRawDataFacade {
     }
 
     private <T extends Identifiable<String>> void processAllPages(
-            Consumer<List<T>> processPageConsumer,
+            Function<List<T>, Integer> processPageConsumer,
             Function<String, List<T>> getNewPage
     ) {
-        int processDataItems = 0;
+        int totalProcessedCount = 0;
         List<T> dataPage = getNewPage.apply(null);
 
         String lastId = null;
         while(!CollectionUtils.isEmpty(dataPage)) {
 
+            Integer processDataCount = 0;
+            long beforeProcessing = System.currentTimeMillis();
             try {
-                processPageConsumer.accept(dataPage);
+                processDataCount = processPageConsumer.apply(dataPage);
             } catch (Exception ex) {
                 logError(lastId, ex);
             }
+            long tookProcessing = System.currentTimeMillis() - beforeProcessing;
 
-            processDataItems += dataPage.size();
-            LOG.info("Processed in total {}.", processDataItems);
+            totalProcessedCount += processDataCount;
+            LOG.info("Processed in total {}. Last page took {} milis. Last page size {}",
+                    totalProcessedCount, tookProcessing, processDataCount);
 
             T lastElementInPage = dataPage.get(dataPage.size() - 1);
             lastId = lastElementInPage.getId();
@@ -334,6 +442,14 @@ public class YelpRawDataFacade {
     public List<YelpPlaceRawModel> getYelpPlacesPage(
             YelpImportModel yelpImportModel, String id) {
         return getYelpPlacesPage(yelpImportModel, id, DEFAULT_PAGE_SIZE);
+    }
+
+    public List<PlaceModel> getPlacesPage(String id) {
+        return getPlacesPage(id, DEFAULT_PLACES_SIZE);
+    }
+
+    private List<PlaceModel> getPlacesPage(String id, int pageSize) {
+        return placeService.getPlacesPage(getYelpOrigin(), id, pageSize);
     }
 
     public List<YelpPlaceRawModel> getYelpPlacesPage(

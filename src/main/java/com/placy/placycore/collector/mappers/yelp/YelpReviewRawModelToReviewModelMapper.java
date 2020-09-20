@@ -2,11 +2,8 @@ package com.placy.placycore.collector.mappers.yelp;
 
 import com.placy.placycore.collector.model.yelp.YelpReviewRawModel;
 import com.placy.placycore.collector.services.yelp.YelpOriginService;
-import com.placy.placycore.core.mappers.AbstractSimpleMapper;
 import com.placy.placycore.core.model.OriginModel;
 import com.placy.placycore.core.model.UserModel;
-import com.placy.placycore.core.services.PlaceService;
-import com.placy.placycore.core.services.UserService;
 import com.placy.placycore.reviewscore.model.PlaceModel;
 import com.placy.placycore.reviewscore.model.ReviewModel;
 import org.slf4j.Logger;
@@ -24,7 +21,7 @@ public class YelpReviewRawModelToReviewModelMapper {
     @Autowired
     private YelpOriginService yelpOriginService;
 
-    public ReviewModel map(YelpReviewRawModel yelpReviewRawModel, List<UserModel> prefetchedExistingUsers, List<PlaceModel> prefetchedExistingPlaces) {
+    public ReviewModel map(YelpReviewRawModel yelpReviewRawModel, List<UserModel> prefetchedExistingUsers, List<PlaceModel> placeModels) {
         long beforeMapMilis = System.currentTimeMillis();
         ReviewModel reviewModel = new ReviewModel();
 
@@ -33,27 +30,19 @@ public class YelpReviewRawModelToReviewModelMapper {
 
         OriginModel yelpOrigin = yelpOriginService.getYelpOrigin();
 
-        long beforePlaceFinding = System.currentTimeMillis();
-        Optional<PlaceModel> placeOptional = findPlaceByOriginCode(prefetchedExistingPlaces, businessId);
-        long tookToFindPlace = System.currentTimeMillis() - beforePlaceFinding;
-
         long beforeUserFinding = System.currentTimeMillis();
         Optional<UserModel> userOptional = findUserByOriginCode(prefetchedExistingUsers, userId);
         long tookToFindUser = System.currentTimeMillis() - beforeUserFinding;
 
-        if(placeOptional.isEmpty() || userOptional.isEmpty()) {
-//            LOG.debug(
-//                    "Review with id {} is ignored. Place {} or user {} not found.",
-//                    yelpReviewRawModel.getId(),
-//                    businessId,
-//                    userId
-//            );
+        Optional<PlaceModel> placeModelOptional = findPlaceByOriginCode(placeModels, businessId);
+
+        if(userOptional.isEmpty() || placeModelOptional.isEmpty()) {
 
             return null;
         }
 
-        PlaceModel placeModel = placeOptional.get();
         UserModel userModel = userOptional.get();
+        PlaceModel placeModel = placeModelOptional.get();
 
         reviewModel.setOrigin(yelpOrigin);
         reviewModel.setOriginCode(yelpReviewRawModel.getId());
@@ -64,9 +53,9 @@ public class YelpReviewRawModelToReviewModelMapper {
 
         long tookToMap = System.currentTimeMillis() - beforeMapMilis;
 
-        if(tookToMap > 2) {
-            LOG.info("Took to map {} milis. Took to find place {} milis. Took to find user {} milis.", tookToMap, tookToFindPlace, tookToFindUser);
-        }
+//        if(tookToMap > 2) {
+//            LOG.info("Took to map {} milis. Took to find user {} milis.", tookToMap, tookToFindUser);
+//        }
 
         return reviewModel;
     }

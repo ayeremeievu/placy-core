@@ -3,11 +3,13 @@ package com.placy.placycore.core.services;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.placy.placycore.collector.model.yelp.YelpImportModel;
 import com.placy.placycore.core.model.OriginModel;
 import com.placy.placycore.core.model.UserModel;
 import com.placy.placycore.core.repositories.PlaceRepository;
 import com.placy.placycore.reviewscore.model.PlaceModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -61,6 +63,18 @@ public class PlaceService extends AbstractModelService<PlaceModel, String>  {
 
     public List<PlaceModel> getPlacesByOriginCodes(OriginModel originModel, List<String> originCodes) {
         return placeRepository.findByOriginAndOriginCodeIn(originModel, originCodes);
+    }
+
+    public List<PlaceModel> getPlacesPage(OriginModel originModel, String id, int pageSize) {
+        if(id == null) {
+            return placeRepository.findByOriginOrderByPk(
+                    originModel, PageRequest.of(0, pageSize)
+            );
+        }
+
+        return placeRepository.findByOriginAndPkGreaterThanOrderByPk(
+                originModel, id, PageRequest.of(0, pageSize)
+        );
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
