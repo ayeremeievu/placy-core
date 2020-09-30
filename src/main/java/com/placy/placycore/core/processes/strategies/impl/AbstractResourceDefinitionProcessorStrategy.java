@@ -112,11 +112,11 @@ public abstract class AbstractResourceDefinitionProcessorStrategy<T extends Reso
 
         Optional<? extends ResourceModel> alreadyExistingResource = getResourceModelByResourceNameFromLastVersion(resourceName);
 
-        return alreadyExistingResource.isEmpty() || checksumChanged(alreadyExistingResource, fileChecksum);
+        return !alreadyExistingResource.isPresent() || checksumChanged(alreadyExistingResource, fileChecksum);
     }
 
     protected boolean checksumChanged(Optional<? extends ResourceModel> resourceModelOptional, String fileChecksum) {
-        if(resourceModelOptional.isEmpty()) {
+        if(!resourceModelOptional.isPresent()) {
             throw new IllegalArgumentException("Resource cannot be null");
         }
 

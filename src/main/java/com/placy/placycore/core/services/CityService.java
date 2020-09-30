@@ -37,7 +37,7 @@ public class CityService {
     }
 
     private CacheLoader<CityCacheKey, Optional<CityModel> > getLoader() {
-        return new CacheLoader<>() {
+        return new CacheLoader<CityCacheKey, Optional<CityModel>>() {
             @Override
             public Optional<CityModel> load(CityCacheKey cityCacheKey) {
                 return doGetCityByNameAndDivision(cityCacheKey.getName(), cityCacheKey.getDivisionModel());
@@ -59,6 +59,10 @@ public class CityService {
 
     public boolean existsCityByNameAndDivision(String name, DivisionModel divisionModel) {
         return getCityByNameAndDivision(name, divisionModel).isPresent();
+    }
+
+    public List<CityModel> getAllCitiesByNameDivisionCountry(String name, String divisionCode, String countryIso) {
+        return cityRepository.getByCityNameAndDivisionCodeAndDivisionCountryIso(name, divisionCode, countryIso);
     }
 
     public List<CityModel> saveAll(List<CityModel> citites) {

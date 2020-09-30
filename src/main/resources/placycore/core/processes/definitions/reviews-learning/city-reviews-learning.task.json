@@ -1,0 +1,19 @@
+{
+    "code": "city-reviews-learning",
+    "name": "Reviews Learning by the city",
+    "runnerBean": "cityReviewsLearningExecutable",
+    "params": [
+        {
+            "code": "cityName",
+            "required": true
+        },
+        {
+            "code": "divisionCode",
+            "required": true
+        },
+        {
+            "code": "countryIso",
+            "required": true
+        }
+    ]
+}

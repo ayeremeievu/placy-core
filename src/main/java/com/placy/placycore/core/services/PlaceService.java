@@ -39,7 +39,7 @@ public class PlaceService extends AbstractModelService<PlaceModel, String>  {
     }
 
     private CacheLoader<CachePlaceByOriginKey, Optional<PlaceModel>> getLoader() {
-        return new CacheLoader<>() {
+        return new CacheLoader<CachePlaceByOriginKey, Optional<PlaceModel>>() {
             @Override
             public Optional<PlaceModel> load(CachePlaceByOriginKey originKey) {
                 return doGetPlaceByOrigin(originKey.originModel, originKey.originCode);

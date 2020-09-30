@@ -36,7 +36,7 @@ public class YelpReviewRawModelToReviewModelMapper {
 
         Optional<PlaceModel> placeModelOptional = findPlaceByOriginCode(placeModels, businessId);
 
-        if(userOptional.isEmpty() || placeModelOptional.isEmpty()) {
+        if(!userOptional.isPresent() || !placeModelOptional.isPresent()) {
 
             return null;
         }

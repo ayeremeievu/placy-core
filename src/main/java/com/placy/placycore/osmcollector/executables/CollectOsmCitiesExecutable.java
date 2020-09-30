@@ -116,7 +116,7 @@ public class CollectOsmCitiesExecutable implements ExecutableBean {
 
         Optional<CountryModel> countryOptional = countryService.getCountryByIso(countryIso);
 
-        if (countryOptional.isEmpty()) {
+        if (!countryOptional.isPresent()) {
             throw new IllegalArgumentException(String.format("There is no such country with iso '%s'", countryIso));
         }
 

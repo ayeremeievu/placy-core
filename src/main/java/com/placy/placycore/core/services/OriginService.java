@@ -32,7 +32,7 @@ public class OriginService extends AbstractModelService<OriginModel, String>  {
     }
 
     private CacheLoader<String, OriginModel> getLoader() {
-        return new CacheLoader<>() {
+        return new CacheLoader<String, OriginModel>() {
             @Override
             public OriginModel load(String code) {
                 return getFirstByCodeMandatory(code);

@@ -43,7 +43,7 @@ public class YelpPlaceRawModelToPlaceModelMapper extends AbstractSimpleMapper<Ye
         Optional<DivisionModel> division = divisionService.getDivisionByCode(state.trim());
         long tookToFetchDivision = System.currentTimeMillis() - milisBeforeDivision;
 
-        if(division.isEmpty()) {
+        if(!division.isPresent()) {
 //            LOG.debug("Yelp place with id '{}' has unknown division state '{}'", yelpPlaceRawModel.getPk().getId(), state);
             return null;
         }
@@ -56,7 +56,7 @@ public class YelpPlaceRawModelToPlaceModelMapper extends AbstractSimpleMapper<Ye
         Optional<CityModel> cityByNameAndDivision = cityService.getCityByNameAndDivision(city.trim(), divisionModel);
         long tookToFetchCity = System.currentTimeMillis() - milisBeforeCity;
 
-        if(cityByNameAndDivision.isEmpty()) {
+        if(!cityByNameAndDivision.isPresent()) {
 //            LOG.debug("Yelp place with id '{}' has unknown city '{}'", yelpPlaceRawModel.getPk().getId(), state);
             return null;
         }

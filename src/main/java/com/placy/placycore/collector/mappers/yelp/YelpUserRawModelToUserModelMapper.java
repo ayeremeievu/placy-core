@@ -33,7 +33,7 @@ public class YelpUserRawModelToUserModelMapper extends AbstractSimpleMapper<Yelp
     private void populateName(YelpUserRawModel yelpUserRawModel, UserModel userModel) {
         String rawName = yelpUserRawModel.getName();
 
-        if(rawName != null && !rawName.isBlank()) {
+        if(rawName != null && !rawName.isEmpty()) {
             String[] nameParts = rawName.split(" ");
 
             String name = nameParts[0];

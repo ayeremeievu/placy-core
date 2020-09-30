@@ -35,7 +35,7 @@ public class ProcessResourceDefinitionProcessorStrategy extends AbstractResource
 
         Optional<ResourceImportModel> lastResourceImport = getResourceImportService().getLastResourceImport();
 
-        if(!lastResourceImport.isEmpty()) {
+        if(lastResourceImport.isPresent()) {
             ResourceImportModel resourceImportModel = lastResourceImport.get();
             resourceImportModel.getProcessResources().size();
 

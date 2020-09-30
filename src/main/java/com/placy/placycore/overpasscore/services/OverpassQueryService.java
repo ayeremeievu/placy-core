@@ -8,8 +8,12 @@ import com.placy.placycore.overpasscore.data.ElementData;
 import com.placy.placycore.overpasscore.data.OverpassResponseData;
 import com.placy.placycore.overpasscore.mappers.OverpassResponseMapper;
 import com.placy.placycore.overpasscore.query.SimpleOverpassQuery;
-import org.geojson.Feature;
-import org.geojson.FeatureCollection;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,10 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,23 +46,31 @@ public class OverpassQueryService {
     public OverpassResponseData queryOverpassSync(SimpleOverpassQuery simpleOverpassQuery) {
         OverpassResponseData result = null;
 
-        HttpClient client = HttpClient.newHttpClient();
-
-        HttpRequest request = buildHttpRequest(simpleOverpassQuery);
+        CloseableHttpClient client = HttpClients.createDefault();
 
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == HttpStatus.OK.value()) {
-                String body = response.body();
+            HttpPost request = buildHttpRequest(simpleOverpassQuery);
 
-                result = objectMapper.readValue(body, OverpassResponseData.class);
-            } else {
-                throw new HttpRequestResultException(
-                    String.format("Overpass responded not successfully. Status : %s, body : %s", response.statusCode(), response.body())
-                );
+            try (CloseableHttpResponse response = client.execute(request)) {
+                String body = EntityUtils.toString(response.getEntity());
+                if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+
+                    result = objectMapper.readValue(body, OverpassResponseData.class);
+                } else {
+                    throw new HttpRequestResultException(
+                            String.format("Overpass responded not successfully. Status : %s, body : %s",
+                                    response.getStatusLine().getStatusCode(), body)
+                    );
+                }
             }
-        } catch (IOException | InterruptedException ex) {
+        } catch (IOException ex) {
             rethrow(ex);
+        } finally {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                rethrow(ex);
+            }
         }
 
         return result;
@@ -75,13 +84,16 @@ public class OverpassQueryService {
                        .collect(Collectors.toList());
     }
 
-    private HttpRequest buildHttpRequest(SimpleOverpassQuery simpleOverpassQuery) {
+    private HttpPost buildHttpRequest(SimpleOverpassQuery simpleOverpassQuery) throws UnsupportedEncodingException {
         String overpassQuery = simpleOverpassQueryAdapter.resolveOverpassQuery(simpleOverpassQuery);
-        return HttpRequest.newBuilder()
-                          .uri(URI.create(OVERPASS_BASE_URI))
-                          .setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                          .POST(HttpRequest.BodyPublishers.ofString(overpassQuery))
-                          .build();
+        HttpPost httpPost = new HttpPost(OVERPASS_BASE_URI);
+
+        httpPost.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        StringEntity body = new StringEntity(overpassQuery);
+
+        httpPost.setEntity(body);
+
+        return httpPost;
     }
 
     public SimpleOverpassQueryAdapter getSimpleOverpassQueryAdapter() {

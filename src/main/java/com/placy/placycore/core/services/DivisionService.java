@@ -35,7 +35,7 @@ public class DivisionService {
     }
 
     private CacheLoader<String, Optional<DivisionModel>> getLoader() {
-        return new CacheLoader<>() {
+        return new CacheLoader<String, Optional<DivisionModel>>() {
             @Override
             public Optional<DivisionModel> load(String code) {
                 return doGetDivisionByCode(code);

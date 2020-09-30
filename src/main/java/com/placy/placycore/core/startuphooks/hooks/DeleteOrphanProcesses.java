@@ -58,6 +58,6 @@ public class DeleteOrphanProcesses implements PostStartupHook {
     }
 
     private boolean doesntExistsResource(ProcessModel processModel) {
-        return processResourcesService.getResourceByProcess(processModel).isEmpty();
+        return !processResourcesService.getResourceByProcess(processModel).isPresent();
     }
 }

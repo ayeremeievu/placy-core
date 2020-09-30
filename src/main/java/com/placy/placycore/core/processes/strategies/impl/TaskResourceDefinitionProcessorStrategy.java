@@ -32,7 +32,7 @@ public class TaskResourceDefinitionProcessorStrategy extends AbstractResourceDef
 
         Optional<ResourceImportModel> lastResourceImport = getResourceImportService().getLastResourceImport();
 
-        if(!lastResourceImport.isEmpty()) {
+        if(lastResourceImport.isPresent()) {
             result.addAll(lastResourceImport.get().getTaskResources());
         }
 

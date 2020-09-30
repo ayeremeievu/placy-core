@@ -55,6 +55,6 @@ public class DeleteOrphanTasks implements PostStartupHook {
     }
 
     private boolean doesntExistsResource(TaskModel processModel) {
-        return taskResourcesService.getResourceByTask(processModel).isEmpty();
+        return !taskResourcesService.getResourceByTask(processModel).isPresent();
     }
 }
