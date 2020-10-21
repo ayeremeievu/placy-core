@@ -17,6 +17,8 @@ import com.placy.placycore.core.processes.model.TaskParameterModel;
 import com.placy.placycore.core.processes.model.TaskParameterValueModel;
 import com.placy.placycore.core.processes.repository.TaskInstancesRepository;
 import com.placy.placycore.core.processes.repository.TasksRepository;
+import org.hibernate.Session;
+import org.hibernate.internal.SessionImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

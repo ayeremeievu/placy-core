@@ -18,6 +18,8 @@ import com.placy.placycore.core.model.UserModel;
 import com.placy.placycore.core.services.*;
 import com.placy.placycore.reviewscore.model.PlaceModel;
 import com.placy.placycore.reviewscore.model.ReviewModel;
+import org.hibernate.Session;
+import org.hibernate.internal.SessionImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -71,6 +74,9 @@ public class YelpRawDataFacade {
     @Autowired
     private YelpOriginService yelpOriginService;
 
+    @Autowired
+    private EntityManager entityManager;
+
     public void saveUsers(YelpImportModel yelpImportModel) {
         LOG.info("Starting processing users.");
         Function<List<YelpUserRawModel>, Integer> processPageConsumer = this::processUsersPage;
@@ -79,6 +85,24 @@ public class YelpRawDataFacade {
         processAllPages(processPageConsumer, getNewPage);
         LOG.info("Finished processing users.");
     }
+
+    public void savePlaces(YelpImportModel yelpImportModel) {
+        LOG.info("Starting processing places.");
+        Function<List<YelpPlaceRawModel>, Integer> processPageConsumer = this::processPlacesPage;
+        Function<String, List<YelpPlaceRawModel>> getNewPage = (id) -> getYelpPlacesPage(yelpImportModel, id);
+
+        processAllPages(processPageConsumer, getNewPage);
+        LOG.info("Finished processing places.");
+    }
+    public void saveReviews(YelpImportModel yelpImportModel) {
+        LOG.info("Starting processing reviews.");
+        Function<List<PlaceModel>, Integer> processPageConsumer = this::processReviewsPage;
+        Function<Integer, List<PlaceModel>> getNewPage = (id) -> getPlacesPage(id);
+
+        processAllPages(processPageConsumer, getNewPage);
+        LOG.info("Finished processing reviews.");
+    }
+
 
     private int processUsersPage(List<YelpUserRawModel> yelpUsersPage) {
         List<UserModel> userPage = new ArrayList<>();
@@ -134,15 +158,6 @@ public class YelpRawDataFacade {
                 );
     }
 
-    public void savePlaces(YelpImportModel yelpImportModel) {
-        LOG.info("Starting processing places.");
-        Function<List<YelpPlaceRawModel>, Integer> processPageConsumer = this::processPlacesPage;
-        Function<String, List<YelpPlaceRawModel>> getNewPage = (id) -> getYelpPlacesPage(yelpImportModel, id);
-
-        processAllPages(processPageConsumer, getNewPage);
-        LOG.info("Finished processing places.");
-    }
-
     private int processPlacesPage(List<YelpPlaceRawModel> placesPage) {
         List<PlaceModel> places = new ArrayList<>();
 
@@ -185,15 +200,6 @@ public class YelpRawDataFacade {
                 .collect(Collectors.toList());
 
         return placeService.getPlacesByOriginCodes(getYelpOrigin(), placesIds);
-    }
-
-    public void saveReviews(YelpImportModel yelpImportModel) {
-        LOG.info("Starting processing reviews.");
-        Function<List<PlaceModel>, Integer> processPageConsumer = this::processReviewsPage;
-        Function<String, List<PlaceModel>> getNewPage = (id) -> getPlacesPage(id);
-
-        processAllPages(processPageConsumer, getNewPage);
-        LOG.info("Finished processing reviews.");
     }
 
 //    public void saveReviewsOrderedByDate(YelpImportModel yelpImportModel) {
@@ -401,14 +407,14 @@ public class YelpRawDataFacade {
         return yelpOriginService.getYelpOrigin();
     }
 
-    private <T extends Identifiable<String>> void processAllPages(
+    private <ID, T extends Identifiable<ID>> void processAllPages(
             Function<List<T>, Integer> processPageConsumer,
-            Function<String, List<T>> getNewPage
+            Function<ID, List<T>> getNewPage
     ) {
         int totalProcessedCount = 0;
         List<T> dataPage = getNewPage.apply(null);
 
-        String lastId = null;
+        ID lastId = null;
         while(!CollectionUtils.isEmpty(dataPage)) {
 
             Integer processDataCount = 0;
@@ -427,11 +433,14 @@ public class YelpRawDataFacade {
             T lastElementInPage = dataPage.get(dataPage.size() - 1);
             lastId = lastElementInPage.getId();
 
+            getCurrentSession().flush();
+            getCurrentSession().clear();
+
             dataPage = getNewPage.apply(lastId);
         }
     }
 
-    private void logError(String lastId, Exception ex) {
+    private <ID> void logError(ID lastId, Exception ex) {
         if(lastId == null) {
             LOG.error("Error happened during first pge processing.");
         } else {
@@ -444,11 +453,11 @@ public class YelpRawDataFacade {
         return getYelpPlacesPage(yelpImportModel, id, DEFAULT_PAGE_SIZE);
     }
 
-    public List<PlaceModel> getPlacesPage(String id) {
+    public List<PlaceModel> getPlacesPage(Integer id) {
         return getPlacesPage(id, DEFAULT_PLACES_SIZE);
     }
 
-    private List<PlaceModel> getPlacesPage(String id, int pageSize) {
+    private List<PlaceModel> getPlacesPage(Integer id, int pageSize) {
         return placeService.getPlacesPage(getYelpOrigin(), id, pageSize);
     }
 
@@ -503,5 +512,9 @@ public class YelpRawDataFacade {
         return yelpReviewRawRepository.findAllByIdYelpImportAndIdIdGreaterThanOrderByIdId(
                 yelpImportModel, id, PageRequest.of(0, pageSize)
         );
+    }
+
+    private Session getCurrentSession(){
+        return ((SessionImpl)entityManager.getDelegate());
     }
 }

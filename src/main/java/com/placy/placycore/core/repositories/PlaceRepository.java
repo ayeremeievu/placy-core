@@ -24,5 +24,5 @@ public interface PlaceRepository extends JpaRepository<PlaceModel, String> {
     List<PlaceModel> findByOriginOrderByPk(OriginModel originModel, Pageable pageable);
 
     @QueryHints(value = { @QueryHint(name = org.hibernate.annotations.QueryHints.FLUSH_MODE, value = "COMMIT") })
-    List<PlaceModel> findByOriginAndPkGreaterThanOrderByPk(OriginModel originModel, String pk, Pageable pageable);
+    List<PlaceModel> findByOriginAndPkGreaterThanOrderByPk(OriginModel originModel, Integer pk, Pageable pageable);
 }

@@ -7,7 +7,9 @@ import com.placy.placycore.core.model.CityModel;
 import com.placy.placycore.core.model.DivisionModel;
 import com.placy.placycore.core.model.OriginModel;
 import com.placy.placycore.core.repositories.CityRepository;
+import com.placy.placycore.reviewslearning.model.LearningProcessModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -20,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @author ayeremeiev@netconomy.net
  */
 @Component
-public class CityService {
+public class CityService extends AbstractModelService<CityModel, Integer>  {
     private static final int CACHE_MAX_SIZE = 10000;
 
     @Autowired
@@ -75,6 +77,11 @@ public class CityService {
 
     public void setCityRepository(CityRepository cityRepository) {
         this.cityRepository = cityRepository;
+    }
+
+    @Override
+    public JpaRepository<CityModel, Integer> getRepository() {
+        return cityRepository;
     }
 
     private static class CityCacheKey {

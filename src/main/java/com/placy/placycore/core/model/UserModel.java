@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class UserModel extends UuidDomainModel {
+public class UserModel extends IncrementalDomainModel {
 
     @Column(name = "u_name")
     private String name;

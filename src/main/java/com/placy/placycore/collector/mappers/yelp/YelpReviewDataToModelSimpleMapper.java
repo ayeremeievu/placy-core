@@ -18,7 +18,7 @@ public class YelpReviewDataToModelSimpleMapper extends AbstractSimpleMapper<Yelp
         yelpReviewRawModel.setId(yelpReviewJsonData.getReview_id());
         yelpReviewRawModel.setUserId(yelpReviewJsonData.getUser_id());
         yelpReviewRawModel.setBusinessId(yelpReviewJsonData.getBusiness_id());
-        yelpReviewRawModel.setStars(yelpReviewRawModel.getStars());
+        yelpReviewRawModel.setStars(yelpReviewJsonData.getStars());
 
         return yelpReviewRawModel;
     }

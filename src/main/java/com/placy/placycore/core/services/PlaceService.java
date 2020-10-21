@@ -65,7 +65,7 @@ public class PlaceService extends AbstractModelService<PlaceModel, String>  {
         return placeRepository.findByOriginAndOriginCodeIn(originModel, originCodes);
     }
 
-    public List<PlaceModel> getPlacesPage(OriginModel originModel, String id, int pageSize) {
+    public List<PlaceModel> getPlacesPage(OriginModel originModel, Integer id, int pageSize) {
         if(id == null) {
             return placeRepository.findByOriginOrderByPk(
                     originModel, PageRequest.of(0, pageSize)

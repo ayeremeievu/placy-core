@@ -1,5 +1,6 @@
 package com.placy.placycore.reviewscore.model;
 
+import com.placy.placycore.core.model.IncrementalDomainModel;
 import com.placy.placycore.core.model.OriginModel;
 import com.placy.placycore.core.model.UserModel;
 import com.placy.placycore.core.model.UuidDomainModel;
@@ -10,7 +11,7 @@ import javax.validation.constraints.Min;
 
 @Entity
 @Table(name = "reviews")
-public class ReviewModel extends UuidDomainModel {
+public class ReviewModel extends IncrementalDomainModel {
     @ManyToOne
     @JoinColumn(name = "r_user_pk")
     private UserModel user;

@@ -14,7 +14,7 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class IncrementalDomainModel extends AbstractDomainModel<Integer> {
+public class IncrementalDomainModel extends AbstractDomainModel<Integer> implements Identifiable<Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +31,10 @@ public class IncrementalDomainModel extends AbstractDomainModel<Integer> {
 
     public void setPk(Integer id) {
         this.pk = id;
+    }
+
+    @Override
+    public Integer getId() {
+        return pk;
     }
 }

@@ -19,8 +19,8 @@ public class CategoryModel extends UuidDomainModel {
     @ManyToMany
     @JoinTable(
             name = "categoryToPlacesRel",
-            joinColumns = @JoinColumn(name = "ctp_place_pk"),
-            inverseJoinColumns = @JoinColumn(name = "ctp_category_pk")
+            joinColumns = @JoinColumn(name = "ctp_place_pk", columnDefinition = "int4"),
+            inverseJoinColumns = @JoinColumn(name = "ctp_category_pk", columnDefinition = "varchar")
     )
     private List<PlaceModel> places;
 
