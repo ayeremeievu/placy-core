@@ -72,11 +72,11 @@ public class TaskRunner implements Runnable {
             taskInstanceModel.setStatus(TaskInstanceStatusEnum.ERROR);
         }
 
+        taskInstanceModel.setFinishDate(new Date());
         LOG.info("The task instance at {} with a task code {} has finished",
-                 taskInstanceModel.getStartDate(),
+                 taskInstanceModel.getFinishDate(),
                  taskInstanceModel.getTask().getCode()
         );
-        taskInstanceModel.setFinishDate(new Date());
         tasksService.save(taskInstanceModel);
     }
 

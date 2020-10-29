@@ -10,6 +10,6 @@ public class PredictionRateComparator implements Comparator<PredictionData> {
         float pred1Rate = pred1.getEvaluatedRate();
         float pred2Rate = pred2.getEvaluatedRate();
 
-        return Float.compare(pred1Rate, pred2Rate);
+        return Float.compare(pred1Rate, pred2Rate) * (-1);
     }
 }

@@ -130,7 +130,11 @@ public class DefaultModelReaderIterator<MODEL extends AbstractDomainModel<PK>, P
             return false;
         }
 
-        return isCurSubIteratorNotFinished() && !peekNextPage().isEmpty();
+        if(isCurSubIteratorNotFinished()) {
+            return true;
+        } else {
+            return !peekNextPage().isEmpty();
+        }
     }
 
     @Override
@@ -140,5 +144,12 @@ public class DefaultModelReaderIterator<MODEL extends AbstractDomainModel<PK>, P
 
             consumer.accept(curElement);
         }
+    }
+
+    public static <MODEL extends AbstractDomainModel<PK>, PK> DefaultModelReaderIterator<MODEL, PK> of(
+            Function<ModelPageQueryData<PK>, List<MODEL>> pageSupplier,
+            ModelPageQueryData<PK> firstPageData
+    ) {
+        return new DefaultModelReaderIterator<>(pageSupplier, firstPageData);
     }
 }

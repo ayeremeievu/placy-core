@@ -92,11 +92,12 @@ public class ProcessRunner implements Runnable {
             processInstanceModel.setStatus(ProcessInstanceStatusEnum.ERROR);
         }
 
-        LOG.info("The process instance with code {} with a process code {} has finished",
-                 processInstanceModel.getCode(),
-                 processInstanceModel.getProcess().getCode()
-        );
         processInstanceModel.setFinishDate(new Date());
+        LOG.info("The process instance with code {} with a process code {} has finished at {}",
+                 processInstanceModel.getCode(),
+                 processInstanceModel.getProcess().getCode(),
+                 processInstanceModel.getFinishDate()
+        );
         processesService.save(processInstanceModel);
     }
 
