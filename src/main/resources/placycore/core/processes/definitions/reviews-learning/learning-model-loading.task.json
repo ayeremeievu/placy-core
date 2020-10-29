@@ -1,0 +1,11 @@
+{
+    "code": "learning-model-loading",
+    "name": "Learning model loading task",
+    "runnerBean": "learningModelLoadingExecutable",
+    "params": [
+        {
+            "code": "learningProcessPk",
+            "required": true
+        }
+    ]
+}

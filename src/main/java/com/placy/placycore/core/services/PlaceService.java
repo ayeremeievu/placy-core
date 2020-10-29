@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class PlaceService extends AbstractModelService<PlaceModel, String>  {
+public class PlaceService extends AbstractModelService<PlaceModel, Integer>  {
     private static final int CACHE_MAX_SIZE = 10000;
     @Autowired
     private PlaceRepository placeRepository;
@@ -93,7 +93,7 @@ public class PlaceService extends AbstractModelService<PlaceModel, String>  {
     }
 
     @Override
-    public JpaRepository<PlaceModel, String> getRepository() {
+    public JpaRepository<PlaceModel, Integer> getRepository() {
         return placeRepository;
     }
 

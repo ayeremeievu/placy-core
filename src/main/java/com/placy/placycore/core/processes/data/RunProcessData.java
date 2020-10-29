@@ -29,4 +29,8 @@ public class RunProcessData {
     public void setParamValues(List<ParamValueData> paramValues) {
         this.paramValues = paramValues;
     }
+
+    public static RunProcessData of() {
+        return new RunProcessData();
+    }
 }

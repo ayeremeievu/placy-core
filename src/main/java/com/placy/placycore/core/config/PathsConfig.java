@@ -11,6 +11,9 @@ public class PathsConfig {
     @Value("${PLACY_DATA}")
     private String placyDataFolderPath;
 
+    @Value("${JAVA_HOME}")
+    private String javaHomePath;
+
     @PostConstruct
     public void init() {
         if(placyDataFolderPath == null) {
@@ -20,5 +23,9 @@ public class PathsConfig {
 
     public String getPlacyDataFolderPath() {
         return placyDataFolderPath;
+    }
+
+    public String getJavaHomePath() {
+        return javaHomePath;
     }
 }

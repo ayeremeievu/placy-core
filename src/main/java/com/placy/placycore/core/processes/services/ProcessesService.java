@@ -14,9 +14,6 @@ import com.placy.placycore.core.processes.model.ProcessParameterModel;
 import com.placy.placycore.core.processes.model.ProcessParameterValueModel;
 import com.placy.placycore.core.processes.model.ProcessStepInstanceModel;
 import com.placy.placycore.core.processes.model.ResourceImportModel;
-import com.placy.placycore.core.processes.model.TaskInstanceModel;
-import com.placy.placycore.core.processes.model.TaskParameterModel;
-import com.placy.placycore.core.processes.model.TaskParameterValueModel;
 import com.placy.placycore.core.processes.repository.ProcessInstanceRepository;
 import com.placy.placycore.core.processes.repository.ProcessStepInstanceRepository;
 import com.placy.placycore.core.processes.repository.ProcessesRepository;
@@ -24,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,23 +86,31 @@ public class ProcessesService {
         return new ArrayList<>();
     }
 
-    public void startProcess(RunProcessData runProcessData) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ProcessInstanceModel initializeProcess(RunProcessData runProcessData) {
         String processCode = runProcessData.getProcessCode();
 
         ProcessModel processModel = getLastProcessByCodeOptional(processCode)
                                              .orElseThrow(() -> new ProcessNotFoundException(processCode));
 
         ProcessInstanceModel processInstanceModel = new ProcessInstanceModel();
-        persistInstance(processInstanceModel, processModel, runProcessData.getParamValues());
+        processInstanceModel = persistInstance(processInstanceModel, processModel, runProcessData.getParamValues());
 
         LOG.info("New process instance with code {} for task with {} instantiated.", processInstanceModel.getCode(), processModel.getCode());
 
         processModel.getProcessSteps().size();
         processModel.getParams().size();
-        processRunnerService.runProcess(processInstanceModel);
+
+        return processInstanceModel;
     }
 
-    private void persistInstance(ProcessInstanceModel processInstanceModel, ProcessModel processModel, List<ParamValueData> paramValues) {
+    public ProcessInstanceModel runProcess(ProcessInstanceModel processInstanceModel) {
+        processRunnerService.runProcess(processInstanceModel);
+
+        return processInstanceModel;
+    }
+
+    private ProcessInstanceModel persistInstance(ProcessInstanceModel processInstanceModel, ProcessModel processModel, List<ParamValueData> paramValues) {
         processInstanceModel.setProcess(processModel);
         processInstanceModel.setStatus(ProcessInstanceStatusEnum.NOT_STARTED);
 
@@ -117,7 +124,7 @@ public class ProcessesService {
 
         processInstanceModel.setParamValues(processParameterValueModels);
 
-        save(processInstanceModel);
+        return saveAndFlushTransactional(processInstanceModel);
     }
 
     private void validateParams(ProcessInstanceModel processInstanceModel,
@@ -154,6 +161,15 @@ public class ProcessesService {
 
     public List<ProcessInstanceModel> getAllProcessInstancesModels() {
         return processInstanceRepository.findAll();
+    }
+
+    public ProcessInstanceModel saveAndFlush(ProcessInstanceModel processInstanceModel) {
+        return processInstanceRepository.saveAndFlush(processInstanceModel);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ProcessInstanceModel saveAndFlushTransactional(ProcessInstanceModel processInstanceModel) {
+        return processInstanceRepository.saveAndFlush(processInstanceModel);
     }
 
     public void save(ProcessInstanceModel processInstanceModel) {

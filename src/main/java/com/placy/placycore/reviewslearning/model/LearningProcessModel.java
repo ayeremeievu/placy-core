@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "learningProcess")
+@Table(name = "learningProcesses")
 public class LearningProcessModel extends IncrementalDomainModel {
     @ManyToOne
     @JoinColumn(name = "lp_city_pk")

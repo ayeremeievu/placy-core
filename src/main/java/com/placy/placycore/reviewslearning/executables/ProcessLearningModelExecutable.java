@@ -10,10 +10,11 @@ import com.placy.placycore.reviewslearning.services.LearningProcessesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.Map;
 
-@Component(value = "cityReviewsLearningExecutable")
-public class CityReviewsLearningExecutable implements ExecutableBean {
+@Component(value = "processLearningModelExecutable")
+public class ProcessLearningModelExecutable implements ExecutableBean {
 
     @Autowired
     private LearningFacade learningFacade;
@@ -29,7 +30,12 @@ public class CityReviewsLearningExecutable implements ExecutableBean {
         LearningProcessModel learningProcessModel = learningProcessModelParamService.getLearningProcessModel(params);
 
         try {
-            learningFacade.trainByCity(learningProcessModel);
+            learningFacade.processModel(learningProcessModel);
+
+            learningProcessModel.setStatus(LearningProcessStatusEnum.FINISHED);
+            learningProcessModel.setFinishDate(new Date());
+
+            learningProcessesService.save(learningProcessModel);
         } catch (Exception ex) {
             learningProcessModel.setStatus(LearningProcessStatusEnum.ERROR);
             learningProcessesService.save(learningProcessModel);

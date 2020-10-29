@@ -1,0 +1,5 @@
+{
+    "code": "assign-city-task",
+    "name": "Assign cities to the users from this city",
+    "runnerBean": "assignCityExecutable"
+}

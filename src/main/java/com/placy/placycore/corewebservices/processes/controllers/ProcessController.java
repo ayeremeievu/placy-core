@@ -2,6 +2,7 @@ package com.placy.placycore.corewebservices.processes.controllers;
 
 import com.placy.placycore.core.processes.data.ProcessInstanceData;
 import com.placy.placycore.core.processes.data.RunProcessData;
+import com.placy.placycore.core.processes.facades.ProcessesFacade;
 import com.placy.placycore.core.processes.model.ProcessModel;
 import com.placy.placycore.core.processes.services.ProcessesService;
 import com.placy.placycore.corewebservices.constants.CorewebservicesRouteConstants;
@@ -35,6 +36,9 @@ public class ProcessController {
     private ProcessesService processesService;
 
     @Autowired
+    private ProcessesFacade processesFacade;
+
+    @Autowired
     private ProcessModelToDtoMapper processModelToDtoMapper;
 
     @Autowired
@@ -65,7 +69,7 @@ public class ProcessController {
     public void createProcessInstance(@RequestBody RunProcessDto runProcessDto) {
         RunProcessData runProcessData = runProcessMapper.map(runProcessDto);
 
-        processesService.startProcess(runProcessData);
+        processesFacade.startProcess(runProcessData);
     }
 
     @RequestMapping(path = "/process-instances", method = RequestMethod.GET)

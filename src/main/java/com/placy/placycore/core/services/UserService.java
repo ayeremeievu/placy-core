@@ -1,5 +1,6 @@
 package com.placy.placycore.core.services;
 
+import com.placy.placycore.core.model.CityModel;
 import com.placy.placycore.core.model.OriginModel;
 import com.placy.placycore.core.model.UserModel;
 import com.placy.placycore.core.repositories.UserRepository;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class UserService extends AbstractModelService<UserModel, String> {
+public class UserService extends AbstractModelService<UserModel, Integer> {
     @Autowired
     private UserRepository userRepository;
 
@@ -30,13 +31,17 @@ public class UserService extends AbstractModelService<UserModel, String> {
         return userRepository.findByOriginAndOriginCodeIn(originModel, originCodes);
     }
 
+    public List<UserModel> getUsersByCity(CityModel cityModel) {
+        return userRepository.findAllByCity(cityModel);
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Collection<UserModel> saveAllTransactional(List<UserModel> users) {
         return saveAll(users);
     }
 
     @Override
-    public JpaRepository<UserModel, String> getRepository() {
+    public JpaRepository<UserModel, Integer> getRepository() {
         return userRepository;
     }
 }

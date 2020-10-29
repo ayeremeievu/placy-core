@@ -4,6 +4,7 @@ import com.placy.placycore.core.model.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "places")
@@ -110,5 +111,24 @@ public class PlaceModel extends IncrementalDomainModel {
 
     public void setReviews(List<ReviewModel> reviews) {
         this.reviews = reviews;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlaceModel that = (PlaceModel) o;
+        return Double.compare(that.latitude, latitude) == 0 &&
+                Double.compare(that.longitude, longitude) == 0 &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(address, that.address) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(origin, that.origin) &&
+                Objects.equals(originCode, that.originCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, latitude, longitude, address, description, origin, originCode);
     }
 }

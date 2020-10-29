@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PlaceRepository extends JpaRepository<PlaceModel, String> {
+public interface PlaceRepository extends JpaRepository<PlaceModel, Integer> {
     @QueryHints(value = { @QueryHint(name = org.hibernate.annotations.QueryHints.FLUSH_MODE, value = "COMMIT") })
     Optional<PlaceModel> findFirstByOriginAndOriginCode(OriginModel originModel, String originCode);
 

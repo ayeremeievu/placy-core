@@ -1,0 +1,11 @@
+{
+    "code": "learning-task",
+    "name": "Learn based on city",
+    "runnerBean": "learningTaskExecutable",
+    "params": [
+        {
+            "code": "cityPk",
+            "required": true
+        }
+    ]
+}

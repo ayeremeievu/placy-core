@@ -12,9 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@Component(value = "cityReviewsLearningExecutable")
-public class CityReviewsLearningExecutable implements ExecutableBean {
-
+@Component(value = "learningModelLoadingExecutable")
+public class LearningModelLoadingExecutable implements ExecutableBean {
     @Autowired
     private LearningFacade learningFacade;
 
@@ -29,7 +28,9 @@ public class CityReviewsLearningExecutable implements ExecutableBean {
         LearningProcessModel learningProcessModel = learningProcessModelParamService.getLearningProcessModel(params);
 
         try {
-            learningFacade.trainByCity(learningProcessModel);
+            learningFacade.loadModel(learningProcessModel);
+
+            learningProcessesService.save(learningProcessModel);
         } catch (Exception ex) {
             learningProcessModel.setStatus(LearningProcessStatusEnum.ERROR);
             learningProcessesService.save(learningProcessModel);

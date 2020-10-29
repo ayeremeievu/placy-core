@@ -1,6 +1,5 @@
 package com.placy.placycore.collector.tasks.executables;
 
-import com.google.common.collect.Streams;
 import com.placy.placycore.collector.data.YelpSaveParameters;
 import com.placy.placycore.collector.model.yelp.*;
 import com.placy.placycore.collector.services.yelp.YelpImportService;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author ayeremeiev@netconomy.net
@@ -41,7 +41,7 @@ public class SaveYelpDataExecutable implements ExecutableBean {
         List<YelpImportModel> allYelpImportsWithErrorStatus = yelpImportService
                 .getAllYelpImportsWithStatus(YelpImportStatusEnum.ERROR_SAVING);
 
-        List<YelpImportModel> yelpImportsToProcess = Streams
+        List<YelpImportModel> yelpImportsToProcess = Stream
                 .concat(yelpImportsToSave.stream(), allYelpImportsWithErrorStatus.stream())
                 .collect(Collectors.toList());
 

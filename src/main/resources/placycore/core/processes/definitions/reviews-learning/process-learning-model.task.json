@@ -1,0 +1,11 @@
+{
+    "code": "process-learning-model",
+    "name": "Process learning model task",
+    "runnerBean": "processLearningModelExecutable",
+    "params": [
+        {
+            "code": "learningProcessPk",
+            "required": true
+        }
+    ]
+}

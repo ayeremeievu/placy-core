@@ -1,0 +1,42 @@
+{
+    "code" : "learning-process",
+    "name" : "Learning process",
+    "params" : [
+        {
+            "code" : "learningProcessPk",
+            "required" : true
+        }
+    ],
+    "steps" : [
+        {
+            "code" : "city-reviews-learning-step",
+            "taskCode" : "city-reviews-learning",
+            "delegatingParams" : [
+                {
+                    "processParamCode" : "learningProcessPk",
+                    "taskParamCode" : "learningProcessPk"
+                }
+            ]
+        },
+        {
+            "code" : "learning-model-loading-step",
+            "taskCode" : "learning-model-loading",
+            "delegatingParams" : [
+                {
+                    "processParamCode" : "learningProcessPk",
+                    "taskParamCode" : "learningProcessPk"
+                }
+            ]
+        },
+        {
+            "code" : "process-learning-model-step",
+            "taskCode" : "process-learning-model",
+            "delegatingParams" : [
+                {
+                    "processParamCode" : "learningProcessPk",
+                    "taskParamCode" : "learningProcessPk"
+                }
+            ]
+        }
+    ]
+}

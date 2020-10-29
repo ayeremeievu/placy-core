@@ -4,15 +4,7 @@
     "runnerBean": "cityReviewsLearningExecutable",
     "params": [
         {
-            "code": "cityName",
-            "required": true
-        },
-        {
-            "code": "divisionCode",
-            "required": true
-        },
-        {
-            "code": "countryIso",
+            "code": "learningProcessPk",
             "required": true
         }
     ]
