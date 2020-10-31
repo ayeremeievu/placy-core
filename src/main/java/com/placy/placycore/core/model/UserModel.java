@@ -82,18 +82,15 @@ public class UserModel extends IncrementalDomainModel {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserModel userModel = (UserModel) o;
-        return Objects.equals(name, userModel.name) &&
-                Objects.equals(lastName, userModel.lastName) &&
-                Objects.equals(origin, userModel.origin) &&
-                Objects.equals(originCode, userModel.originCode);
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        UserModel otherUserModel = (UserModel) other;
+        return otherUserModel.getPk().equals(this.getPk());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, lastName, origin, originCode);
+        return Objects.hash(getPk());
     }
 }

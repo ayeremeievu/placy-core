@@ -7,6 +7,7 @@ import com.placy.placycore.core.model.CityModel;
 import com.placy.placycore.core.model.DivisionModel;
 import com.placy.placycore.core.model.OriginModel;
 import com.placy.placycore.core.repositories.CityRepository;
+import com.placy.placycore.reviewscore.model.PlaceModel;
 import com.placy.placycore.reviewslearning.model.LearningProcessModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -57,6 +59,22 @@ public class CityService extends AbstractModelService<CityModel, Integer>  {
         int divisionId = divisionModel.getId();
 
         return cityRepository.getFirstByCityNameAndDivisionId(name, divisionId);
+    }
+
+    public Optional<CityModel> getCityById(int id) {
+        return cityRepository.findById(id);
+    }
+
+    public CityModel getCityByIdMandatory(int id) {
+        Optional<CityModel> cityModelOptional = getCityById(id);
+
+        if(!cityModelOptional.isPresent()) {
+            throw new NoSuchElementException(
+                    String.format("No city with id '%s' is found", id)
+            );
+        }
+
+        return cityModelOptional.get();
     }
 
     public boolean existsCityByNameAndDivision(String name, DivisionModel divisionModel) {

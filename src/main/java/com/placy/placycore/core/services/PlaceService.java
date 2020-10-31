@@ -3,9 +3,9 @@ package com.placy.placycore.core.services;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.placy.placycore.collector.model.yelp.YelpImportModel;
+import com.placy.placycore.core.data.AverageRatedPlace;
+import com.placy.placycore.core.model.CityModel;
 import com.placy.placycore.core.model.OriginModel;
-import com.placy.placycore.core.model.UserModel;
 import com.placy.placycore.core.repositories.PlaceRepository;
 import com.placy.placycore.reviewscore.model.PlaceModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +16,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
 public class PlaceService extends AbstractModelService<PlaceModel, Integer>  {
@@ -90,6 +88,36 @@ public class PlaceService extends AbstractModelService<PlaceModel, Integer>  {
         });
 
         return savedPlaces;
+    }
+
+    public List<AverageRatedPlace> getTopXReviewsByCityWithHighestRates(int top, int minReviewsCount, CityModel cityModel) {
+        List<Object[]> resultObject = placeRepository.getTopXPlacesByCityWithHighestRates(top, minReviewsCount, cityModel.getId());
+
+        return convertTopRatedResultObject(resultObject);
+    }
+
+    private List<AverageRatedPlace> convertTopRatedResultObject(List<Object[]> resultObject) {
+        return resultObject.stream()
+                .map(columns -> new AverageRatedPlace(
+                        getPlaceByIdMandatory((int) columns[0]),
+                        ((Double) columns[1]).floatValue()
+                )).collect(Collectors.toList());
+    }
+
+    public Optional<PlaceModel> getPlaceById(int id) {
+        return placeRepository.findById(id);
+    }
+
+    public PlaceModel getPlaceByIdMandatory(int id) {
+        Optional<PlaceModel> placeById = getPlaceById(id);
+
+        if(!placeById.isPresent()) {
+            throw new NoSuchElementException(
+                    String.format("No place with id '%s' is found", id)
+            );
+        }
+
+        return placeById.get();
     }
 
     @Override

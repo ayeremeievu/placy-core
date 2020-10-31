@@ -1,4 +1,4 @@
-package com.placy.placycore.sparklearner.data;
+package com.placy.placycore.reviewslearning.data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,15 @@ public class PredictionDataList {
         this.predictionDataList = predictionDataList;
     }
 
+    public boolean isEmpty() {
+        return predictionDataList == null || predictionDataList.isEmpty();
+    }
+
     public List<PredictionData> getPredictionDataList() {
+        if(predictionDataList == null) {
+            return new ArrayList<>();
+        }
+
         return predictionDataList;
     }
 

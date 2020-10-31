@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
@@ -33,6 +34,22 @@ public class UserService extends AbstractModelService<UserModel, Integer> {
 
     public List<UserModel> getUsersByCity(CityModel cityModel) {
         return userRepository.findAllByCity(cityModel);
+    }
+
+    public Optional<UserModel> getUserByPk(int id) {
+        return userRepository.findById(id);
+    }
+
+    public UserModel getUserByPkMandatory(int id) {
+        Optional<UserModel> userModelOptional = getUserByPk(id);
+
+        if(!userModelOptional.isPresent()) {
+            throw new NoSuchElementException(
+                    String.format("No user with id '%s' is found", id)
+            );
+        }
+
+        return userModelOptional.get();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

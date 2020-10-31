@@ -100,12 +100,6 @@ public class SparkJobService {
 
         ALSModel model = readModel(modelPath, spark);
 
-//        Dataset<Row> rowDataset = model.recommendForAllUsers(10);
-//
-//        rowDataset.count();
-//
-//        rowDataset.show(10);
-
         return model;
     }
 

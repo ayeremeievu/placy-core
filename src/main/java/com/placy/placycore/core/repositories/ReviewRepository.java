@@ -9,6 +9,7 @@ import com.placy.placycore.reviewscore.model.PlaceModel;
 import com.placy.placycore.reviewscore.model.ReviewModel;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
 
@@ -28,5 +29,4 @@ public interface ReviewRepository extends PageableRepository<ReviewModel, Intege
     @QueryHints(value = { @QueryHint(name = org.hibernate.annotations.QueryHints.FLUSH_MODE, value = "COMMIT") })
     List<ReviewModel> findAllByPlaceAddressCityAndPkGreaterThanAndCreatedAtGreaterThanOrderByPkAscCreatedAtAsc(
             CityModel cityModel, Integer pk, Date createdAt, Pageable pageable);
-
 }

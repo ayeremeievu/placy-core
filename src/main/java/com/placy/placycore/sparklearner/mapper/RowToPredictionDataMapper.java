@@ -1,13 +1,12 @@
 package com.placy.placycore.sparklearner.mapper;
 
-import com.placy.placycore.core.mappers.AbstractSimpleMapper;
 import com.placy.placycore.core.model.UserModel;
 import com.placy.placycore.core.services.PlaceService;
 import com.placy.placycore.core.services.UserService;
 import com.placy.placycore.reviewscore.model.PlaceModel;
 import com.placy.placycore.reviewslearning.exceptions.LearningProcessException;
-import com.placy.placycore.sparklearner.data.PredictionData;
-import com.placy.placycore.sparklearner.data.PredictionDataList;
+import com.placy.placycore.reviewslearning.data.PredictionData;
+import com.placy.placycore.reviewslearning.data.PredictionDataList;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema;
 import org.springframework.beans.factory.annotation.Autowired;

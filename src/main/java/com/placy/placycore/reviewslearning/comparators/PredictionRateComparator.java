@@ -1,6 +1,6 @@
 package com.placy.placycore.reviewslearning.comparators;
 
-import com.placy.placycore.sparklearner.data.PredictionData;
+import com.placy.placycore.reviewslearning.data.PredictionData;
 
 import java.util.Comparator;
 

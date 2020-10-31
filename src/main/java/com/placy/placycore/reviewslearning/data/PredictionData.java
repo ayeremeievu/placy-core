@@ -1,7 +1,9 @@
-package com.placy.placycore.sparklearner.data;
+package com.placy.placycore.reviewslearning.data;
 
 import com.placy.placycore.core.model.UserModel;
 import com.placy.placycore.reviewscore.model.PlaceModel;
+
+import java.util.Objects;
 
 public class PredictionData {
 
@@ -25,5 +27,20 @@ public class PredictionData {
 
     public float getEvaluatedRate() {
         return evaluatedRate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PredictionData that = (PredictionData) o;
+        return Float.compare(that.evaluatedRate, evaluatedRate) == 0 &&
+                Objects.equals(userModel, that.userModel) &&
+                Objects.equals(placeModel, that.placeModel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userModel, placeModel, evaluatedRate);
     }
 }
